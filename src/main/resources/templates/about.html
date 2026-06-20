@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>О проекте - Кинозал</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+    <div class="logo">
+        <a href="/">КИНОЗАЛ</a>
+    </div>
+    <div class="nav">
+        <a th:href="@{/}">Афиша</a>
+        <a th:href="@{/about}">О проекте</a>
+        <a href="#" class="nav-link" onclick="showLoginModal();return false;">Вход</a>
+    </div>
+</header>
+
+<!-- Technical Section -->
+<section class="tech-section">
+    <div class="tech-header">
+        <h1>О проекте</h1>
+        <div class="subtitle">Техническая информация о базе данных и проекте</div>
+    </div>
+
+    <!-- Статистика БД -->
+    <div class="tech-card">
+        <h2>Статистика базы данных</h2>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-number" th:text="${movieCount}">0</div>
+                <div class="stat-label">Фильмов</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" th:text="${seanceCount}">0</div>
+                <div class="stat-label">Сеансов</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" th:text="${hallCount}">0</div>
+                <div class="stat-label">Залов</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" th:text="${bookCount}">0</div>
+                <div class="stat-label">Бронирований</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Технические детали -->
+    <div class="tech-card">
+        <h2>Технический стек</h2>
+        <div class="tech-details">
+            <p>🔹 Backend: Spring Boot 4.0.6</p>
+            <p>🔹 База данных: PostgreSQL</p>
+            <p>🔹 ORM: Spring Data JPA / Hibernate</p>
+            <p>🔹 Шаблонизатор: Thymeleaf</p>
+            <p>🔹 Язык: Java 24</p>
+            <p>🔹 Сборка: Maven</p>
+        </div>
+    </div>
+
+    <!-- GitHub ссылка -->
+    <div class="tech-card" style="text-align: center;">
+        <h2>GitHub</h2>
+        <p style="margin-bottom: 20px; color: #888;">Исходный код проекта</p>
+        <a href="https://github.com/ваш-username/booking-system" class="github-link" target="_blank">
+            github.com/ваш-username/booking-system
+        </a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <p>Кинозал | 2026</p>
+</footer>
+
+<!-- Подключить модальное окно -->
+<div th:replace="~{fragments/login-modal :: loginModal}"></div>
+
+<!-- Подключить JS -->
+<script src="/js/login.js"></script>
+
+</body>
+</html>

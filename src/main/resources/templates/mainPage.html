@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кинозал - Афиша</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+    <div class="logo">
+        <a href="/">КИНОЗАЛ</a>
+    </div>
+    <div class="nav">
+        <a th:href="@{/}">Афиша</a>
+        <a th:href="@{/about}">О проекте</a>
+        <a href="#" class="nav-link" onclick="showLoginModal();return false;">Вход</a>
+    </div>
+</header>
+
+<!-- Hero Section - главный фильм на всю ширину -->
+<section class="hero" th:if="${featuredMovie != null}"
+         th:style="'background-image: linear-gradient(90deg, #0a0a0a 0%, rgba(10, 10, 10, 0.7) 50%, #0a0a0a 100%), url(' + ${featuredMovie.backdropUrl} + '); background-size: cover; background-position: center 30%;'">
+    <div class="hero-content">
+        <div class="hero-label">СЕАНС НЕДЕЛИ</div>
+        <h1 class="hero-title" th:text="${featuredMovie.title}">Бегущий по лезвию 2049</h1>
+        <div class="hero-meta">
+            <span th:text="${featuredMovie.formattedDuration}">2ч 43мин</span>
+            <span th:text="${featuredMovie.genre}">фантастика</span>
+            <span th:text="${featuredMovie.ageRating}">18+</span>
+        </div>
+        <p class="hero-description" th:text="${featuredMovie.description}">
+            Офицер полиции Кей вынужден разыскивать беглецов...
+        </p>
+        <a href="#" class="btn-buy" th:data-movie-id="${featuredMovie.id}">Купить билет</a>
+    </div>
+
+    <div class="hero-poster">
+        <img th:src="${featuredMovie.posterUrl}" th:alt="${featuredMovie.title}" class="hero-poster-img">
+    </div>
+</section>
+
+<!-- Main Content - Афиша -->
+<main class="container">
+    <h2 class="section-title">Сегодня в кино</h2>
+
+    <div class="movies-grid">
+        <!-- Динамическая генерация карточек фильмов -->
+        <div class="movie-card" th:each="movie : ${movies}">
+            <div class="movie-image">
+                <img th:src="${movie.posterUrl}"
+                     th:alt="${movie.title}"
+                     class="movie-poster-img"
+                     onerror="this.src='/images/no-image.jpg'">
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title" th:text="${movie.title}">Название фильма</h3>
+                <p class="movie-description" th:text="${movie.description}">Описание фильма</p>
+                <div class="seances">
+                    <div class="time-buttons" th:if="${not #lists.isEmpty(movie.seances)}">
+                        <div class="time-button"
+                             th:each="seance : ${movie.seances}"
+                             th:text="${#temporals.format(seance.start_time, 'HH:mm')}"
+                             th:data-session-id="${seance.id}"
+                             th:data-hall="${seance.hall.id}">
+                            10:30
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="btn-buy-small"
+                   th:if="${not #lists.isEmpty(movie.seances)}"
+                   th:data-movie-id="${movie.id}">
+                    Купить билет
+                </a>
+                <div th:if="${#lists.isEmpty(movie.seances)}" class="no-seances-message">
+                    Скоро будут сеансы
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <p>Кинозал | 2026</p>
+</footer>
+
+<!-- Подключить модальное окно -->
+<div th:replace="~{fragments/login-modal :: loginModal}"></div>
+
+<!-- Подключить JS -->
+<script src="/js/login.js"></script>
+
+</body>
+</html>
