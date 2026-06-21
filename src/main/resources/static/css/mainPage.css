@@ -1,0 +1,305 @@
+
+.hero {
+    position: relative;
+    aspect-ratio: 3/1;
+    background: linear-gradient(90deg, #0a0a0a 0%, rgba(10, 10, 10, 0.7) 50%, #0a0a0a 100%);
+    display: flex;
+    align-items: center;
+    padding: 0 60px;
+    border-bottom: 1px solid #333;
+    justify-content: space-between;
+}
+
+.hero-content {
+    max-width: 500px;
+}
+
+.hero-label {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #e50914;
+    margin-bottom: 15px;
+}
+
+.hero-title {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.hero-description {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #cccccc;
+    margin-bottom: 30px;
+}
+
+.hero-meta {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    font-size: 14px;
+    color: #888;
+}
+
+.hero-poster {
+    width: 300px;
+    height: 450px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.hero-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin: 15px 0;
+    color: #888;
+    font-size: 14px;
+}
+
+.hero-image-placeholder {
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 400px;
+    height: 300px;
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 14px;
+    border: 1px dashed #555;
+}
+
+.btn-buy {
+    display: inline-block;
+    background-color: #e50914;
+    color: #ffffff;
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-buy:hover {
+    background-color: #b81d24;
+}
+
+/* Main Content */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.section-title {
+    font-size: 28px;
+    margin-bottom: 30px;
+    border-left: 4px solid #e50914;
+    padding-left: 15px;
+}
+
+.movies-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    align-items: stretch;
+}
+
+.movie-card {
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
+}
+
+.movie-image {
+    width: 100%;
+    background-color: #2a2a2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.movie-poster-img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    display: block;
+}
+
+.movie-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 20px;
+    flex-grow: 1;
+}
+
+.movie-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.movie-duration {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 15px;
+}
+
+.movie-description {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #aaaaaa;
+    margin-bottom: 20px;
+    flex: 1;
+}
+
+/* Сеансы - только время без даты */
+.sessions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.session-time {
+    background-color: #2a2a2a;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    color: #ffffff;
+}
+
+.btn-buy-small {
+    display: inline-block;
+    background-color: #e50914;
+    color: #ffffff;
+    padding: 8px 24px;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 4px;
+    text-align: center;
+    width: 100%;
+    transition: background-color 0.3s;
+    border: none;
+    cursor: pointer;
+    margin-top: auto;
+}
+
+.btn-buy-small:hover {
+    background-color: #b81d24;
+}
+
+.footer {
+    background-color: #1a1a1a;
+    text-align: center;
+    padding: 30px;
+    margin-top: 60px;
+    border-top: 1px solid #333;
+    color: #666;
+    font-size: 14px;
+}
+
+/* Placeholder for images - убрать потом */
+.image-placeholder-text {
+    text-align: center;
+}
+
+.sessions-title {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.time-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.time-button {
+    background-color: #e50914;
+    border: none;
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.time-button:hover {
+    background-color: #b81d24;
+    color: white;
+    transform: scale(1.05);
+}
+
+.seances {
+    flex: 1;
+    margin-top: auto;
+}
+
+.movie-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 12px;
+    font-size: 13px;
+}
+
+.movie-duration, .movie-genre, .movie-age-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #666;
+}
+
+.age-restricted {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.no-seances-message {
+    background-color: #2a2a2a;
+    color: #888;
+    text-align: center;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-top: auto;
+    width: 100%;
+}

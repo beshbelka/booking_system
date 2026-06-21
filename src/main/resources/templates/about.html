@@ -5,20 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>О проекте - Кинозал</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/about.css">
+    <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
 
-<!-- Header -->
-<header class="header">
-    <div class="logo">
-        <a href="/">КИНОЗАЛ</a>
-    </div>
-    <div class="nav">
-        <a th:href="@{/}">Афиша</a>
-        <a th:href="@{/about}">О проекте</a>
-        <a href="#" class="nav-link" onclick="showLoginModal();return false;">Вход</a>
-    </div>
-</header>
+<div th:replace="~{fragments/header :: header}"></div>
 
 <!-- Technical Section -->
 <section class="tech-section">
@@ -67,16 +59,13 @@
     <div class="tech-card" style="text-align: center;">
         <h2>GitHub</h2>
         <p style="margin-bottom: 20px; color: #888;">Исходный код проекта</p>
-        <a href="https://github.com/ваш-username/booking-system" class="github-link" target="_blank">
-            github.com/ваш-username/booking-system
+        <a href="https://github.com/beshbelka/booking_system" class="github-link" target="_blank">
+            https://github.com/beshbelka/booking_system
         </a>
     </div>
 </section>
 
-<!-- Footer -->
-<footer class="footer">
-    <p>Кинозал | 2026</p>
-</footer>
+<div th:replace="~{fragments/footer :: footer}"></div>
 
 <!-- Подключить модальное окно -->
 <div th:replace="~{fragments/login-modal :: loginModal}"></div>

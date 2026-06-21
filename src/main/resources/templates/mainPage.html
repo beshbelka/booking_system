@@ -5,20 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Кинозал - Афиша</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/mainPage.css">
+    <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
 
-<!-- Header -->
-<header class="header">
-    <div class="logo">
-        <a href="/">КИНОЗАЛ</a>
-    </div>
-    <div class="nav">
-        <a th:href="@{/}">Афиша</a>
-        <a th:href="@{/about}">О проекте</a>
-        <a href="#" class="nav-link" onclick="showLoginModal();return false;">Вход</a>
-    </div>
-</header>
+<div th:replace="~{fragments/header :: header}"></div>
 
 <!-- Hero Section - главный фильм на всю ширину -->
 <section class="hero" th:if="${featuredMovie != null}"
@@ -82,10 +74,7 @@
     </div>
 </main>
 
-<!-- Footer -->
-<footer class="footer">
-    <p>Кинозал | 2026</p>
-</footer>
+<div th:replace="~{fragments/footer :: footer}"></div>
 
 <!-- Подключить модальное окно -->
 <div th:replace="~{fragments/login-modal :: loginModal}"></div>
