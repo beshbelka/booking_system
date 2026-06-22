@@ -7,8 +7,9 @@
     <div class="nav">
         <a href="/">Афиша</a>
         <a href="/about">О проекте</a>
-        <a href="/register">Регистрация</a>
-        <a href="#" onclick="showLoginModal(); return false;">Вход</a>
+        <button class="open-btn" onclick="openModal()" id="openAuthBtn">Вход</button>
     </div>
+    <div th:replace="~{fragments/auth :: authModal}"></div>
+    <script th:src="@{/js/auth.js}"></script>
 </header>
 </html>
