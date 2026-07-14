@@ -6,10 +6,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = "booking_system.repository")
-public class ReservationSystemApplication {
+public class BookingSystemApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ReservationSystemApplication.class, args);
+		SpringApplication.run(BookingSystemApplication.class, args);
 	}
 
 }

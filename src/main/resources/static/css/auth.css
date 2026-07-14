@@ -5,11 +5,10 @@
     color: #fff;
     background: #e50914;
     border: none;
-    border-radius: 8px;
+    border-radius: 4px;
     cursor: pointer;
     transition: background 0.3s ease, transform 0.2s ease;
     font-family: inherit;
-    box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -19,16 +18,6 @@
 
 .open-btn:hover {
     background: #b81d24;
-    transform: scale(1.02);
-}
-
-.open-btn:active {
-    transform: scale(0.98);
-}
-
-.open-btn:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.3);
 }
 
 /* ===== Модальное окно ===== */

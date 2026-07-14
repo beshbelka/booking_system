@@ -6,7 +6,7 @@
     <title>О проекте - Кинозал</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/about.css">
-    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="/css/auth.css">
 </head>
 <body>
 
@@ -58,7 +58,6 @@
     <!-- GitHub ссылка -->
     <div class="tech-card" style="text-align: center;">
         <h2>GitHub</h2>
-        <p style="margin-bottom: 20px; color: #888;">Исходный код проекта</p>
         <a href="https://github.com/beshbelka/booking_system" class="github-link" target="_blank">
             https://github.com/beshbelka/booking_system
         </a>
@@ -66,12 +65,6 @@
 </section>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
-
-<!-- Подключить модальное окно -->
-<div th:replace="~{fragments/login-modal :: loginModal}"></div>
-
-<!-- Подключить JS -->
-<script src="/js/login.js"></script>
 
 </body>
 </html>

@@ -42,10 +42,9 @@
         <!-- Динамическая генерация карточек фильмов -->
         <div class="movie-card" th:each="movie : ${movies}">
             <div class="movie-image">
-                <img th:src="${movie.posterUrl}"
+                <img th:src="${movie.posterUrl != null && movie.posterUrl != '' ? movie.posterUrl : '/images/no-image.jpg'}"
                      th:alt="${movie.title}"
-                     class="movie-poster-img"
-                     onerror="this.src='/images/no-image.jpg'">
+                     class="movie-poster-img">
             </div>
             <div class="movie-info">
                 <h3 class="movie-title" th:text="${movie.title}">Название фильма</h3>
