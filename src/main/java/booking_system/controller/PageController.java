@@ -8,9 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class MainPageController {
+public class PageController {
 
     @Autowired
     private SeanceService seanceService;
@@ -41,4 +42,10 @@ public class MainPageController {
         model.addAttribute("movies", movieService.getAllMovies());
         return "about";
     }
+
+    @GetMapping("/auth/login")
+    public String login() { return "login"; }
+
+    @GetMapping("/auth/registration")
+    public String registration() { return "registration"; }
 }

@@ -19,6 +19,16 @@ body {
     border-bottom: 1px solid #333;
 }
 
+.footer {
+    background-color: #1a1a1a;
+    text-align: center;
+    padding: 30px;
+    margin-top: 60px;
+    border-top: 1px solid #333;
+    color: #666;
+    font-size: 14px;
+}
+
 @media (max-width: 768px) {
     .header {
         flex-direction: column;
