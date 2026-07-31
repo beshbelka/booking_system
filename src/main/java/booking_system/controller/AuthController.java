@@ -1,13 +1,13 @@
 package booking_system.controller;
 
-import booking_system.DTO.UserRegistrationDto;
-import booking_system.entity.User;
+import booking_system.DTO.LoginRequest;
+import booking_system.DTO.RegisterRequest;
+import booking_system.service.AuthService;
 import booking_system.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -19,19 +19,27 @@ import java.util.Map;
 public class AuthController {
 
     private final UserService userService;
+    private final AuthService authService;
 
     @PostMapping("/register")
     @ResponseBody
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationDto userData) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest request) {
         try {
-            User registeredUser = userService.register(userData);
-            log.info("Регистрация успешна: " + registeredUser.getEmail());
-            return ResponseEntity.ok(Map.of(
-                    "success", true,
-                    "message", "Регистрация успешна"
-            ));
+            log.info("Регистрация успешна: " + request.email());
+            return ResponseEntity.ok(authService.register(request));
         } catch (Exception e) {
             log.error("Регистрация провалена: " + e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        try {
+            log.info("Вход успешен: " + request.email());
+            return ResponseEntity.ok(authService.login(request));
+        } catch (Exception e) {
+            log.error("Вход провален: " + e.getMessage());
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }

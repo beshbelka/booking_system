@@ -1,0 +1,98 @@
+package booking_system.security;
+
+import booking_system.service.JwtService;
+import booking_system.service.UserDetailsServiceImpl;
+import io.jsonwebtoken.JwtException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+import java.io.IOException;
+
+@Component
+@RequiredArgsConstructor
+@Slf4j
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private final JwtService jwtService;
+    private final UserDetailsServiceImpl userDetailsService;
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
+
+        String token = null;
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("token".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (token == null) {
+            log.error("token is null (JwtAuthenticationFilter)");
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        try {
+            final String email = jwtService.extractEmail(token);
+            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                if (jwtService.isTokenValid(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request)
+                    );
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            }
+        } catch (JwtException e) {
+            log.error("Токен не валидный, ошибка: " + e.getMessage());
+        }
+        filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+
+        String path = request.getRequestURI();
+        String method = request.getMethod();
+
+        for (String publicPath : Path.PUBLIC) {
+            if (publicPath.endsWith("/**")) {
+                String prefix = publicPath.replace("/**", "");
+                if (path.startsWith(prefix)) return true;
+            } else if (path.equals(publicPath)) return true;
+        }
+
+        if ("GET".equalsIgnoreCase(method)) {
+            for (String publicPath : Path.PUBLIC_GET) {
+                if (path.equals(publicPath)) return true;
+            }
+        } else if ("POST".equalsIgnoreCase(method)) {
+            for (String publicPath : Path.PUBLIC_POST) {
+                if (path.equals(publicPath)) return true;
+            }
+        }
+        return false;
+    }
+}

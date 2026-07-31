@@ -48,4 +48,7 @@ public class PageController {
 
     @GetMapping("/auth/registration")
     public String registration() { return "registration"; }
+
+    @GetMapping("/profile")
+    public String profile() { return "profile"; }
 }

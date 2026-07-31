@@ -1,0 +1,420 @@
+/* ===== PROFILE PAGE STYLES ===== */
+
+.profile-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* Profile Header */
+.profile-header {
+    margin-bottom: 40px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 20px;
+}
+
+.profile-header h1 {
+    font-size: 32px;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.profile-subtitle {
+    color: #888;
+    font-size: 16px;
+}
+
+/* Profile Grid */
+.profile-grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 30px;
+}
+
+/* Profile Cards */
+.profile-card {
+    background-color: #1a1a1a;
+    border-radius: 12px;
+    border: 1px solid #2a2a2a;
+    padding: 28px;
+    transition: border-color 0.3s;
+}
+
+.profile-card:hover {
+    border-color: #3a3a3a;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.card-header h2 {
+    font-size: 20px;
+    color: #ffffff;
+    margin: 0;
+}
+
+/* Avatar */
+.user-avatar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.avatar-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e50914, #b81d24);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    font-weight: bold;
+    color: #ffffff;
+    border: 3px solid #2a2a2a;
+}
+
+/* User Info List */
+.user-info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: #111;
+    border-radius: 8px;
+    border: 1px solid #222;
+}
+
+.info-label {
+    color: #888;
+    font-size: 14px;
+}
+
+.info-value {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.role-badge {
+    background-color: #2a2a2a;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #aaa;
+}
+
+/* Profile Actions */
+.profile-actions {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #2a2a2a;
+}
+
+.btn-change-password {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: none;
+    border: 1px solid #333;
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.3s;
+    width: 100%;
+}
+
+.btn-change-password:hover {
+    border-color: #e50914;
+    background-color: rgba(229, 9, 20, 0.1);
+    color: #e50914;
+}
+
+/* Buttons */
+.btn-edit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.3s;
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+
+.btn-edit:hover {
+    color: #e50914;
+    background-color: rgba(229, 9, 20, 0.05);
+}
+
+/* Bookings */
+.bookings-count {
+    background-color: #e50914;
+    color: #ffffff;
+    padding: 2px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.bookings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.booking-item {
+    background-color: #111;
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #222;
+    transition: all 0.3s;
+}
+
+.booking-item:hover {
+    border-color: #333;
+}
+
+.booking-movie {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex: 1;
+}
+
+.booking-poster {
+    width: 60px;
+    height: 80px;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background-color: #2a2a2a;
+}
+
+.booking-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.booking-movie-info {
+    flex: 1;
+}
+
+.booking-movie-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0 0 6px 0;
+}
+
+.booking-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+    color: #888;
+    flex-wrap: wrap;
+}
+
+.booking-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.booking-date::before {
+    content: "📅 ";
+    font-size: 12px;
+}
+
+.booking-time::before {
+    content: "🕐 ";
+    font-size: 12px;
+}
+
+.booking-hall::before {
+    content: "🎬 ";
+    font-size: 12px;
+}
+
+.booking-seats {
+    font-size: 13px;
+    color: #aaa;
+    margin-top: 4px;
+}
+
+.seats-label {
+    color: #666;
+}
+
+.seats-numbers {
+    color: #fff;
+    font-weight: 500;
+}
+
+.booking-actions {
+    flex-shrink: 0;
+    margin-left: 16px;
+}
+
+.btn-cancel-booking {
+    display: inline-block;
+    background: none;
+    border: 1px solid #333;
+    color: #888;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-size: 13px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-cancel-booking:hover {
+    border-color: #e50914;
+    color: #e50914;
+    background-color: rgba(229, 9, 20, 0.05);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 0 16px;
+        margin: 20px auto;
+    }
+
+    .profile-card {
+        padding: 20px;
+    }
+
+    .booking-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .booking-actions {
+        margin-left: 0;
+    }
+
+    .booking-movie {
+        flex-wrap: wrap;
+    }
+
+    .profile-header h1 {
+        font-size: 24px;
+    }
+
+    .avatar-circle {
+        width: 80px;
+        height: 80px;
+        font-size: 32px;
+    }
+}
+
+/* ===== ADDITIONS TO style.css ===== */
+
+/* Form Styles */
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    color: #888;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.form-group input {
+    background-color: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #ffffff;
+    font-size: 14px;
+    transition: border-color 0.3s;
+    outline: none;
+}
+
+.form-group input:focus {
+    border-color: #e50914;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.btn-save {
+    flex: 1;
+    padding: 14px;
+    background-color: #e50914;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn-save:hover {
+    background-color: #b81d24;
+}
+
+.btn-cancel {
+    flex: 0 0 auto;
+    padding: 14px 32px;
+    background: none;
+    border: 1px solid #333;
+    color: #888;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn-cancel:hover {
+    border-color: #666;
+    color: #fff;
+}
