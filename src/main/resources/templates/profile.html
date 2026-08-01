@@ -9,7 +9,16 @@
 </head>
 <body>
 
-<div th:replace="~{fragments/header :: header}"></div>
+<header class="header">
+    <div class="logo">
+        <a href="/">Кинозал</a>
+    </div>
+    <nav class="nav">
+        <a href="/">Афиша</a>
+        <a href="/profile">Личный кабинет</a>
+        <a href="/logout">Выйти</a>
+    </nav>
+</header>
 
 <main class="profile-container">
     <div class="profile-header">
@@ -17,14 +26,14 @@
         <p class="profile-subtitle">Управление профилем и бронированиями</p>
     </div>
 
-    <div class="profile-grid">
-        <!-- Левая колонка - информация о пользователе -->
-        <div class="profile-card profile-info">
-            <div class="card-header">
-                <h2>Мои данные</h2>
-                <a href="/profile/edit" class="btn-edit">✎ Редактировать</a>
-            </div>
+    <!-- Информация о пользователе (сверху) -->
+    <div class="profile-card profile-info">
+        <div class="card-header">
+            <h2>Мои данные</h2>
+            <a href="/profile/edit" class="btn-edit">✎ Редактировать</a>
+        </div>
 
+        <div class="profile-grid-top">
             <div class="user-avatar">
                 <div class="avatar-circle">И</div>
             </div>
@@ -47,99 +56,101 @@
                     <span class="info-value role-badge">Пользователь</span>
                 </div>
             </div>
-
-            <div class="profile-actions">
-                <a href="/profile/change-password" class="btn-change-password">
-                    🔒 Сменить пароль
-                </a>
-            </div>
         </div>
 
-        <!-- Правая колонка - бронирования -->
-        <div class="profile-card profile-bookings">
-            <div class="card-header">
-                <h2>Мои бронирования</h2>
-                <span class="bookings-count">3</span>
+        <div class="profile-actions">
+            <a href="/profile/change-password" class="btn-change-password">
+                🔒 Сменить пароль
+            </a>
+        </div>
+    </div>
+
+    <!-- Бронирования (снизу) -->
+    <div class="profile-card profile-bookings">
+        <div class="card-header">
+            <h2>Мои бронирования</h2>
+            <span class="bookings-count">3</span>
+        </div>
+
+        <div class="bookings-list">
+            <!-- Бронирование 1 -->
+            <div class="booking-item">
+                <div class="booking-movie">
+                    <div class="booking-poster">
+                        <img src="/images/movie-placeholder.jpg" alt="Постер фильма">
+                    </div>
+                    <div class="booking-movie-info">
+                        <h3 class="booking-movie-title">Бегущий по лезвию 2049</h3>
+                        <div class="booking-meta">
+                            <span class="booking-date">15.03.2024</span>
+                            <span class="booking-time">19:30</span>
+                            <span class="booking-hall">Зал 3</span>
+                        </div>
+                        <div class="booking-seats">
+                            <span class="seats-label">Места:</span>
+                            <span class="seats-numbers">5, 6, 7</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="booking-actions">
+                    <a href="/profile/cancel/1" class="btn-cancel-booking" onclick="return confirm('Вы уверены, что хотите отменить бронирование?')">Отменить</a>
+                </div>
             </div>
 
-            <div class="bookings-list">
-                <!-- Бронирование 1 -->
-                <div class="booking-item">
-                    <div class="booking-movie">
-                        <div class="booking-poster">
-                            <img src="/images/movie-placeholder.jpg" alt="Постер фильма">
-                        </div>
-                        <div class="booking-movie-info">
-                            <h3 class="booking-movie-title">Бегущий по лезвию 2049</h3>
-                            <div class="booking-meta">
-                                <span class="booking-date">15.03.2024</span>
-                                <span class="booking-time">19:30</span>
-                                <span class="booking-hall">Зал 3</span>
-                            </div>
-                            <div class="booking-seats">
-                                <span class="seats-label">Места:</span>
-                                <span class="seats-numbers">5, 6, 7</span>
-                            </div>
-                        </div>
+            <!-- Бронирование 2 -->
+            <div class="booking-item">
+                <div class="booking-movie">
+                    <div class="booking-poster">
+                        <img src="/images/movie-placeholder2.jpg" alt="Постер фильма">
                     </div>
-                    <div class="booking-actions">
-                        <a href="/profile/cancel/1" class="btn-cancel-booking" onclick="return confirm('Вы уверены, что хотите отменить бронирование?')">Отменить</a>
+                    <div class="booking-movie-info">
+                        <h3 class="booking-movie-title">Дюна: Часть вторая</h3>
+                        <div class="booking-meta">
+                            <span class="booking-date">20.03.2024</span>
+                            <span class="booking-time">21:00</span>
+                            <span class="booking-hall">Зал 5</span>
+                        </div>
+                        <div class="booking-seats">
+                            <span class="seats-label">Места:</span>
+                            <span class="seats-numbers">12, 13</span>
+                        </div>
                     </div>
                 </div>
+                <div class="booking-actions">
+                    <a href="/profile/cancel/2" class="btn-cancel-booking" onclick="return confirm('Вы уверены, что хотите отменить бронирование?')">Отменить</a>
+                </div>
+            </div>
 
-                <!-- Бронирование 2 -->
-                <div class="booking-item">
-                    <div class="booking-movie">
-                        <div class="booking-poster">
-                            <img src="/images/movie-placeholder2.jpg" alt="Постер фильма">
-                        </div>
-                        <div class="booking-movie-info">
-                            <h3 class="booking-movie-title">Дюна: Часть вторая</h3>
-                            <div class="booking-meta">
-                                <span class="booking-date">20.03.2024</span>
-                                <span class="booking-time">21:00</span>
-                                <span class="booking-hall">Зал 5</span>
-                            </div>
-                            <div class="booking-seats">
-                                <span class="seats-label">Места:</span>
-                                <span class="seats-numbers">12, 13</span>
-                            </div>
-                        </div>
+            <!-- Бронирование 3 -->
+            <div class="booking-item">
+                <div class="booking-movie">
+                    <div class="booking-poster">
+                        <img src="/images/movie-placeholder3.jpg" alt="Постер фильма">
                     </div>
-                    <div class="booking-actions">
-                        <a href="/profile/cancel/2" class="btn-cancel-booking" onclick="return confirm('Вы уверены, что хотите отменить бронирование?')">Отменить</a>
+                    <div class="booking-movie-info">
+                        <h3 class="booking-movie-title">Оппенгеймер</h3>
+                        <div class="booking-meta">
+                            <span class="booking-date">22.03.2024</span>
+                            <span class="booking-time">18:00</span>
+                            <span class="booking-hall">Зал 1</span>
+                        </div>
+                        <div class="booking-seats">
+                            <span class="seats-label">Места:</span>
+                            <span class="seats-numbers">8</span>
+                        </div>
                     </div>
                 </div>
-
-                <!-- Бронирование 3 -->
-                <div class="booking-item">
-                    <div class="booking-movie">
-                        <div class="booking-poster">
-                            <img src="/images/movie-placeholder3.jpg" alt="Постер фильма">
-                        </div>
-                        <div class="booking-movie-info">
-                            <h3 class="booking-movie-title">Оппенгеймер</h3>
-                            <div class="booking-meta">
-                                <span class="booking-date">22.03.2024</span>
-                                <span class="booking-time">18:00</span>
-                                <span class="booking-hall">Зал 1</span>
-                            </div>
-                            <div class="booking-seats">
-                                <span class="seats-label">Места:</span>
-                                <span class="seats-numbers">8</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="booking-actions">
-                        <a href="/profile/cancel/3" class="btn-cancel-booking" onclick="return confirm('Вы уверены, что хотите отменить бронирование?')">Отменить</a>
-                    </div>
+                <div class="booking-actions">
+                    <a href="/profile/cancel/3" class="btn-cancel-booking" onclick="return confirm('Вы уверены, что хотите отменить бронирование?')">Отменить</a>
                 </div>
             </div>
         </div>
     </div>
 </main>
 
-<div th:replace="~{fragments/footer :: footer}"></div>
+<footer class="footer">
+    <p>&copy; 2026 Кинозал. Все права защищены.</p>
+</footer>
 
 </body>
 </html>

@@ -42,9 +42,9 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
 
         const result = await response.json();
 
-        if (response.ok && result.success) {
+        if (response.ok && result.accessToken) {
             alert('Регистрация успешна! Перенаправление...');
-            window.location.href = '/auth/login';
+            window.location.href = '/profile';
         } else {
             if (result.errors) {
                 Object.keys(result.errors).forEach(field => {

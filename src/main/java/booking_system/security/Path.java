@@ -13,8 +13,7 @@ public class Path {
             "/",
             "/about",
             "/auth/login",
-            "/auth/registration",
-            "/profile"
+            "/auth/registration"
     };
 
     public static final String[] PUBLIC_POST = {
