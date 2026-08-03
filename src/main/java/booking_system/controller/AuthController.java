@@ -41,10 +41,12 @@ public class AuthController {
     }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
         try {
+            AuthResponse authResponse = authService.login(request);
+            addTokenCookie(response, authResponse.accessToken());
             log.info("Вход успешен: " + request.email());
-            return ResponseEntity.ok(authService.login(request));
+            return ResponseEntity.ok(authResponse);
         } catch (Exception e) {
             log.error("Вход провален: " + e.getMessage());
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));

@@ -39,9 +39,10 @@ public class JwtService {
         return extractAllClaims(token).getExpiration().before(new Date());
     }
 
-    public String extractEmail(String token) {
-        return extractAllClaims(token).getSubject();
+    public Claims extractClaims(String token) {
+        return extractAllClaims(token);
     }
+    public String extractEmail(String token) { return extractAllClaims(token).getSubject(); }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts.builder()

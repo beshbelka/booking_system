@@ -12,6 +12,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -30,7 +34,12 @@ public class AuthService {
         User user = new User(request.email(), passwordEncoder.encode(request.password()), request.name(), request.birthDate());
         userRepository.save(user);
 
-        return new AuthResponse(jwtService.generateToken(user));
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("name", user.getName());
+        claims.put("birthDate", user.getBirthDate()!=null ? user.getBirthDate().format(DateTimeFormatter.ISO_LOCAL_DATE) : "Дата рождения не указана");
+        claims.put("role", user.getRole().name());
+
+        return new AuthResponse(jwtService.generateToken(claims, user));
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -41,6 +50,10 @@ public class AuthService {
                 )
         );
         User user = userRepository.findByEmail(request.email()).orElseThrow();
-        return new AuthResponse(jwtService.generateToken(user));
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("name", user.getName());
+        claims.put("birthDate", user.getBirthDate()!=null ? user.getBirthDate().format(DateTimeFormatter.ISO_LOCAL_DATE) : "Дата рождения не указана");
+        claims.put("role", user.getRole().name());
+        return new AuthResponse(jwtService.generateToken(claims, user));
     }
 }

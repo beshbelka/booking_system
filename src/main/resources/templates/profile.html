@@ -9,21 +9,11 @@
 </head>
 <body>
 
-<header class="header">
-    <div class="logo">
-        <a href="/">Кинозал</a>
-    </div>
-    <nav class="nav">
-        <a href="/">Афиша</a>
-        <a href="/profile">Личный кабинет</a>
-        <a href="/logout">Выйти</a>
-    </nav>
-</header>
+<div th:replace="~{fragments/header :: header}"></div>
 
 <main class="profile-container">
     <div class="profile-header">
         <h1>Личный кабинет</h1>
-        <p class="profile-subtitle">Управление профилем и бронированиями</p>
     </div>
 
     <!-- Информация о пользователе (сверху) -->
@@ -35,25 +25,25 @@
 
         <div class="profile-grid-top">
             <div class="user-avatar">
-                <div class="avatar-circle">И</div>
+                <div class="avatar-circle">♥</div>
             </div>
 
             <div class="user-info-list">
                 <div class="info-item">
                     <span class="info-label">Email</span>
-                    <span class="info-value">user@example.com</span>
+                    <span class="info-value" th:text="${email}">email не указан</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">Имя</span>
-                    <span class="info-value">Иван Петров</span>
+                    <span class="info-value" th:text="${name}">имя не указано</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">Дата рождения</span>
-                    <span class="info-value">15.03.1990</span>
+                    <span class="info-value" th:text="${birthDate}">дата рождения не указана</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">Роль</span>
-                    <span class="info-value role-badge">Пользователь</span>
+                    <span class="info-value role-badge"th:text="${role}">роль не указана</span>
                 </div>
             </div>
         </div>
@@ -148,9 +138,7 @@
     </div>
 </main>
 
-<footer class="footer">
-    <p>&copy; 2026 Кинозал. Все права защищены.</p>
-</footer>
+<div th:replace="~{fragments/footer :: footer}"></div>
 
 </body>
 </html>

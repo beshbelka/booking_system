@@ -1,6 +1,7 @@
 package booking_system.controller;
 
 import booking_system.service.*;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.HashMap;
 
 @Controller
 @Slf4j
@@ -54,7 +57,7 @@ public class PageController {
     public String registration() { return "registration"; }
 
     @GetMapping("/profile")
-    public String profile(HttpServletRequest request) {
+    public String profile(HttpServletRequest request, Model model) {
         String token = null;
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -65,15 +68,23 @@ public class PageController {
                 }
             }
         }
-        if (token == null) return "/auth/login";
+        if (token == null) return "redirect:/auth/login";
         try {
             if (jwtService.isTokenValid(token)) {
-                return "/profile";
+
+                Claims claims = jwtService.extractClaims(token);
+
+                model.addAttribute("email", jwtService.extractEmail(token));
+                model.addAttribute("name", claims.get("name"));
+                model.addAttribute("birthDate", claims.get("birthDate"));
+                model.addAttribute("role", claims.get("role").equals("USER") ? "Пользователь" : "Администратор");
+
+                return "profile";
             }
-            return "/auth/login";
+            return "redirect:/auth/login";
         } catch (Exception e) {
-            log.error("AuthController: token validate error " + e.getMessage());
-            return "/auth/login";
+            log.error("PageController: token validate error,  " + e.getMessage());
+            return "redirect:/auth/login";
         }
     }
 }
