@@ -20,13 +20,14 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/auth")
 public class AuthController {
 
     private final UserService userService;
     private final AuthService authService;
     private final JwtService jwtService;
 
-    @PostMapping("/auth/register")
+    @PostMapping("/register")
     @ResponseBody
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest request, HttpServletResponse response) {
         try {
@@ -40,7 +41,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/auth/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
         try {
             AuthResponse authResponse = authService.login(request);
@@ -51,6 +52,13 @@ public class AuthController {
             log.error("Вход провален: " + e.getMessage());
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        String token = jwtService.extractTokenFromCookies(request);
+        authService.logout(token, response);
+        return ResponseEntity.ok(Map.of("success", true));
     }
 
     private void addTokenCookie(HttpServletResponse response, String token) {

@@ -6,7 +6,8 @@ public class Path {
             "/css/**",
             "/js/**",
             "/images/**",
-            "/error"
+            "/error",
+            "/favicon.ico"
     };
 
     public static final String[] PUBLIC_GET = {

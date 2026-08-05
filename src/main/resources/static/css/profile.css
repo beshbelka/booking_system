@@ -114,9 +114,11 @@
     margin-top: 24px;
     padding-top: 20px;
     border-top: 1px solid #2a2a2a;
+    display: flex;
+    gap: 12px;
 }
 
-.btn-change-password {
+.btn-profile-actions {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -132,7 +134,7 @@
     width: 100%;
 }
 
-.btn-change-password:hover {
+.btn-profile-actions:hover {
     border-color: #e50914;
     background-color: rgba(229, 9, 20, 0.1);
     color: #e50914;

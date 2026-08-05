@@ -48,10 +48,13 @@
             </div>
         </div>
 
-        <div class="profile-actions">
-            <a href="/profile/change-password" class="btn-change-password">
+        <div class="profile-actions" id="profileActions">
+            <a href="/profile/change-password" class="btn-profile-actions">
                 🔒 Сменить пароль
             </a>
+            <button type="button" class="btn-profile-actions" id="logoutButton" onclick="logout()">
+                🚪 Выйти
+            </button>
         </div>
     </div>
 
@@ -139,6 +142,8 @@
 </main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
+
+<script th:src="@{/js/profile.js}"></script>
 
 </body>
 </html>

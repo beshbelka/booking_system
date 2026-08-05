@@ -1,6 +1,7 @@
 package booking_system.security;
 
 import booking_system.service.JwtService;
+import booking_system.service.TokenBlacklistService;
 import booking_system.service.UserDetailsServiceImpl;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -26,26 +27,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsServiceImpl userDetailsService;
+    private final TokenBlacklistService blacklistService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        String token = null;
-        Cookie[] cookies = request.getCookies();
-
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("accessToken".equals(cookie.getName())) {
-                    token = cookie.getValue();
-                    break;
-                }
-            }
-        }
+        String token = jwtService.extractTokenFromCookies(request);
 
         if (token == null) {
             log.error("token is null (JwtAuthenticationFilter)");
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        if (blacklistService.isBlackListed(token)) {
+            log.info("token blacklisted");
+
+            Cookie cookie = new Cookie("accessToken", null);
+            cookie.setPath("/");
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+
             filterChain.doFilter(request, response);
             return;
         }
@@ -82,23 +86,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
 
         String path = request.getRequestURI();
-        String method = request.getMethod();
 
         for (String publicPath : Path.PUBLIC) {
             if (publicPath.endsWith("/**")) {
                 String prefix = publicPath.replace("/**", "");
                 if (path.startsWith(prefix)) return true;
             } else if (path.equals(publicPath)) return true;
-        }
-
-        if ("GET".equalsIgnoreCase(method)) {
-            for (String publicPath : Path.PUBLIC_GET) {
-                if (path.equals(publicPath)) return true;
-            }
-        } else if ("POST".equalsIgnoreCase(method)) {
-            for (String publicPath : Path.PUBLIC_POST) {
-                if (path.equals(publicPath)) return true;
-            }
         }
         return false;
     }
