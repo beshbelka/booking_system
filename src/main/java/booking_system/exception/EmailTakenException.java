@@ -6,6 +6,8 @@ import org.springframework.web.ErrorResponseException;
 
 public class EmailTakenException extends ErrorResponseException {
 
+    private final String detailMessage;
+
     private static ProblemDetail asProblem(String email) {
         ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.CONFLICT);
         problemDetail.setTitle("email taken");
@@ -16,5 +18,11 @@ public class EmailTakenException extends ErrorResponseException {
 
     public EmailTakenException(String email) {
         super(HttpStatus.CONFLICT, asProblem(email), null);
+        this.detailMessage = "Пользователь с email: '%s' уже существует".formatted(email);
+    }
+
+    @Override
+    public String getMessage() {
+        return detailMessage;
     }
 }

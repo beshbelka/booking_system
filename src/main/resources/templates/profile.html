@@ -20,7 +20,9 @@
     <div class="profile-card profile-info">
         <div class="card-header">
             <h2>Мои данные</h2>
-            <a href="/profile/edit" class="btn-edit">✎ Редактировать</a>
+            <button class="btn-edit" id="toggleEditBtn" onclick="toggleEditMode()">
+                ✎ Редактировать
+            </button>
         </div>
 
         <div class="profile-grid-top">
@@ -33,13 +35,17 @@
                     <span class="info-label">Email</span>
                     <span class="info-value" th:text="${email}">email не указан</span>
                 </div>
-                <div class="info-item">
+                <div class="info-item editable-field">
                     <span class="info-label">Имя</span>
-                    <span class="info-value" th:text="${name}">имя не указано</span>
+                    <span class="info-value display-mode" id="userNameDisplay" th:text="${name}">имя не указано</span>
+                    <input type="text" class="edit-input edit-mode" id="userNameInput"
+                           th:value="${name}" placeholder="Введите имя" style="display: none;">
                 </div>
-                <div class="info-item">
+                <div class="info-item editable-field">
                     <span class="info-label">Дата рождения</span>
-                    <span class="info-value" th:text="${birthDate}">дата рождения не указана</span>
+                    <span class="info-value display-mode" id="userBirthDateDisplay" th:text="${birthDate}">дата рождения не указана</span>
+                    <input type="date" class="edit-input edit-mode" id="userBirthDateInput"
+                           th:value="${birthDate}" style="display: none;">
                 </div>
                 <div class="info-item">
                     <span class="info-label">Роль</span>
@@ -54,6 +60,15 @@
             </a>
             <button type="button" class="btn-profile-actions" id="logoutButton" onclick="logout()">
                 🚪 Выйти
+            </button>
+        </div>
+
+        <div class="edit-actions" id="editActions" style="display: none;">
+            <button class="btn-save-all" onclick="saveAllFields()">
+                💾 Сохранить изменения
+            </button>
+            <button class="btn-cancel-all" onclick="cancelAllFields()">
+                ✕ Отменить
             </button>
         </div>
     </div>
@@ -145,5 +160,6 @@
 
 <script th:src="@{/js/profile.js}"></script>
 
+<div id="notification" class="notification" style="display: none;"></div>
 </body>
 </html>

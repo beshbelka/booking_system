@@ -14,27 +14,29 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             body: JSON.stringify({ email, password })
         });
 
-        // Проверяем Content-Type
         const contentType = response.headers.get('content-type');
         if (!contentType || !contentType.includes('application/json')) {
             const text = await response.text();
             console.error('Non-JSON response:', text);
-            showError('emailError', 'Ошибка сервера. Попробуйте позже.');
+            document.getElementById('emailError').textContent = 'Ошибка сервера. Попробуйте позже.';
+            document.getElementById('emailError').style.display = 'block';
             return;
         }
 
         const result = await response.json();
 
-        if (response.ok && result.accessToken) {
-            // Редирект на профиль
+        if (response.ok && result.success) {
             window.location.href = '/profile';
         } else {
-            // Показываем ошибку
-            document.getElementById('errorMessage').style.display = 'block';
+            // Показываем message под email
+            const msg = document.getElementById('emailError');
+            msg.textContent = result.message || 'Ошибка входа';
+            msg.style.display = 'block';
         }
     } catch (error) {
         console.error('Error:', error);
-        document.getElementById('errorMessage').textContent = '❌ Ошибка соединения с сервером';
-        document.getElementById('errorMessage').style.display = 'block';
+        const msg = document.getElementById('emailError');
+        msg.textContent = '❌ Ошибка соединения с сервером';
+        msg.style.display = 'block';
     }
 });

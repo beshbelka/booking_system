@@ -30,3 +30,8 @@ SELECT * FROM (VALUES
     (8, '20:00:00'::time, '22:46:00'::time, 3, 2, 'UNDEFINED')
 ) AS s(id, start_time, end_time, movie_id, hall_id, status)
 WHERE NOT EXISTS (SELECT 1 FROM seance WHERE seance.id = s.id);
+
+INSERT INTO users (email, password, name, birth_date, role)
+VALUES ('user@email.com', '$2a$10$hCeKBUgH0EHGfAe/qEKMier5d.0wyNzzig5yksNE3H8MV5AFbPCby', 'username', '2005-06-25', 'USER');
+INSERT INTO users (email, password, name, birth_date, role)
+VALUES ('admin@email.com', '$2a$10$gSTUsYNKz.y9zuWjUSgljegSx6pXw3Ep8lvWY1/eESByh7K8b.bCe', 'adminame', '2005-06-25', 'ADMIN');

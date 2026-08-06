@@ -42,11 +42,15 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
 
         const result = await response.json();
 
-        if (response.ok && result.accessToken) {
-            alert('Регистрация успешна! Перенаправление...');
+        if (response.ok && result.success) {
             window.location.href = '/profile';
         } else {
-            if (result.errors) {
+            // Обработка ошибок в зависимости от статуса
+            if (response.status === 409) {
+                // EmailTakenException - конфликт
+                showError('emailError', result.message || 'Email уже используется');
+            } else if (response.status === 400 && result.errors) {
+                // Ошибки валидации (если есть Map<String, String> errors)
                 Object.keys(result.errors).forEach(field => {
                     const errorEl = document.getElementById(field + 'Error');
                     if (errorEl) {
@@ -55,10 +59,12 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
                         if (input) input.classList.add('error');
                     }
                 });
-            } else if (result.error) {
-                showError('emailError', result.error);
+            } else if (response.status === 500) {
+                // Внутренняя ошибка сервера
+                showError('emailError', result.message || 'Внутренняя ошибка сервера');
             } else {
-                showError('emailError', 'Неизвестная ошибка');
+                // Остальные ошибки
+                showError('emailError', result.message || 'Ошибка регистрации');
             }
         }
     } catch (error) {
@@ -70,11 +76,23 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
 function validateForm(data) {
     const errors = {};
     if (!data.email) errors.email = 'Email обязателен';
+    else if (!isValidEmail(data.email)) errors.email = 'Некорректный формат email';
     if (!data.name) errors.name = 'Имя обязательно';
     if (!data.birthDate) errors.birthDate = 'Дата рождения обязательна';
+    else if (!isValidDate(data.birthDate)) errors.birthDate = 'Некорректная дата';
     if (!data.password) errors.password = 'Пароль обязателен';
+    else if (data.password.length < 6) errors.password = 'Пароль должен быть не менее 6 символов';
     if (data.password !== data.confirmPassword) errors.confirmPassword = 'Пароли не совпадают';
     return errors;
+}
+
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function isValidDate(dateStr) {
+    const date = new Date(dateStr);
+    return !isNaN(date.getTime()) && dateStr.includes('-');
 }
 
 function clearErrors() {
