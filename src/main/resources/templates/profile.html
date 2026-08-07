@@ -6,6 +6,7 @@
     <title>Личный кабинет - Кинозал</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/profile.css">
+    <link rel="stylesheet" href="/css/password.css">
 </head>
 <body>
 
@@ -55,9 +56,9 @@
         </div>
 
         <div class="profile-actions" id="profileActions">
-            <a href="/profile/change-password" class="btn-profile-actions">
+            <button type="button" class="btn-profile-actions" onclick="openPasswordModal()">
                 🔒 Сменить пароль
-            </a>
+            </button>
             <button type="button" class="btn-profile-actions" id="logoutButton" onclick="logout()">
                 🚪 Выйти
             </button>
@@ -157,8 +158,10 @@
 </main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
+<div th:replace="~{fragments/password :: passwordModal}"></div>
 
 <script th:src="@{/js/profile.js}"></script>
+<script th:src="@{/js/password.js}"></script>
 
 <div id="notification" class="notification" style="display: none;"></div>
 </body>

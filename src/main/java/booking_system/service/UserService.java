@@ -9,6 +9,7 @@ import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -26,21 +28,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-
-    public User register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.email())) {
-            throw new RuntimeException("Пользователь с email " + request.email() + " уже существует");
-        }
-
-        String encodedPassword = passwordEncoder.encode(request.password());
-        User user = new User(
-                request.email(),
-                encodedPassword,
-                request.name(),
-                request.birthDate());
-
-        return userRepository.save(user);
-    }
 
     @Transactional
     public ApiResponse editProfile(@Valid ProfileEditRequest data, String token) {
@@ -71,6 +58,26 @@ public class UserService {
 
             return ApiResponse.success(newData);
 
+        } catch (Exception e) {
+            return ApiResponse.error(500, e.getMessage());
+        }
+    }
+
+    @Transactional
+    public ApiResponse changePassword(String token, String oldPass, String newPass) {
+        try {
+            String email = jwtService.extractEmail(token);
+            User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("user not found"));
+            String passwordFromDB = user.getPassword();
+            if (!passwordEncoder.matches(oldPass, passwordFromDB)) {
+                log.info("password does not match: " + passwordFromDB + ", " + oldPass);
+                throw new Exception("password does not match");
+            }
+            user.setPassword(passwordEncoder.encode(newPass));
+            userRepository.save(user);
+            Map<String, String> data = new HashMap<>();
+            data.put("accessToken", token);
+            return ApiResponse.success(data);
         } catch (Exception e) {
             return ApiResponse.error(500, e.getMessage());
         }

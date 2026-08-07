@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -49,13 +50,13 @@ public class AuthService {
     }
 
     public AuthResponse login(LoginRequest request) {
-        authenticationManager.authenticate(
+        Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.email(),
                         request.password()
                 )
         );
-        User user = userRepository.findByEmail(request.email()).orElseThrow();
+        User user = (User) auth.getPrincipal();
         Map<String, Object> claims = new HashMap<>();
         claims.put("name", user.getName());
         claims.put("birthDate", user.getBirthDate()!=null ? user.getBirthDate().format(DateTimeFormatter.ISO_LOCAL_DATE) : "Дата рождения не указана");
