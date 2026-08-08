@@ -36,4 +36,8 @@ public class MovieService {
     public List<Movie> getAllMovies() {
         return movieRepository.findAll();
     }
+
+    public Movie findById(Long id) {
+        return movieRepository.findById(id).orElseThrow(() -> new RuntimeException("movie not found"));
+    }
 }

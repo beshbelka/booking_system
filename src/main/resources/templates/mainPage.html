@@ -25,7 +25,7 @@
         <p class="hero-description" th:text="${featuredMovie.description}">
             Офицер полиции Кей вынужден разыскивать беглецов...
         </p>
-        <a href="#" class="btn-buy" th:data-movie-id="${featuredMovie.id}">Купить билет</a>
+        <a th:href="@{/seances(movieId=${featuredMovie.id})}" class="btn-buy" th:data-movie-id="${featuredMovie.id}">Купить билет</a>
     </div>
 
     <div class="hero-poster">
@@ -59,7 +59,7 @@
                         </div>
                     </div>
                 </div>
-                <a href="#" class="btn-buy-small"
+                <a th:href="@{/seances(movieId=${movie.id})}" class="btn-buy-small"
                    th:if="${not #lists.isEmpty(movie.seances)}"
                    th:data-movie-id="${movie.id}">
                     Купить билет
