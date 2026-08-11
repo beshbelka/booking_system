@@ -10,24 +10,24 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-
 @Controller
-public class MovieController {
+public class SeanceController {
 
-    @Autowired
-    private MovieService movieService;
     @Autowired
     private SeanceService seanceService;
+    @Autowired
+    private MovieService movieService;
 
-    @GetMapping("/seances")
-    public String showSeance(@RequestParam Long movieId, Model model) {
+    @GetMapping("/seats")
+    public String chooseSeat(@RequestParam Long seanceId,
+                             @RequestParam Long movieId,
+                             Model model) {
         Movie movie = movieService.findById(movieId);
-        List<Seance> seances = seanceService.findByMovieId(movieId);
+        Seance seance = seanceService.findById(seanceId);
 
+        model.addAttribute("seance", seance);
         model.addAttribute("movie", movie);
-        model.addAttribute("seances", seances);
 
-        return "seances";
+        return "seats";
     }
 }

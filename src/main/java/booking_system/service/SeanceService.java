@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SeanceService {
@@ -20,5 +21,13 @@ public class SeanceService {
 
     public long getSeanceCount() {
         return seanceRepository.count();
+    }
+
+    public List<Seance> findByMovieId(Long movieId) {
+        return seanceRepository.findByMovieId(movieId);
+    }
+
+    public Seance findById(Long seanceId) {
+        return seanceRepository.findById(seanceId).orElseThrow(() -> new RuntimeException("seance not found"));
     }
 }

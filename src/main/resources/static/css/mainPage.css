@@ -233,36 +233,6 @@
     font-weight: bold;
 }
 
-.time-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.time-button {
-    background-color: #e50914;
-    border: none;
-    color: #ffffff;
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.time-button:hover {
-    background-color: #b81d24;
-    color: white;
-    transform: scale(1.05);
-}
-
-.seances {
-    flex: 1;
-    margin-top: auto;
-}
-
 .movie-meta {
     display: flex;
     flex-wrap: wrap;

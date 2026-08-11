@@ -15,7 +15,7 @@ import booking_system.enums.SEAT_TYPE;
 public class Seat {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
     private short row;
@@ -32,4 +32,18 @@ public class Seat {
     @ManyToOne
     @JoinColumn(name = "hall_id", nullable = false)
     private Hall hall;
+
+    public Seat (short row,
+                 short number,
+                 SEAT_STATUS status,
+                 float price,
+                 SEAT_TYPE type,
+                 Hall hall) {
+        this.row = row;
+        this.number = number;
+        this.status = status;
+        this.price = price;
+        this.type = type;
+        this.hall = hall;
+    }
 }

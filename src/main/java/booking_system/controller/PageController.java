@@ -36,7 +36,7 @@ public class PageController {
     @GetMapping("/")
     public String home(Model model) {
         // все фильмы
-        model.addAttribute("movies", movieService.getAllMoviesWithSeances());
+        model.addAttribute("movies", movieService.getAllMovies());
 
         // сеанс недели
         model.addAttribute("featuredMovie", movieService.getRandomMovie());

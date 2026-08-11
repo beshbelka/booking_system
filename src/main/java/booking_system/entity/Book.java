@@ -1,5 +1,7 @@
 package booking_system.entity;
 
+import booking_system.enums.SEAT_STATUS;
+import booking_system.enums.SEAT_TYPE;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +19,7 @@ import java.util.List;
 public class Book {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
     @Enumerated(EnumType.STRING)
@@ -28,10 +30,20 @@ public class Book {
     private User user;
 
     @OneToMany
-    @JoinColumn(name = "seat_id", nullable = false)
+    @JoinColumn(name = "book_id", nullable = false)
     private List<Seat> seats = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "seance_id", nullable = false)
     private Seance seance;
+
+    public Book (BOOK_STATUS status,
+                 User user,
+                 List<Seat> seats,
+                 Seance seance) {
+        this.status = status;
+        this.user = user;
+        this.seats = seats;
+        this.seance = seance;
+    }
 }

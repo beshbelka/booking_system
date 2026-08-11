@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выбор места - Кинозал</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/seats.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="seats-container">
+    <div class="seats-card">
+        <h1 class="seats-title">Выбор места</h1>
+
+        <!-- Информация о сеансе -->
+        <div class="session-info">
+            <h2 class="movie-title-display" th:text="${movie.title}">Название фильма</h2>
+            <div class="session-time-display">
+                Начало: <span th:text="${#temporals.format(seance.start_time, 'HH:mm')}">19:00</span>
+                Окончание: <span th:text="${#temporals.format(seance.end_time, 'HH:mm')}">21:46</span>
+            </div>
+            Зал <div class="session-hall-display" th:text="${seance.hall.id}">3</div>
+        </div>
+
+        <!-- Выбор места -->
+        <div class="seat-selection">
+            <div class="selection-group">
+                <label for="rowSelect">Ряд</label>
+                <select id="rowSelect" class="seat-select">
+                    <option value="">Выберите ряд</option>
+                    <option value="1">1 ряд</option>
+                    <option value="2">2 ряд</option>
+                    <option value="3">3 ряд</option>
+                    <option value="4">4 ряд</option>
+                    <option value="5">5 ряд</option>
+                    <option value="6">6 ряд</option>
+                    <option value="7">7 ряд</option>
+                    <option value="8">8 ряд</option>
+                    <option value="9">9 ряд</option>
+                    <option value="10">10 ряд</option>
+                </select>
+            </div>
+
+            <div class="selection-group">
+                <label for="seatSelect">Место</label>
+                <select id="seatSelect" class="seat-select">
+                    <option value="">Выберите место</option>
+                    <option value="1">Место 1</option>
+                    <option value="2">Место 2</option>
+                    <option value="3">Место 3</option>
+                    <option value="4">Место 4</option>
+                    <option value="5">Место 5</option>
+                    <option value="6">Место 6</option>
+                    <option value="7">Место 7</option>
+                    <option value="8">Место 8</option>
+                    <option value="9">Место 9</option>
+                    <option value="10">Место 10</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Кнопки действий -->
+        <div class="action-buttons">
+            <button class="btn-pay" onclick="payTicket()">💰 Оплатить</button>
+            <button class="btn-cancel" onclick="cancelBooking()">✕ Отменить</button>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script>
+    function payTicket() {
+        const row = document.getElementById('rowSelect').value;
+        const number = document.getElementById('seatSelect').value;
+
+        if (!row || !number) {
+            alert('Пожалуйста, выберите ряд и место');
+            return;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const movieId = urlParams.get('movieId');
+        const seanceId = urlParams.get('seanceId');
+        console.log("movieId: " + movieId + ", seanceId: " + seanceId, ", row: " + row + ", number: " + number);
+        createBooking(movieId, seanceId, row, number);
+
+        alert('Бронирование подтверждено!\nРяд: ' + row + '\nМесто: ' + number);
+    }
+
+    function cancelBooking() {
+        if (confirm('Вы уверены, что хотите отменить бронирование?')) {
+            window.location.href = '/';
+        }
+    }
+
+    async function createBooking(movieId, seanceId, row, number) {
+        try {
+            const response = await fetch('/book', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',  // ← отправлять куки
+                body: JSON.stringify({
+                    movieId: movieId,
+                    seanceId: seanceId,
+                    row: row,
+                    number: number
+                })
+            });
+
+            // Если вернулся 401 (неавторизован) — редирект на логин
+            if (response.status === 401 || response.status === 403) {
+                alert('Сессия истекла. Войдите заново.');
+                window.location.href = '/login';
+                return;
+            }
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert('✅ Бронирование успешно!');
+                window.location.href = '/profile';
+            } else {
+                alert(result.message || '❌ Ошибка при бронировании');
+            }
+
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('⚠️ Ошибка соединения');
+        }
+    }
+</script>
+
+</body>
+</html>

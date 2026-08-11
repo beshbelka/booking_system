@@ -14,17 +14,15 @@
 <main class="buy-container">
     <!-- Верхняя часть с фильмом -->
     <section class="movie-hero"
-             th:style="'background-image: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.2) 100%), url(' + ${movie.backdropUrl} + ');'">
+             th:style="'background-image: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.2) 100%), url(' + ${movie.backdropUrl} + '); background-size: cover; background-position: center;'">
         <div class="movie-hero-content">
             <div class="movie-poster-large">
-                <img th:src="@{{path}(path=${movie.posterUrl})}"
-                     th:alt="${movie.title} + ' постер'"
-                     alt="Постер фильма">
+                <img th:src="${movie.posterUrl}" th:alt="${movie.title}" alt="Постер">
             </div>
             <div class="movie-details">
                 <h1 class="movie-title" th:text="${movie.title}">Название фильма</h1>
                 <div class="movie-meta-hero">
-                    <span class="meta-item">⏱ <span th:text="${movie.getFormattedDuration()}">2 часа 46 мин</span></span>
+                    <span class="meta-item">⏱ <span th:text="${movie.getFormattedDuration()}">2ч 46мин</span></span>
                     <span class="meta-item">🎬 <span th:text="${movie.genre}">Фантастика</span></span>
                     <span class="meta-item age-rating" th:text="${movie.ageRating}">18+</span>
                 </div>
@@ -38,21 +36,20 @@
         <div class="container">
             <h2 class="section-title">Выберите сеанс</h2>
 
-            <div class="sessions-list" th:if="${not #lists.isEmpty(seances)}">
-                <!-- Группируем сеансы по залам -->
-                <div class="session-card" th:each="hallSeances : ${#lists.groupBy(seances, 'hall.id')}">
-                    <div class="session-hall-info">
-                        <span class="hall-name">🎥 Зал <span th:text="${hallSeances[0].hall.number}">3</span></span>
-                        <span class="hall-type" th:text="${hallSeances[0].hall.type}">Обычный</span>
+            <!-- Сеансы идут подряд, каждый в большом квадрате -->
+            <div class="sessions-grid">
+                <div class="session-card" th:each="seance : ${seances}">
+                    <div class="session-time-large" th:text="${#temporals.format(seance.start_time, 'HH:mm')}">
+                        12:30
                     </div>
-                    <div class="session-times">
-                        <button class="time-btn"
-                                th:each="seance : ${hallSeances}"
-                                th:attr="onclick='selectSession(' + ${seance.id} + ')'">
-                            <span th:text="${#temporals.format(seance.startTime, 'HH:mm')}">12:30</span>
-                            <span class="price"><span th:text="${seance.price}">500</span> ₽</span>
-                        </button>
+                    <div class="session-end-time" th:text="${#temporals.format(seance.end_time, 'HH:mm')}">
+                        Окончание: 14:30
                     </div>
+                    <div class="session-hall">Зал <span th:text="${seance.hall.id}">1</span></div>
+                    <button class="btn-select-session"
+                            th:attr="onclick='selectSession(' + ${movie.id} + ', ' + ${seance.id} + ')'">
+                        Выбрать
+                    </button>
                 </div>
             </div>
 
@@ -65,6 +62,12 @@
 </main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
+
+<script>
+    function selectSession(movieId, seanceId) {
+        window.location.href = '/seats?movieId=' + movieId + '&seanceId=' + seanceId;
+    }
+</script>
 
 </body>
 </html>

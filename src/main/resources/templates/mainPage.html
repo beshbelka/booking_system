@@ -48,17 +48,6 @@
             <div class="movie-info">
                 <h3 class="movie-title" th:text="${movie.title}">Название фильма</h3>
                 <p class="movie-description" th:text="${movie.description}">Описание фильма</p>
-                <div class="seances">
-                    <div class="time-buttons" th:if="${not #lists.isEmpty(movie.seances)}">
-                        <div class="time-button"
-                             th:each="seance : ${movie.seances}"
-                             th:text="${#temporals.format(seance.start_time, 'HH:mm')}"
-                             th:data-session-id="${seance.id}"
-                             th:data-hall="${seance.hall.id}">
-                            10:30
-                        </div>
-                    </div>
-                </div>
                 <a th:href="@{/seances(movieId=${movie.id})}" class="btn-buy-small"
                    th:if="${not #lists.isEmpty(movie.seances)}"
                    th:data-movie-id="${movie.id}">

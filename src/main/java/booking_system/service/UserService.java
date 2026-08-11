@@ -82,4 +82,8 @@ public class UserService {
             return ApiResponse.error(500, e.getMessage());
         }
     }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("user not found"));
+    }
 }

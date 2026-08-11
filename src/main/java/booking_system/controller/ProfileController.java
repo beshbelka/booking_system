@@ -32,6 +32,7 @@ public class ProfileController {
             HttpServletResponse response) {
         try {
             String token = jwtService.extractTokenFromCookies(request);
+            if (token == null || token.isEmpty()) throw new RuntimeException("token is null");
             ApiResponse apiResponse = userService.editProfile(data, token);
             if (apiResponse.getData() != null && apiResponse.getData() instanceof Map) {
                 Map<String, Object> responseData = (Map<String, Object>) apiResponse.getData();
