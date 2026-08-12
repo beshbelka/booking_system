@@ -7,6 +7,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.internal.util.logging.formatter.CollectionOfClassesObjectFormatter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class JwtService {
 
@@ -77,15 +79,19 @@ public class JwtService {
     }
 
     public String extractTokenFromCookies(HttpServletRequest request) {
+        log.info("extracting token from cookies");
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
+            log.info("1");
             return null;
         }
         for (Cookie cookie : cookies) {
             if ("accessToken".equals(cookie.getName())) {
+                log.info("2");
                 return cookie.getValue();
             }
         }
+        log.info("3");
         return null;
     }
 

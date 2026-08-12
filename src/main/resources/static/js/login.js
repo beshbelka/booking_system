@@ -25,8 +25,17 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 
         const result = await response.json();
 
+        const urlParams = new URLSearchParams(window.location.search);
+        const seats = urlParams.get('seats');
+
         if (response.ok && result.success) {
-            window.location.href = '/profile';
+            if (seats === 'true') {
+                const movieId = urlParams.get('movieId');
+                const seanceId = urlParams.get('seanceId');
+                window.location.href = "/seats?movieId=" + movieId + '&seanceId=' + seanceId;
+            } else {
+                window.location.href = '/profile';
+            }
         } else {
             // Показываем message под email
             const msg = document.getElementById('emailError');

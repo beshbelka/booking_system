@@ -1,0 +1,139 @@
+/* payment.css */
+.payment-container {
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #0a0a0a;
+    padding: 20px;
+}
+
+.payment-card {
+    background: #1a1a1a;
+    border-radius: 20px;
+    padding: 50px 40px;
+    max-width: 450px;
+    width: 100%;
+    text-align: center;
+    border: 2px solid #333;
+    transition: all 0.6s ease;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* Состояния */
+.payment-card.loading {
+    border-color: #e50914;
+    box-shadow: 0 0 40px rgba(229, 9, 20, 0.15);
+}
+
+.payment-card.success {
+    border-color: #4CAF50;
+    box-shadow: 0 0 50px rgba(76, 175, 80, 0.2);
+    animation: pulseGreen 1.5s ease;
+}
+
+.payment-card.error {
+    border-color: #e50914;
+    box-shadow: 0 0 50px rgba(229, 9, 20, 0.25);
+    animation: shake 0.6s ease;
+}
+
+/* Иконка */
+.payment-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 25px;
+}
+
+.payment-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Заголовок */
+#paymentTitle {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+.payment-card.loading #paymentTitle {
+    color: #e50914;
+}
+
+.payment-card.success #paymentTitle {
+    color: #4CAF50;
+}
+
+.payment-card.error #paymentTitle {
+    color: #e50914;
+}
+
+/* Сообщение */
+#paymentMessage {
+    font-size: 16px;
+    color: #aaa;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    min-height: 50px;
+}
+
+/* Кнопка */
+.payment-btn {
+    background: #e50914;
+    color: #fff;
+    border: none;
+    padding: 14px 40px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.payment-btn:hover {
+    background: #b81d24;
+    transform: scale(1.03);
+}
+
+.payment-card.success .payment-btn {
+    background: #4CAF50;
+}
+
+.payment-card.success .payment-btn:hover {
+    background: #388E3C;
+}
+
+.payment-card.error .payment-btn {
+    background: #e50914;
+}
+
+/* Анимации */
+@keyframes pulseGreen {
+    0% { box-shadow: 0 0 20px rgba(76, 175, 80, 0.1); }
+    50% { box-shadow: 0 0 60px rgba(76, 175, 80, 0.4); }
+    100% { box-shadow: 0 0 20px rgba(76, 175, 80, 0.1); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+    20%, 40%, 60%, 80% { transform: translateX(10px); }
+}
+
+/* Адаптив */
+@media (max-width: 600px) {
+    .payment-card {
+        padding: 30px 20px;
+    }
+
+    .payment-icon {
+        width: 70px;
+        height: 70px;
+    }
+
+    #paymentTitle {
+        font-size: 20px;
+    }
+}

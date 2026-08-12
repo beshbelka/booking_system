@@ -8,6 +8,7 @@ import booking_system.enums.SEAT_STATUS;
 import booking_system.enums.SEAT_TYPE;
 import booking_system.repository.BookRepository;
 import booking_system.repository.SeatRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class BookService {
 
@@ -34,7 +36,7 @@ public class BookService {
     }
 
     @Transactional
-    public ApiResponse createBooking(BookRequest request, String token) {
+    public Book createBooking(BookRequest request, String token) {
         try {
 
             String email = jwtService.extractEmail(token);
@@ -63,9 +65,34 @@ public class BookService {
             bookRepository.save(book);
             seatRepository.save(seat);
 
-            return ApiResponse.success(book.getId(), "book ok");
+            return book;
         } catch (Exception e) {
-            return ApiResponse.error(500, "book fail");
+            return new Book();
+        }
+    }
+
+    public Book findById(Long bookId) {
+        return bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("book not found"));
+    }
+
+    public ApiResponse deleteBooking(Long bookId) {
+        try {
+            Book book = findById(bookId);
+            bookRepository.delete(book);
+            return ApiResponse.success(bookId, "deleteBooking ok");
+        } catch (Exception e) {
+            return ApiResponse.error(500, e.getMessage());
+        }
+    }
+
+    public ApiResponse setStatusPaid(Long bookId) {
+        try {
+            Book book = findById(bookId);
+            book.setStatus(BOOK_STATUS.PAID);
+            bookRepository.save(book);
+            return ApiResponse.success(bookId, "set status PAID ok");
+        } catch (Exception e) {
+            return ApiResponse.error(500, e.getMessage());
         }
     }
 }

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата - Кинозал</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/payment.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="payment-container">
+    <div class="payment-card" id="paymentCard">
+        <!-- Иконка / логотип оплаты -->
+        <div class="payment-icon" id="paymentIcon">
+            <svg viewBox="0 0 100 100" id="paymentSvg">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#333" stroke-width="4"/>
+            </svg>
+        </div>
+
+        <!-- Заголовок -->
+        <h2 id="paymentTitle">Обработка платежа</h2>
+
+        <!-- Сообщение -->
+        <p id="paymentMessage">Пожалуйста, подождите, идёт обработка...</p>
+
+        <!-- Кнопка (изначально скрыта) -->
+        <button class="payment-btn" id="paymentBtn" style="display: none;" onclick="resetPayment()">
+            🔄 На главную
+        </button>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script th:src="@{/js/payment.js}"></script>
+
+</body>
+</html>
