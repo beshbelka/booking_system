@@ -35,7 +35,6 @@
 .payment-card.error {
     border-color: #e50914;
     box-shadow: 0 0 50px rgba(229, 9, 20, 0.25);
-    animation: shake 0.6s ease;
 }
 
 /* Иконка */
@@ -90,11 +89,11 @@
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s;
+    margin: auto;
 }
 
 .payment-btn:hover {
     background: #b81d24;
-    transform: scale(1.03);
 }
 
 .payment-card.success .payment-btn {

@@ -75,11 +75,16 @@
 .form-input[type="date"] {
     color-scheme: dark;
     cursor: pointer;
+    background-color: #2a2a2a;
+    color: #ffffff;
 }
 
-.form-input[type="date"]::-webkit-calendar-picker-indicator {
-    filter: invert(0.7);
-    cursor: pointer;
+.form-input[type="date"]:empty {
+    color: #888;
+}
+
+.form-input[type="date"]:valid {
+    color: #ffffff;
 }
 
 .btn-register {

@@ -29,7 +29,7 @@ function setLoadingState() {
             </circle>
         `;
     card.className = 'payment-card loading';
-    title.textContent = '⏳ Обработка платежа...';
+    title.textContent = 'Обработка платежа...';
     message.textContent = 'Пожалуйста, подождите, идёт оплата';
     btn.style.display = 'none';
 }
@@ -90,10 +90,10 @@ function showSuccess() {
             </path>
         `;
     card.className = 'payment-card success';
-    title.textContent = '✅ Оплата прошла успешно!';
-    message.textContent = 'Билеты забронированы. Приятного просмотра! 🎬';
+    title.textContent = 'Оплата прошла успешно!';
+    message.textContent = 'Билеты забронированы. Приятного просмотра!';
     btn.style.display = 'block';
-    btn.textContent = '📋 Перейти к билетам';
+    btn.textContent = 'Перейти к билетам';
     btn.onclick = () => window.location.href = '/profile';
 }
 
@@ -109,10 +109,10 @@ function showError() {
             </line>
         `;
     card.className = 'payment-card error';
-    title.textContent = '❌ Оплата не прошла';
+    title.textContent = 'Оплата не прошла';
     message.textContent = 'Попробуйте позже или используйте другую карту.';
     btn.style.display = 'block';
-    btn.textContent = '🔄 Попробовать снова';
+    btn.textContent = 'Попробовать снова';
     btn.onclick = () => location.reload();
 }
 
