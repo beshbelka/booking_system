@@ -91,8 +91,17 @@ function isValidEmail(email) {
 }
 
 function isValidDate(dateStr) {
+    // Проверяем формат YYYY-MM-DD
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!regex.test(dateStr)) return false;
+
     const date = new Date(dateStr);
-    return !isNaN(date.getTime()) && dateStr.includes('-');
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+
+    const minDate = new Date('1900-01-01');
+
+    return !isNaN(date.getTime()) && date >= minDate && date <= now;
 }
 
 function clearErrors() {

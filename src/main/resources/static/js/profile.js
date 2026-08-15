@@ -71,7 +71,6 @@ function cancelAllFields() {
 
         // Выходим из режима редактирования
         toggleEditMode();
-        showNotification('Изменения отменены', 'info');
     }
 }
 
@@ -87,33 +86,18 @@ async function saveAllFields() {
     const birthDate = birthDateInput.value;
 
     if (!name) {
-        showNotification('⚠️ Имя не может быть пустым', 'error');
-        nameInput.style.borderColor = '#f44336';
-        nameInput.focus();
-        setTimeout(() => {
-            nameInput.style.borderColor = '#4CAF50';
-        }, 2000);
+        showNotification('Имя не может быть пустым', 'error');
         return;
     }
 
     if (!birthDate) {
-        showNotification('⚠️ Дата рождения не может быть пустой', 'error');
-        birthDateInput.style.borderColor = '#f44336';
-        birthDateInput.focus();
-        setTimeout(() => {
-            birthDateInput.style.borderColor = '#4CAF50';
-        }, 2000);
+        showNotification('Дата рождения не может быть пустой', 'error');
         return;
     }
 
     // Проверка имени (минимум 2 символа)
     if (name.length < 2) {
-        showNotification('⚠️ Имя должно содержать минимум 2 символа', 'error');
-        nameInput.style.borderColor = '#f44336';
-        nameInput.focus();
-        setTimeout(() => {
-            nameInput.style.borderColor = '#4CAF50';
-        }, 2000);
+        showNotification('Имя должно содержать минимум 2 символа', 'error');
         return;
     }
 
@@ -123,22 +107,12 @@ async function saveAllFields() {
     const minDate = new Date('1900-01-01');
 
     if (birthDateObj > today) {
-        showNotification('⚠️ Дата рождения не может быть в будущем', 'error');
-        birthDateInput.style.borderColor = '#f44336';
-        birthDateInput.focus();
-        setTimeout(() => {
-            birthDateInput.style.borderColor = '#4CAF50';
-        }, 2000);
+        showNotification('Дата рождения не может быть в будущем', 'error');
         return;
     }
 
     if (birthDateObj < minDate) {
-        showNotification('⚠️ Некорректная дата рождения', 'error');
-        birthDateInput.style.borderColor = '#f44336';
-        birthDateInput.focus();
-        setTimeout(() => {
-            birthDateInput.style.borderColor = '#4CAF50';
-        }, 2000);
+        showNotification('Некорректная дата рождения', 'error');
         return;
     }
 
@@ -182,7 +156,7 @@ async function saveAllFields() {
             toggleEditMode();
 
         } else {
-            showNotification(result.message || '❌ Ошибка при обновлении данных', 'error');
+            showNotification(result.message || 'Ошибка при обновлении данных', 'error');
         }
     } catch (error) {
         console.error('Error:', error);
@@ -216,7 +190,7 @@ function logout() {
         })
         .catch(error => {
             console.error('Ошибка:', error);
-            alert('❌ Ошибка соединения с сервером');
+            alert('Ошибка соединения с сервером');
         });
 }
 
@@ -260,4 +234,28 @@ function showNotification(message, type = 'info') {
     window.notificationTimeout = setTimeout(() => {
         notification.style.display = 'none';
     }, 4000);
+}
+
+function deleteAccount() {
+    fetch('/profile/deleteAccount', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin'
+    })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            if (data.success === true) {
+                window.location.href = '/';
+            } else {
+                alert('Ошибка: ' + (data.error || 'Неизвестная ошибка'));
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+            alert('Ошибка соединения с сервером');
+        });
 }

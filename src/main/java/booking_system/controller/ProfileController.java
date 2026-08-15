@@ -3,6 +3,7 @@ package booking_system.controller;
 import booking_system.DTO.ApiResponse;
 import booking_system.DTO.PasswordChangeRequest;
 import booking_system.DTO.ProfileEditRequest;
+import booking_system.service.AuthService;
 import booking_system.service.JwtService;
 import booking_system.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ public class ProfileController {
 
     private final UserService userService;
     private final JwtService jwtService;
+    private final AuthService authService;
 
     @PostMapping("/edit")
     public ResponseEntity editProfile(
@@ -66,6 +68,24 @@ public class ProfileController {
             throw new Exception(apiResponse.getMessage());
         } catch (Exception e) {
             log.debug("changePassword error");
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error(500, e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/deleteAccount")
+    public ResponseEntity deleteAccount(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            String token = jwtService.extractTokenFromCookies(request);
+            authService.logout(token, response);
+            String email = jwtService.extractEmail(token);
+            ApiResponse apiResponse = userService.deleteAccount(email);
+            if (apiResponse.isSuccess()) {
+                return ResponseEntity.ok().body(apiResponse);
+            }
+            return ResponseEntity.status(apiResponse.getErrorCode()).body(apiResponse);
+        } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ApiResponse.error(500, e.getMessage()));

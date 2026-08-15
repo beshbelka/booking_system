@@ -86,4 +86,14 @@ public class UserService {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("user not found"));
     }
+
+    public ApiResponse deleteAccount(String email) {
+        try {
+            User user = findByEmail(email);
+            userRepository.delete(user);
+            return ApiResponse.success("delete account ok");
+        } catch (Exception e) {
+            return ApiResponse.error(500, e.getMessage());
+        }
+    }
 }
