@@ -9,7 +9,4 @@ public class TokenExpiredException extends BaseException {
         super(DEFAULT_MESSAGE, DEFAULT_ERROR_CODE);
     }
 
-    public TokenExpiredException(String message) {
-        super(message);
-    }
 }

@@ -8,7 +8,4 @@ public class BookNotFoundException extends BaseException {
     public BookNotFoundException() {
         super(DEFAULT_MESSAGE, DEFAULT_ERROR_CODE);
     }
-    public BookNotFoundException(String message) {
-        super(message);
-    }
 }

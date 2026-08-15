@@ -9,7 +9,4 @@ public class TokenIsNullException extends BaseException {
         super(DEFAULT_MESSAGE, DEFAULT_ERROR_CODE);
     }
 
-    public TokenIsNullException(String message) {
-        super(message);
-    }
 }

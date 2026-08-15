@@ -1,5 +1,6 @@
 package booking_system.service;
 
+import booking_system.enums.USER_ROLE;
 import booking_system.exception.EmailIsNullException;
 import booking_system.exception.InvalidTokenException;
 import booking_system.exception.TokenExpiredException;
@@ -14,7 +15,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.internal.util.logging.formatter.CollectionOfClassesObjectFormatter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,7 @@ public class JwtService {
     private String secretKey;
 
     @Value("${jwt-expiration}")
-    private long jwtExpiration;
+    private int jwtExpiration;
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
@@ -74,18 +74,16 @@ public class JwtService {
         return email;
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    public String generateToken(String email, USER_ROLE role) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role);
         return Jwts.builder()
-                .claims(extraClaims)
-                .subject(userDetails.getUsername())
+                .claims(claims)
+                .subject(email)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSigningKey())
                 .compact();
-    }
-
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
@@ -103,19 +101,15 @@ public class JwtService {
     }
 
     public String extractTokenFromCookies(HttpServletRequest request) {
-        log.info("extracting token from cookies");
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
-            log.info("1");
             return null;
         }
         for (Cookie cookie : cookies) {
             if ("accessToken".equals(cookie.getName())) {
-                log.info("2");
                 return cookie.getValue();
             }
         }
-        log.info("3");
         return null;
     }
 
@@ -124,7 +118,7 @@ public class JwtService {
         cookie.setHttpOnly(true);
         cookie.setSecure(false);
         cookie.setPath("/");
-        cookie.setMaxAge(900000);
+        cookie.setMaxAge(jwtExpiration);
         response.addCookie(cookie);
     }
 

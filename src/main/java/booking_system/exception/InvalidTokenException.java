@@ -8,8 +8,4 @@ public class InvalidTokenException extends BaseException {
     public InvalidTokenException() {
         super(DEFAULT_MESSAGE, DEFAULT_ERROR_CODE);
     }
-
-    public InvalidTokenException(String message) {
-        super(message);
-    }
 }

@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,9 +31,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final TokenBlacklistService blacklistService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         String token = jwtService.extractTokenFromCookies(request);
 
@@ -73,11 +74,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         log.warn("JwtAuthenticationFilter: token invalid");
                     }
                 } catch (UsernameNotFoundException e) {
-                    log.warn("JwtAuthenticationFilter: username not found, " + e.getMessage());
+                    log.warn("JwtAuthenticationFilter: username not found, {}", e.getMessage());
                 }
             }
         } catch (JwtException e) {
-            log.error("JwtAuthenticationFilter: Токен не валидный, ошибка: " + e.getMessage());
+            log.error("JwtAuthenticationFilter: Токен не валидный, ошибка: {}", e.getMessage());
         }
         filterChain.doFilter(request, response);
     }

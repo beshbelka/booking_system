@@ -3,22 +3,16 @@ package booking_system.service;
 import booking_system.entity.Seance;
 import booking_system.exception.SeanceNotFoundException;
 import booking_system.repository.SeanceRepository;
-import org.jspecify.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class SeanceService {
 
-    @Autowired
-    private SeanceRepository seanceRepository;
-
-    public List<Seance> getAllSeances() {
-        return seanceRepository.findAll();
-    }
+    private final SeanceRepository seanceRepository;
 
     public long getSeanceCount() {
         return seanceRepository.count();

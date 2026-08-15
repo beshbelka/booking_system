@@ -4,6 +4,7 @@ import booking_system.DTO.ApiResponse;
 import booking_system.DTO.LoginRequest;
 import booking_system.DTO.RegisterRequest;
 import booking_system.entity.User;
+import booking_system.enums.USER_ROLE;
 import booking_system.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,9 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -39,10 +38,8 @@ public class AuthService {
             User user = new User(request.email(), passwordEncoder.encode(request.password()), request.name(), request.birthDate());
             userRepository.save(user);
 
-            Map<String, Object> claims = putClaims(user);
-
             HashMap<String, String> token = new HashMap<>();
-            token.put("accessToken", jwtService.generateToken(claims, user));
+            token.put("accessToken", jwtService.generateToken(request.email(), USER_ROLE.USER));
 
             return ApiResponse.success(token);
 
@@ -61,10 +58,8 @@ public class AuthService {
             );
             User user = (User) auth.getPrincipal();
             if (user != null) {
-                Map<String, Object> claims = putClaims(user);
-
                 HashMap <String, String> token = new HashMap<>();
-                token.put("accessToken", jwtService.generateToken(claims, user));
+                token.put("accessToken", jwtService.generateToken(user.getEmail(), user.getRole()));
 
                 return ApiResponse.success(token);
             }
@@ -99,13 +94,5 @@ public class AuthService {
         } catch (Exception e) {
             return ApiResponse.error(500, e.getMessage());
         }
-    }
-
-    private Map<String, Object> putClaims(User user) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("name", user.getName());
-        claims.put("birthDate", user.getBirthDate() != null ? user.getBirthDate().format(DateTimeFormatter.ISO_LOCAL_DATE) : "Дата рождения не указана");
-        claims.put("role", user.getRole().name());
-        return claims;
     }
 }

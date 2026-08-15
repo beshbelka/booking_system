@@ -8,8 +8,4 @@ public class EmailIsNullException extends BaseException {
     public EmailIsNullException() {
         super(DEFAULT_MESSAGE, DEFAULT_ERROR_CODE);
     }
-
-    public EmailIsNullException(String message) {
-        super(message);
-    }
 }

@@ -8,8 +8,4 @@ public class SeanceNotFoundException extends BaseException {
     public SeanceNotFoundException() {
         super(DEFAULT_MESSAGE, DEFAULT_ERROR_CODE);
     }
-
-    public SeanceNotFoundException(String message) {
-        super(message);
-    }
 }

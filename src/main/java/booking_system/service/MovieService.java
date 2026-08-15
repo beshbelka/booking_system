@@ -3,24 +3,18 @@ package booking_system.service;
 import booking_system.entity.Movie;
 import booking_system.exception.MovieNotFoundException;
 import booking_system.repository.MovieRepository;
-import org.jspecify.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Random;
 
 @Service
+@RequiredArgsConstructor
 public class MovieService {
 
-    @Autowired
-    private MovieRepository movieRepository;
+    private final MovieRepository movieRepository;
 
-    public List<Movie> getAllMoviesWithSeances() {
-        return movieRepository.findAll();
-    }
-
-    // сеанс недели
     public Movie getRandomMovie() {
         List<Movie> allMovies = movieRepository.findAll();
         if (allMovies.isEmpty()) {

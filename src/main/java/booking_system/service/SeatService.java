@@ -2,14 +2,14 @@ package booking_system.service;
 
 import booking_system.entity.Seat;
 import booking_system.repository.SeatRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class SeatService {
 
-    @Autowired
-    private SeatRepository seatRepository;
+    private final SeatRepository seatRepository;
 
     public void save(Seat seat) {
         seatRepository.save(seat);

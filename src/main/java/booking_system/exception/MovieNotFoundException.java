@@ -8,7 +8,4 @@ public class MovieNotFoundException extends BaseException {
     public MovieNotFoundException() {
         super(DEFAULT_MESSAGE, DEFAULT_ERROR_CODE);
     }
-    public MovieNotFoundException(String message) {
-        super(message);
-    }
 }

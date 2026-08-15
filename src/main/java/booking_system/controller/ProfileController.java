@@ -3,6 +3,7 @@ package booking_system.controller;
 import booking_system.DTO.ApiResponse;
 import booking_system.DTO.PasswordChangeRequest;
 import booking_system.DTO.ProfileEditRequest;
+import booking_system.exception.TokenIsNullException;
 import booking_system.service.AuthService;
 import booking_system.service.JwtService;
 import booking_system.service.UserService;
@@ -15,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,25 +29,24 @@ public class ProfileController {
     private final AuthService authService;
 
     @PostMapping("/edit")
-    public ResponseEntity editProfile(
+    public ResponseEntity<ApiResponse> editProfile(
             @Valid @RequestBody ProfileEditRequest data,
             HttpServletRequest request,
             HttpServletResponse response) {
         try {
             String token = jwtService.extractTokenFromCookies(request);
-            if (token == null || token.isEmpty()) throw new RuntimeException("token is null");
+            if (token == null || token.isEmpty()) throw new TokenIsNullException();
             ApiResponse apiResponse = userService.editProfile(data, token);
-            if (apiResponse.getData() != null && apiResponse.getData() instanceof Map) {
-                Map<String, Object> responseData = (Map<String, Object>) apiResponse.getData();
-                if (responseData.containsKey("accessToken")) {
-                    String newToken = (String) responseData.get("accessToken");
-                    jwtService.addTokenCookie(response, newToken);
-                }
+            if (apiResponse.isSuccess()) {
+                HashMap<String, String> responseData = apiResponse.getData();
+                String newToken = responseData.get("accessToken");
+                jwtService.addTokenCookie(response, newToken);
+                return ResponseEntity.ok(ApiResponse.success("edit ok"));
             }
-            log.debug("edit ok");
-            return ResponseEntity.ok(ApiResponse.success(apiResponse, "edit ok"));
+            return ResponseEntity
+                    .status(apiResponse.getCode())
+                    .body(apiResponse);
         } catch (Exception e) {
-            log.debug("edit error");
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ApiResponse.error(500, e.getMessage()));
@@ -54,7 +54,7 @@ public class ProfileController {
     }
 
     @PutMapping("/password")
-    public ResponseEntity changePassword(
+    public ResponseEntity<ApiResponse> changePassword(
             @Valid @RequestBody PasswordChangeRequest passwordChangeRequest,
             HttpServletRequest request) {
         try {
@@ -63,11 +63,12 @@ public class ProfileController {
             String token = jwtService.extractTokenFromCookies(request);
             ApiResponse apiResponse = userService.changePassword(token, oldPass, newPass);
             if (apiResponse.isSuccess()) {
-                return ResponseEntity.ok(ApiResponse.success(apiResponse, "changePassword ok"));
+                return ResponseEntity.ok(ApiResponse.success("changePassword ok"));
             }
-            throw new Exception(apiResponse.getMessage());
+            return ResponseEntity
+                    .status(apiResponse.getCode())
+                    .body(apiResponse);
         } catch (Exception e) {
-            log.debug("changePassword error");
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ApiResponse.error(500, e.getMessage()));
@@ -75,7 +76,7 @@ public class ProfileController {
     }
 
     @DeleteMapping("/deleteAccount")
-    public ResponseEntity deleteAccount(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<ApiResponse> deleteAccount(HttpServletRequest request, HttpServletResponse response) {
         try {
             String token = jwtService.extractTokenFromCookies(request);
             authService.logout(token, response);
@@ -84,7 +85,9 @@ public class ProfileController {
             if (apiResponse.isSuccess()) {
                 return ResponseEntity.ok().body(apiResponse);
             }
-            return ResponseEntity.status(apiResponse.getCode()).body(apiResponse);
+            return ResponseEntity
+                    .status(apiResponse.getCode())
+                    .body(apiResponse);
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)

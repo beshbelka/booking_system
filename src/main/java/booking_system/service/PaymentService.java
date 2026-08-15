@@ -1,10 +1,7 @@
 package booking_system.service;
 
 import booking_system.DTO.ApiResponse;
-import booking_system.entity.Book;
-import booking_system.exception.BaseException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
