@@ -4,7 +4,7 @@ import booking_system.entity.Movie;
 import booking_system.entity.Seance;
 import booking_system.service.MovieService;
 import booking_system.service.SeanceService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,12 +14,11 @@ import java.util.Comparator;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 public class MovieController {
 
-    @Autowired
-    private MovieService movieService;
-    @Autowired
-    private SeanceService seanceService;
+    private final MovieService movieService;
+    private final SeanceService seanceService;
 
     @GetMapping("/seances")
     public String showSeance(@RequestParam Long movieId, Model model) {

@@ -6,39 +6,36 @@ import booking_system.entity.*;
 import booking_system.enums.BOOK_STATUS;
 import booking_system.enums.SEAT_STATUS;
 import booking_system.enums.SEAT_TYPE;
+import booking_system.exception.BaseException;
+import booking_system.exception.BookNotFoundException;
 import booking_system.repository.BookRepository;
-import booking_system.repository.SeatRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class BookService {
 
-    @Autowired
-    private BookRepository bookRepository;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private JwtService jwtService;
-    @Autowired
-    private SeanceService seanceService;
-    @Autowired
-    private SeatRepository seatRepository;
+    private final BookRepository bookRepository;
+    private final UserService userService;
+    private final JwtService jwtService;
+    private final SeanceService seanceService;
+    private final SeatService seatService;
 
     public long getBookCount() {
         return bookRepository.count();
     }
 
     @Transactional
-    public Book createBooking(BookRequest request, String token) {
+    public ApiResponse createBooking(BookRequest request, String token) {
         try {
-
             String email = jwtService.extractEmail(token);
             User user = userService.findByEmail(email);
 
@@ -63,34 +60,44 @@ public class BookService {
             );
 
             bookRepository.save(book);
-            seatRepository.save(seat);
+            seatService.save(seat);
 
-            return book;
+            HashMap<String, String> response = new HashMap<>();
+            response.put("bookId", book.getId().toString());
+
+            return ApiResponse.success(response);
+        } catch (BaseException e) {
+            return ApiResponse.error(e.getErrorCode(), e.getMessage());
         } catch (Exception e) {
-            return new Book();
+            return ApiResponse.error(500, e.getMessage());
         }
     }
 
     public Book findById(Long bookId) {
-        return bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("book not found"));
+        return bookRepository.findById(bookId).orElseThrow(BookNotFoundException::new);
     }
 
     public ApiResponse deleteBooking(Long bookId) {
         try {
             Book book = findById(bookId);
             bookRepository.delete(book);
-            return ApiResponse.success(bookId, "deleteBooking ok");
+            return ApiResponse.success("delete booking ok");
+        } catch (BaseException e) {
+            return ApiResponse.error(e.getErrorCode(), e.getMessage());
         } catch (Exception e) {
             return ApiResponse.error(500, e.getMessage());
         }
     }
 
+    @Transactional
     public ApiResponse setStatusPaid(Long bookId) {
         try {
             Book book = findById(bookId);
             book.setStatus(BOOK_STATUS.PAID);
             bookRepository.save(book);
-            return ApiResponse.success(bookId, "set status PAID ok");
+            return ApiResponse.success("set status PAID ok");
+        } catch (BaseException e) {
+            return ApiResponse.error(e.getErrorCode(), e.getMessage());
         } catch (Exception e) {
             return ApiResponse.error(500, e.getMessage());
         }

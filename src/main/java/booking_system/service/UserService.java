@@ -4,6 +4,7 @@ import booking_system.DTO.ApiResponse;
 import booking_system.DTO.ProfileEditRequest;
 import booking_system.DTO.RegisterRequest;
 import booking_system.entity.User;
+import booking_system.exception.UserNotFoundException;
 import booking_system.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
@@ -84,7 +85,7 @@ public class UserService {
     }
 
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("user not found"));
+        return userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
     }
 
     public ApiResponse deleteAccount(String email) {

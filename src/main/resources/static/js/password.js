@@ -68,9 +68,3 @@ async function changePassword(event) {
         console.error('Change password error:', error);
     }
 }
-
-function forgotPassword() {
-    closePasswordModal();
-    // Редирект или открытие модалки восстановления
-    window.location.href = '/forgot-password';
-}

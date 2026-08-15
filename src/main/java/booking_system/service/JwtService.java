@@ -1,6 +1,12 @@
 package booking_system.service;
 
+import booking_system.exception.EmailIsNullException;
+import booking_system.exception.InvalidTokenException;
+import booking_system.exception.TokenExpiredException;
+import booking_system.exception.TokenIsNullException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -34,11 +40,19 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        try {
+            return Jwts.parser()
+                    .verifyWith(getSigningKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (ExpiredJwtException e) {
+            throw new TokenExpiredException();
+        } catch (JwtException e) {
+            throw new InvalidTokenException();
+        } catch (IllegalArgumentException e) {
+            throw new TokenIsNullException();
+        }
     }
 
     private Boolean isTokenExpired(String token) {
@@ -48,7 +62,17 @@ public class JwtService {
     public Claims extractClaims(String token) {
         return extractAllClaims(token);
     }
-    public String extractEmail(String token) { return extractAllClaims(token).getSubject(); }
+
+    public String extractEmail(String token) {
+        if (token == null || token.isEmpty()) {
+            throw new TokenIsNullException();
+        }
+        String email = extractAllClaims(token).getSubject();
+        if (email == null || email.isEmpty()) {
+            throw new EmailIsNullException();
+        }
+        return email;
+    }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts.builder()

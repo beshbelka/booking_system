@@ -84,7 +84,7 @@ public class ProfileController {
             if (apiResponse.isSuccess()) {
                 return ResponseEntity.ok().body(apiResponse);
             }
-            return ResponseEntity.status(apiResponse.getErrorCode()).body(apiResponse);
+            return ResponseEntity.status(apiResponse.getCode()).body(apiResponse);
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)

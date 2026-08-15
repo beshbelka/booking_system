@@ -1,46 +1,31 @@
 package booking_system.controller;
 
+import booking_system.entity.Book;
 import booking_system.service.*;
 import io.jsonwebtoken.Claims;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.HashMap;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @Slf4j
+@RequiredArgsConstructor
 public class PageController {
 
-    @Autowired
-    private SeanceService seanceService;
-    @Autowired
-    private MovieService movieService;
-    @Autowired
-    private HallService hallService;
-    @Autowired
-    private BookService bookService;
-    @Autowired
-    private JwtService jwtService;
+    private final SeanceService seanceService;
+    private final MovieService movieService;
+    private final HallService hallService;
+    private final BookService bookService;
+    private final JwtService jwtService;
 
     @GetMapping("/")
     public String home(Model model) {
-        // все фильмы
         model.addAttribute("movies", movieService.getAllMovies());
-
-        // сеанс недели
         model.addAttribute("featuredMovie", movieService.getRandomMovie());
-
         return "mainPage";
     }
 
@@ -78,9 +63,26 @@ public class PageController {
             }
             return "redirect:/auth/login";
         } catch (Exception e) {
-            log.error("PageController: token validate error,  " + e.getMessage());
+            log.error("PageController: token validate error,  {}", e.getMessage());
             return "redirect:/auth/login";
         }
+    }
+
+    @GetMapping("/error")
+    public String error(@RequestParam(defaultValue = "500") int code,
+                        @RequestParam(defaultValue = "Внутренняя ошибка сервера") String message,
+                        Model model) {
+        model.addAttribute("errorCode", code);
+        model.addAttribute("errorMessage", message);
+        return "error";
+    }
+
+    @GetMapping("/payment")
+    public String showPaymentPage(@RequestParam Long bookId, Model model) {
+        Book book = bookService.findById(bookId);
+        model.addAttribute("bookingId", bookId);
+        model.addAttribute("book", book);
+        return "payment";
     }
 
 }

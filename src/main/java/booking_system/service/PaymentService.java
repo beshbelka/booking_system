@@ -2,14 +2,16 @@ package booking_system.service;
 
 import booking_system.DTO.ApiResponse;
 import booking_system.entity.Book;
+import booking_system.exception.BaseException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class PaymentService {
 
-    @Autowired
-    private BookService bookService;
+    private final BookService bookService;
 
     public ApiResponse cancelBook(Long bookId) {
         try {
@@ -17,7 +19,7 @@ public class PaymentService {
             if (response.isSuccess()) {
                 return ApiResponse.success("Бронь отменена");
             }
-            return ApiResponse.error(500, response.getMessage());
+            return ApiResponse.error(response.getCode(), response.getMessage());
         } catch (Exception e) {
             return ApiResponse.error(500, "cancelBook error: " + e.getMessage());
         }
@@ -29,7 +31,7 @@ public class PaymentService {
             if (response.isSuccess()) {
                 return ApiResponse.success("Бронь оплачена");
             }
-            return ApiResponse.error(500, response.getMessage());
+            return ApiResponse.error(response.getCode(), response.getMessage());
         } catch (Exception e) {
             return ApiResponse.error(500, e.getMessage());
         }

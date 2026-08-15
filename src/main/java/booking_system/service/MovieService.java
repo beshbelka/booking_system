@@ -1,6 +1,7 @@
 package booking_system.service;
 
 import booking_system.entity.Movie;
+import booking_system.exception.MovieNotFoundException;
 import booking_system.repository.MovieRepository;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,6 @@ public class MovieService {
     }
 
     public Movie findById(Long id) {
-        return movieRepository.findById(id).orElseThrow(() -> new RuntimeException("movie not found"));
+        return movieRepository.findById(id).orElseThrow(MovieNotFoundException::new);
     }
 }

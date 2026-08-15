@@ -2,47 +2,48 @@ package booking_system.controller;
 
 import booking_system.DTO.ApiResponse;
 import booking_system.DTO.BookRequest;
-import booking_system.entity.Book;
+import booking_system.exception.BaseException;
 import booking_system.service.BookService;
 import booking_system.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class BookController {
 
-    @Autowired
-    private JwtService jwtService;
-    @Autowired
-    private BookService bookService;
+    private final JwtService jwtService;
+    private final BookService bookService;
 
     @PostMapping("/book")
     public ResponseEntity<ApiResponse> createBooking(@Valid @RequestBody BookRequest bookRequest,
                                                      HttpServletRequest request) {
         try {
             String token = jwtService.extractTokenFromCookies(request);
-            if (token == null || token.isEmpty() || !jwtService.isTokenValid(token)) {
-                log.error("token is null or invalid");
+            if (token == null || token.isEmpty()) {
                 return ResponseEntity
                         .status(HttpStatus.UNAUTHORIZED)
-                        .body(ApiResponse.error(403, "token is null or invalid"));
+                        .body(ApiResponse.error(401, "token is null or empty"));
+            } else if (!jwtService.isTokenValid(token)) {
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body(ApiResponse.error(403, "token invalid"));
             }
-            log.info("token ok");
-            Book book = bookService.createBooking(bookRequest, token);
-            log.info("created booking");
-            return ResponseEntity.ok(ApiResponse.success(book.getId(), "created booking"));
+            ApiResponse apiResponse = bookService.createBooking(bookRequest, token);
+            return ResponseEntity.ok(apiResponse);
+        } catch (BaseException e) {
+            return ResponseEntity
+                    .status(e.getErrorCode())
+                    .body(ApiResponse.error(e.getErrorCode(), e.getMessage()));
         } catch (Exception e) {
-            log.error(e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ApiResponse.error(500, e.getMessage()));

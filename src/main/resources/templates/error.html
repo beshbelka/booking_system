@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ошибка - Кинозал</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/error.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="error-container">
+    <div class="error-card">
+        <!-- Код ошибки -->
+        <div class="error-code" th:text="${errorCode}">404</div>
+
+        <!-- Иконка -->
+        <div class="error-icon">
+            <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="50" cy="50" r="45"/>
+                <line x1="30" y1="30" x2="70" y2="70"/>
+                <line x1="70" y1="30" x2="30" y2="70"/>
+            </svg>
+        </div>
+
+        <!-- Сообщение -->
+        <h2 class="error-title" th:text="${errorMessage}">Страница не найдена</h2>
+
+        <!-- Кнопка -->
+        <a href="/" class="btn-error">На главную</a>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>
