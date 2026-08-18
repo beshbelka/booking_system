@@ -1,5 +1,7 @@
 package booking_system.security;
 
+import booking_system.exception.TokenExpiredException;
+import booking_system.exception.UserNotFoundException;
 import booking_system.service.JwtService;
 import booking_system.service.TokenBlacklistService;
 import booking_system.service.UserDetailsServiceImpl;
@@ -12,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -73,12 +76,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     } else {
                         log.warn("JwtAuthenticationFilter: token invalid");
                     }
-                } catch (UsernameNotFoundException e) {
-                    log.warn("JwtAuthenticationFilter: username not found, {}", e.getMessage());
+                } catch (UserNotFoundException e) {
+                    log.warn("JwtAuthenticationFilter: user not found, {}", e.getMessage());
+                    throw new UserNotFoundException();
                 }
             }
-        } catch (JwtException e) {
+        } catch (TokenExpiredException e) {
             log.error("JwtAuthenticationFilter: Токен не валидный, ошибка: {}", e.getMessage());
+            throw new TokenExpiredException();
         }
         filterChain.doFilter(request, response);
     }
@@ -87,6 +92,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
 
         String path = request.getRequestURI();
+        String method = request.getMethod();
+
+        if (method.equals("GET")) {
+            for (String publicPath : Path.PUBLIC_GET) {
+                if (publicPath.endsWith("/**")) {
+                    String prefix = publicPath.replace("/**", "");
+                    if (path.startsWith(prefix)) return true;
+                } else if (path.equals(publicPath)) return true;
+            }
+        }
+
+        if (method.equals("POST")) {
+            for (String publicPath : Path.PUBLIC_POST) {
+                if (publicPath.endsWith("/**")) {
+                    String prefix = publicPath.replace("/**", "");
+                    if (path.startsWith(prefix)) return true;
+                } else if (path.equals(publicPath)) return true;
+            }
+        }
 
         for (String publicPath : Path.PUBLIC) {
             if (publicPath.endsWith("/**")) {

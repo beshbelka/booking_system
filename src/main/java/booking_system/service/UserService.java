@@ -2,6 +2,7 @@ package booking_system.service;
 
 import booking_system.DTO.ApiResponse;
 import booking_system.DTO.ProfileEditRequest;
+import booking_system.entity.Book;
 import booking_system.entity.User;
 import booking_system.exception.BaseException;
 import booking_system.exception.PasswordDoesNotMatchException;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -91,5 +93,18 @@ public class UserService {
         } catch (Exception e) {
             return ApiResponse.error(500, e.getMessage());
         }
+    }
+
+    public HashMap<String, String> getNameAndBirthDate(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
+        HashMap<String, String> nameAnsBirthDate = new HashMap<>();
+        nameAnsBirthDate.put("name", user.getName());
+        nameAnsBirthDate.put("birthDate", user.getBirthDate().toString());
+        return nameAnsBirthDate;
+    }
+
+    public List<Book> getBooks(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
+        return user.getBooks();
     }
 }

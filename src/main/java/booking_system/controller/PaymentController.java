@@ -42,15 +42,9 @@ public class PaymentController {
                         .status(response.getCode())
                         .body(response);
             }
-            ApiResponse response = paymentService.cancelBook(bookId);
-            if (response.isSuccess()) {
-                return ResponseEntity
-                        .status(HttpStatus.PAYMENT_REQUIRED)
-                        .body(ApiResponse.error(402, "Оплата не прошла, бронь отменена"));
-            }
             return ResponseEntity
-                    .status(response.getCode())
-                    .body(response);
+                    .status(HttpStatus.PAYMENT_REQUIRED)
+                    .body(ApiResponse.error(402, "Оплата не прошла, бронь отменена"));
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)

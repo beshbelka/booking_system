@@ -10,6 +10,7 @@ import booking_system.enums.BOOK_STATUS;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "book")
@@ -45,5 +46,17 @@ public class Book {
         this.user = user;
         this.seats = seats;
         this.seance = seance;
+    }
+
+    public String getSeatsFormatted() {
+        return seats.stream()
+                .map(seat -> seat.getRow() + "-" + seat.getNumber())
+                .collect(Collectors.joining(", "));
+    }
+
+    public float getTotalPrice() {
+        return (float) seats.stream()
+                .mapToDouble(Seat::getPrice)
+                .sum();
     }
 }

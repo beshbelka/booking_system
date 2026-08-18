@@ -9,7 +9,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @Slf4j
@@ -21,6 +29,7 @@ public class PageController {
     private final HallService hallService;
     private final BookService bookService;
     private final JwtService jwtService;
+    private final UserService userService;
 
     @GetMapping("/")
     public String home(Model model) {
@@ -53,28 +62,22 @@ public class PageController {
             if (jwtService.isTokenValid(token)) {
 
                 Claims claims = jwtService.extractClaims(token);
+                String email = jwtService.extractEmail(token);
+                HashMap<String, String > nameAndBirthDate = userService.getNameAndBirthDate(email);
+                List<Book> books = userService.getBooks(email);
 
-                model.addAttribute("email", jwtService.extractEmail(token));
-                model.addAttribute("name", claims.get("name"));
-                model.addAttribute("birthDate", claims.get("birthDate"));
+                model.addAttribute("email", email);
+                model.addAttribute("name", nameAndBirthDate.get("name"));
+                model.addAttribute("birthDate", nameAndBirthDate.get("birthDate"));
                 model.addAttribute("role", claims.get("role").equals("USER") ? "Пользователь" : "Администратор");
+                model.addAttribute("books", books);
 
                 return "profile";
             }
             return "redirect:/auth/login";
         } catch (Exception e) {
-            log.error("PageController: token validate error,  {}", e.getMessage());
             return "redirect:/auth/login";
         }
-    }
-
-    @GetMapping("/error")
-    public String error(@RequestParam(defaultValue = "500") int code,
-                        @RequestParam(defaultValue = "Внутренняя ошибка сервера") String message,
-                        Model model) {
-        model.addAttribute("errorCode", code);
-        model.addAttribute("errorMessage", message);
-        return "error";
     }
 
     @GetMapping("/payment")

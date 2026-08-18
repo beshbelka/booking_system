@@ -46,7 +46,7 @@ async function createBooking(movieId, seanceId, row, number) {
         const result = await response.json();
 
         if (response.ok && result.success) {
-            const bookId = result.data;
+            const bookId = result.data.bookId;
             window.location.href = '/payment?bookId=' + bookId;
         } else {
             alert(result.message || '❌ Ошибка при бронировании');
