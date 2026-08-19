@@ -87,111 +87,82 @@
         <div class="bookings-list" th:unless="${#lists.isEmpty(books)}">
             <!-- Динамическое отображение бронирований -->
             <div class="booking-item" th:each="book : ${books}">
-                <div class="booking-movie">
-                    <div class="booking-poster">
-                        <img th:if="${book.seance.movie.posterUrl != null}"
-                             th:src="@{${book.seance.movie.posterUrl}}"
-                             alt="Постер фильма"
-                             style="width: 100%; height: 100%; object-fit: cover;">
-                        <img th:unless="${book.seance.movie.posterUrl != null}"
-                             src="/images/no-image.jpg"
-                             alt="Постер фильма"
-                             style="width: 100%; height: 100%; object-fit: cover;">
-                    </div>
-                    <div class="booking-movie-info">
-                        <!-- Название фильма -->
-                        <h3 class="booking-movie-title" th:text="${book.seance.movie.title}">Название фильма</h3>
+                <!-- Картинка на всю ширину -->
+                <div class="booking-poster">
+                    <img th:if="${book.seance.movie.posterUrl != null}"
+                         th:src="@{${book.seance.movie.posterUrl}}"
+                         alt="Постер фильма">
+                    <img th:unless="${book.seance.movie.posterUrl != null}"
+                         src="/images/no-image.jpg"
+                         alt="Постер фильма">
+                </div>
 
-                        <!-- Информация в две колонки -->
-                        <div class="booking-info-grid">
-                            <div class="booking-info-column">
-                                <div class="booking-info-item">
-                                    <span class="info-label">Жанр:</span>
-                                    <span class="info-value" th:text="${book.seance.movie.genre}">Жанр</span>
+                <div class="booking-movie-info">
+                    <h3 class="booking-movie-title" th:text="${book.seance.movie.title}">Название фильма</h3>
+
+                    <!-- Информация в 2 колонки -->
+                    <div class="booking-info-grid">
+                        <div class="booking-info-column">
+                            <div class="booking-info-item">
+                                <span class="info-label">Жанр:</span>
+                                <span class="info-value" th:text="${book.seance.movie.genre}">Жанр</span>
+                            </div>
+                            <div class="booking-info-item">
+                                <span class="info-label">Возраст:</span>
+                                <span class="info-value" th:text="${book.seance.movie.ageRating}">18+</span>
+                            </div>
+                            <div class="booking-info-item">
+                                <span class="info-label">Длительность:</span>
+                                <span class="info-value" th:text="${book.seance.movie.formattedDuration}">2 ч 30 мин</span>
+                            </div>
+                            <div class="booking-info-item">
+                                <span class="info-label">Статус:</span>
+                                <div class="booking-status">
+                                    <span class="status-value"
+                                          th:class="'status-' + ${book.status.toString().toLowerCase()}"
+                                          th:text="${book.status.toString() == 'PAID' ? 'Оплачено' : ''}">
+                                    </span>
                                 </div>
-                                <div class="booking-info-item">
-                                    <span class="info-label">Возрастной рейтинг:</span>
-                                    <span class="info-value" th:text="${book.seance.movie.ageRating}">18+</span>
-                                </div>
-                                <div class="booking-info-item">
-                                    <span class="info-label">Длительность:</span>
-                                    <span class="info-value" th:text="${book.seance.movie.formattedDuration}">2 ч 30 мин</span>
-                                </div>
-                                <div class="booking-info-item">
-                                    <span class="info-label">Дата:</span>
-                                    <span class="info-value" th:text="${#temporals.format(book.seance.date, 'dd.MM.yyyy')}">01.01.2024</span>
+                                <div th:if="${book.status.toString() == 'NOT_PAID'}">
+                                    <a th:href="'/payment?bookId=' + ${book.id}" class="btn-pay-booking">Оплатить</a>
                                 </div>
                             </div>
-                            <div class="booking-info-column">
-                                <div class="booking-info-item">
-                                    <span class="info-label">Время:</span>
-                                    <span class="info-value">
-                                    <span th:text="${#temporals.format(book.seance.start_time, 'HH:mm')}">19:30</span>
-                                    <span th:if="${book.seance.end_time != null}">
-                                        - <span th:text="${#temporals.format(book.seance.end_time, 'HH:mm')}">21:00</span>
-                                    </span>
-                                </span>
-                                </div>
-                                <div class="booking-info-item">
-                                    <span class="info-label">Зал:</span>
-                                    <span class="info-value" th:text="'Зал ' + ${book.seance.hall.id}">Зал 1</span>
-                                </div>
-                                <div class="booking-info-item">
-                                    <span class="info-label">Места:</span>
-                                    <span class="info-value">
+
+
+
+
+                        </div>
+                        <div class="booking-info-column">
+                            <div class="booking-info-item">
+                                <span class="info-label">Время начала:</span>
+                                <span class="info-value" th:text="${#temporals.format(book.seance.start_time, 'HH:mm')}">19:30</span>
+                            </div>
+                            <div class="booking-info-item">
+                                <span class="info-label">Зал:</span>
+                                <span class="info-value" th:text="'Зал ' + ${book.seance.hall.id}">Зал 1</span>
+                            </div>
+                            <div class="booking-info-item">
+                                <span class="info-label">Места:</span>
+                                <span class="info-value">
                                     <span th:each="seat, iterStat : ${book.seats}">
                                         <span th:text="${seat.row + '-' + seat.number}"></span>
                                         <span th:if="${!iterStat.last}">, </span>
                                     </span>
                                 </span>
-                                </div>
-                                <div class="booking-info-item">
-                                    <span class="info-label">Стоимость:</span>
-                                    <span class="price-value" th:text="'₽' + ${book.totalPrice}">₽500</span>
-                                </div>
                             </div>
-                        </div>
-
-                        <!-- Статус бронирования -->
-                        <div class="booking-status-container">
-                            <div class="booking-status">
-                                <span class="status-label">Статус оплаты:</span>
-                                <span class="status-value"
-                                      th:class="'status-' + ${book.status.toString().toLowerCase()}"
-                                      th:text="${book.status.toString() == 'PAID' ? 'Оплачено' : 'Не оплачено'}">
-                                Не оплачено
-                            </span>
-                            </div>
-
-                            <!-- Ссылка на оплату, если не оплачено -->
-                            <div class="booking-payment-action" th:if="${book.status.toString() != 'PAID'}">
-                                <a th:href="'/payment?bookId=' + ${book.id}"
-                                   class="btn-pay-booking">
-                                    Оплатить
-                                </a>
+                            <div class="booking-info-item">
+                                <span class="info-label">Стоимость:</span>
+                                <span class="price-value" th:text="'₽' + ${book.totalPrice}">₽500</span>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="booking-actions">
-                    <!-- Кнопка отмены только для активных бронирований -->
-                    <a th:href="'/profile/cancel/' + ${book.id}"
-                       class="btn-cancel-booking"
-                       th:if="${book.status.toString() == 'ACTIVE'}"
-                       onclick="return confirm('Вы уверены, что хотите отменить бронирование?')">
-                        Отменить
-                    </a>
-                    <span class="booking-cancelled"
-                          th:if="${book.status.toString() != 'ACTIVE'}"
-                          th:text="'Бронирование ' + ${book.status.toString().toLowerCase()}">Отменено</span>
                 </div>
             </div>
         </div>
 
         <!-- Сообщение, если нет бронирований -->
         <div class="bookings-empty" th:if="${#lists.isEmpty(books)}">
-            <p>У вас пока нет бронирований.</p>
+            <p style="margin-bottom: 10px">У вас пока нет бронирований.</p>
             <a href="/" class="btn-browse-movies">Выбрать фильм</a>
         </div>
     </div>

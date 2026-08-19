@@ -19,10 +19,10 @@ public class SeanceController {
 
     @GetMapping("/seats")
     public String chooseSeat(@RequestParam Long seanceId,
-                             @RequestParam Long movieId,
                              Model model) {
-        Movie movie = movieService.findById(movieId);
+
         Seance seance = seanceService.findById(seanceId);
+        Movie movie = seance.getMovie();
 
         model.addAttribute("seance", seance);
         model.addAttribute("movie", movie);

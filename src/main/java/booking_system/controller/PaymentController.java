@@ -33,7 +33,7 @@ public class PaymentController {
                         .body(ApiResponse.error(409, "Бронь уже оплачена"));
             }
             double success = Math.random();
-            if (success >= 0.8) {
+            if (success <= 0.8) {
                 ApiResponse response = paymentService.payBooking(bookId);
                 if (response.isSuccess()) {
                     return ResponseEntity.ok(response);
@@ -44,7 +44,7 @@ public class PaymentController {
             }
             return ResponseEntity
                     .status(HttpStatus.PAYMENT_REQUIRED)
-                    .body(ApiResponse.error(402, "Оплата не прошла, бронь отменена"));
+                    .body(ApiResponse.error(402, "Оплата не прошла"));
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)

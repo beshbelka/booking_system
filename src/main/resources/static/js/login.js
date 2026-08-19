@@ -32,7 +32,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             if (seats === 'true') {
                 const movieId = urlParams.get('movieId');
                 const seanceId = urlParams.get('seanceId');
-                window.location.href = "/seats?movieId=" + movieId + '&seanceId=' + seanceId;
+                window.location.href = "/seats?&seanceId=" + seanceId;
             } else {
                 window.location.href = '/profile';
             }

@@ -1,8 +1,1 @@
-
-в сервис добавить
-public List<Booking> getUserHistory(Long userId) {
-    return bookingRepository.findByUserIdAndStatusIn(
-        userId,
-        List.of(COMPLETED, CANCELLED)
-    );
-}
+разобраться что лежит в бд а что нет, положить

@@ -8,9 +8,8 @@ function payTicket() {
     }
 
     const urlParams = new URLSearchParams(window.location.search);
-    const movieId = urlParams.get('movieId');
     const seanceId = urlParams.get('seanceId');
-    createBooking(movieId, seanceId, row, number);
+    createBooking(seanceId, row, number);
 
 }
 
@@ -20,7 +19,7 @@ function cancelBooking() {
     }
 }
 
-async function createBooking(movieId, seanceId, row, number) {
+async function createBooking(seanceId, row, number) {
     try {
         const response = await fetch('/book', {
             method: 'POST',
@@ -29,7 +28,6 @@ async function createBooking(movieId, seanceId, row, number) {
             },
             credentials: 'include',  // ← отправлять куки
             body: JSON.stringify({
-                movieId: movieId,
                 seanceId: seanceId,
                 row: row,
                 number: number
@@ -39,7 +37,7 @@ async function createBooking(movieId, seanceId, row, number) {
         // Если вернулся 401 (неавторизован) — редирект на логин
         if (response.status === 401 || response.status === 403) {
             alert('Сессия истекла. Войдите заново.');
-            window.location.href = '/auth/login?seats=true&movieId=' + movieId + '&seanceId=' + seanceId;
+            window.location.href = '/auth/login?seats=true&seanceId=' + seanceId;
             return;
         }
 
