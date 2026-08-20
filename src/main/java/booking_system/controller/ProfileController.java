@@ -1,10 +1,12 @@
 package booking_system.controller;
 
 import booking_system.DTO.ApiResponse;
+import booking_system.DTO.DeleteBookingRequest;
 import booking_system.DTO.PasswordChangeRequest;
 import booking_system.DTO.ProfileEditRequest;
 import booking_system.exception.TokenIsNullException;
 import booking_system.service.AuthService;
+import booking_system.service.BookService;
 import booking_system.service.JwtService;
 import booking_system.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +29,7 @@ public class ProfileController {
     private final UserService userService;
     private final JwtService jwtService;
     private final AuthService authService;
+    private final BookService bookService;
 
     @PostMapping("/edit")
     public ResponseEntity<ApiResponse> editProfile(
@@ -49,7 +52,7 @@ public class ProfileController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error(500, e.getMessage()));
+                    .body(ApiResponse.error());
         }
     }
 
@@ -71,7 +74,7 @@ public class ProfileController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error(500, e.getMessage()));
+                    .body(ApiResponse.error());
         }
     }
 
@@ -91,7 +94,36 @@ public class ProfileController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error(500, e.getMessage()));
+                    .body(ApiResponse.error());
+        }
+    }
+
+    @DeleteMapping("/deleteBooking")
+    public ResponseEntity<ApiResponse> deleteBooking(
+            HttpServletRequest request,
+            @Valid @RequestBody DeleteBookingRequest deleteBookingRequest
+    ) {
+        try {
+            String bookIdString = deleteBookingRequest.bookId();
+            if (bookIdString == null || !bookIdString.matches("\\d+")) {
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(ApiResponse.error(400, "Неверный ID бронирования"));
+            }
+            String token = jwtService.extractTokenFromCookies(request);
+            String email = jwtService.extractEmail(token);
+            Long id = Long.parseLong(bookIdString);
+            ApiResponse apiResponse = bookService.deleteBooking(email, id);
+            if (apiResponse.isSuccess()) {
+                return ResponseEntity.ok().body(apiResponse);
+            }
+            return ResponseEntity
+                    .status(apiResponse.getCode())
+                    .body(apiResponse);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error());
         }
     }
 }

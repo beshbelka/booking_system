@@ -8,11 +8,14 @@ import booking_system.enums.SEAT_STATUS;
 import booking_system.enums.SEAT_TYPE;
 import booking_system.exception.BaseException;
 import booking_system.exception.BookNotFoundException;
+import booking_system.exception.UnauthorizedException;
 import booking_system.repository.BookRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.core.ObjectReadContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,10 +80,19 @@ public class BookService {
         return bookRepository.findById(bookId).orElseThrow(BookNotFoundException::new);
     }
 
-    public ApiResponse deleteBooking(Long bookId) {
+    public ApiResponse deleteBooking(String email, Long id) {
         try {
-            Book book = findById(bookId);
-            bookRepository.delete(book);
+            User user = userService.findByEmail(email);
+            Book book = findById(id);
+            if (!user.getBooks().contains(book)) {
+                throw new UnauthorizedException();
+            }
+            book.setStatus(BOOK_STATUS.CANCELLED);
+
+            List<Seat> seats = book.getSeats();
+            seats.forEach(seat -> seat.setStatus(SEAT_STATUS.FREE));
+            seatService.saveAll(seats);
+
             return ApiResponse.success("delete booking ok");
         } catch (BaseException e) {
             return ApiResponse.error(e.getErrorCode(), e.getMessage());

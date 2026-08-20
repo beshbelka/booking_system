@@ -259,3 +259,29 @@ function deleteAccount() {
             alert('Ошибка соединения с сервером');
         });
 }
+
+function cancelBooking(button) {
+    const bookId = button.getAttribute('th:data-book-id') || button.dataset.bookId;
+    if (!bookId) {
+        showNotification('Ошибка: ID бронирования не найден', 'error');
+        return;
+    }
+
+    fetch('/profile/deleteBooking', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type' : 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({ bookId : bookId})
+    })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                location.reload()
+            } else {
+                showNotification(result.message || 'Ошибка отмены', 'error');
+            }
+        })
+        .catch(() => showNotification('Ошибка соединения', 'error'));
+}

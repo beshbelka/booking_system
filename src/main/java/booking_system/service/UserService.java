@@ -3,11 +3,15 @@ package booking_system.service;
 import booking_system.DTO.ApiResponse;
 import booking_system.DTO.ProfileEditRequest;
 import booking_system.entity.Book;
+import booking_system.entity.Seat;
 import booking_system.entity.User;
+import booking_system.enums.BOOK_STATUS;
+import booking_system.enums.SEAT_STATUS;
 import booking_system.exception.BaseException;
 import booking_system.exception.PasswordDoesNotMatchException;
 import booking_system.exception.UserNotFoundException;
 import booking_system.repository.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -107,4 +111,5 @@ public class UserService {
         User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
         return user.getBooks();
     }
+
 }

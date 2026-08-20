@@ -229,6 +229,10 @@
     color: #4caf50;
 }
 
+.status-cancelled {
+    color: #c62828;
+}
+
 .btn-pay-booking {
     color: white;
     text-decoration: none;
@@ -306,25 +310,6 @@
 .booking-actions {
     flex-shrink: 0;
     margin-left: 16px;
-}
-
-.btn-cancel-booking {
-    display: inline-block;
-    background: none;
-    border: 1px solid #333;
-    color: #888;
-    padding: 8px 20px;
-    border-radius: 6px;
-    font-size: 13px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.btn-cancel-booking:hover {
-    border-color: #e50914;
-    color: #e50914;
-    background-color: rgba(229, 9, 20, 0.05);
 }
 
 /* Responsive */
@@ -757,4 +742,26 @@ input[type="date"].edit-input::-webkit-calendar-picker-indicator {
 
 .modal-content::-webkit-scrollbar-thumb:hover {
     background: #444;
+}
+
+.booking-actions-item {
+    margin-top: 8px;
+    justify-content: flex-start;
+}
+
+.btn-cancel-booking {
+    background: none;
+    border: 1px solid #e50914;
+    color: #e50914;
+    padding: 6px 20px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-left: auto;
+}
+
+.btn-cancel-booking:hover {
+    background: #e50914;
+    color: #fff;
 }

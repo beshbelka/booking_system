@@ -120,17 +120,25 @@
                                 <div class="booking-status">
                                     <span class="status-value"
                                           th:class="'status-' + ${book.status.toString().toLowerCase()}"
-                                          th:text="${book.status.toString() == 'PAID' ? 'Оплачено' : ''}">
+                                          th:switch="${book.status.toString()}">
+                                        <span th:case='PAID'>Оплачено</span>
+                                        <span th:case='NOT_PAID'></span>
+                                        <span th:case='FILM_SCREENING'>В процессе</span>
+                                        <span th:case='CANCELLED'>Отменено</span>
+                                        <span th:case="*">—</span>
                                     </span>
                                 </div>
                                 <div th:if="${book.status.toString() == 'NOT_PAID'}">
                                     <a th:href="'/payment?bookId=' + ${book.id}" class="btn-pay-booking">Оплатить</a>
                                 </div>
                             </div>
-
-
-
-
+                            <div th:if="${book.status.toString() != 'CANCELLED'}" class="booking-info-item booking-actions-item">
+                                <button class="btn-cancel-booking"
+                                        th:data-book-id="${book.id}"
+                                        onclick="cancelBooking(this)">
+                                    Отменить
+                                </button>
+                            </div>
                         </div>
                         <div class="booking-info-column">
                             <div class="booking-info-item">
