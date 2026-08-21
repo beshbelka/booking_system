@@ -23,6 +23,7 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -33,6 +34,9 @@ public class JwtService {
 
     @Value("${jwt-expiration}")
     private int jwtExpiration;
+
+    @Value("${jwt-refresh-expiration}")
+    private int refreshExpiration;
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
@@ -74,9 +78,10 @@ public class JwtService {
         return email;
     }
 
-    public String generateToken(String email, USER_ROLE role) {
+    public String generateAccessToken(String email, USER_ROLE role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
+        claims.put("type", "access");
         return Jwts.builder()
                 .claims(claims)
                 .subject(email)
@@ -86,40 +91,108 @@ public class JwtService {
                 .compact();
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String email = extractEmail(token);
-        return email.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    public String generateRefreshToken(String email) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("type", "refresh");
+        claims.put("tokenId", UUID.randomUUID().toString());
+        return Jwts.builder()
+                .claims(claims)
+                .subject(email)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + refreshExpiration))
+                .signWith(getSigningKey())
+                .compact();
     }
 
-    public boolean isTokenValid(String token) {
+    public boolean isAccessToken(String token) {
         try {
-            String email = extractEmail(token);
-            return !isTokenExpired(token) && email != null;
+            Claims claims = extractAllClaims(token);
+            return "access".equals(claims.get("type"));
         } catch (Exception e) {
             return false;
         }
     }
 
-    public String extractTokenFromCookies(HttpServletRequest request) {
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        try {
+            final String email = extractEmail(token);
+            return email.equals(userDetails.getUsername()) && !isTokenExpired(token) && isAccessToken(token);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean isTokenValid(String token) {
+        try {
+            String email = extractEmail(token);
+            return !isTokenExpired(token) && email != null && isAccessToken(token);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean isRefreshTokenValid(String token) {
+        try {
+            Claims claims = extractAllClaims(token);
+            return "refresh".equals(claims.get("type"))
+                    && claims.getExpiration().after(new Date())
+                    && claims.getSubject() != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private String extractAccessTokenFromCookies(HttpServletRequest request, String cookieName) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
             return null;
         }
         for (Cookie cookie : cookies) {
-            if ("accessToken".equals(cookie.getName())) {
+            if (cookieName.equals(cookie.getName())) {
                 return cookie.getValue();
             }
         }
         return null;
     }
 
-    public void addTokenCookie(HttpServletResponse response, String token) {
-        Cookie cookie = new Cookie("accessToken", token);
+    public String extractAccessTokenFromCookies(HttpServletRequest request) {
+        return extractAccessTokenFromCookies(request, "accessToken");
+    }
+
+    public String extractRefreshTokenFromCookies(HttpServletRequest request) {
+        return extractAccessTokenFromCookies(request, "refreshToken");
+    }
+
+    private void addTokenCookie(HttpServletResponse response, String token, String cookieName, int maxAge) {
+        Cookie cookie = new Cookie(cookieName, token);
         cookie.setHttpOnly(true);
         cookie.setSecure(false);
         cookie.setPath("/");
-        cookie.setMaxAge(jwtExpiration);
+        cookie.setMaxAge(maxAge);
         response.addCookie(cookie);
+    }
+
+    public void addAccessTokenCookie(HttpServletResponse response, String token) {
+        addTokenCookie(response, token, "accessToken", jwtExpiration / 1000);
+    }
+
+    public void addRefreshTokenCookie(HttpServletResponse response, String token) {
+        addTokenCookie(response, token, "refreshToken", refreshExpiration / 1000);
+    }
+
+    public void clearTokenCookie(HttpServletResponse response, String cookieName) {
+        Cookie cookie = new Cookie(cookieName, null);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+    }
+
+    public void clearAccessTokenCookie(HttpServletResponse response) {
+        clearTokenCookie(response, "accessToken");
+    }
+
+    public void clearRefreshTokenCookie(HttpServletResponse response) {
+        clearTokenCookie(response, "refreshToken");
     }
 
 }

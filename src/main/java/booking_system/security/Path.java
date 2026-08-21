@@ -16,13 +16,13 @@ public class Path {
             "/auth/login",
             "/auth/registration",
             "/seances",
-            "/seats",
-            "/error"
+            "/seats"
     };
 
     public static final String[] PUBLIC_POST = {
             "/auth/register",
             "/auth/login",
+            "/auth/refresh",
             "/book"
     };
 }

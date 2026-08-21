@@ -1,3 +1,4 @@
+import { fetchWithAuth } from './fetchWithAuth.js';
 function payTicket() {
     const row = document.getElementById('rowSelect').value;
     const number = document.getElementById('seatSelect').value;
@@ -21,7 +22,7 @@ function cancelBooking() {
 
 async function createBooking(seanceId, row, number) {
     try {
-        const response = await fetch('/book', {
+        const response = await fetchWithAuth('/book', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -33,13 +34,6 @@ async function createBooking(seanceId, row, number) {
                 number: number
             })
         });
-
-        // Если вернулся 401 (неавторизован) — редирект на логин
-        if (response.status === 401 || response.status === 403) {
-            alert('Сессия истекла. Войдите заново.');
-            window.location.href = '/auth/login?seats=true&seanceId=' + seanceId;
-            return;
-        }
 
         const result = await response.json();
 

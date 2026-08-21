@@ -1,23 +1,20 @@
 package booking_system.controller;
 
 import booking_system.entity.Book;
+import booking_system.enums.USER_ROLE;
 import booking_system.service.*;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @Slf4j
@@ -55,9 +52,26 @@ public class PageController {
     public String registration() { return "registration"; }
 
     @GetMapping("/profile")
-    public String profile(HttpServletRequest request, Model model) {
-        String token = jwtService.extractTokenFromCookies(request);
-        if (token == null) return "redirect:/auth/login";
+    public String profile(HttpServletRequest request, Model model, HttpServletResponse response) {
+        String token = jwtService.extractAccessTokenFromCookies(request);
+        if (token == null) {
+            String refreshToken = jwtService.extractRefreshTokenFromCookies(request);
+            if (refreshToken == null) {
+                return "redirect:/auth/login";
+            }
+            try {
+                if (jwtService.isRefreshTokenValid(refreshToken)) {
+                    String email = jwtService.extractEmail(refreshToken);
+                    USER_ROLE role = userService.getRole(email);
+                    String newAccessToken = jwtService.generateAccessToken(email, role);
+                    jwtService.addAccessTokenCookie(response, newAccessToken);
+                    return "redirect:/profile";
+                }
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+            return "redirect:/auth/login";
+        }
         try {
             if (jwtService.isTokenValid(token)) {
 

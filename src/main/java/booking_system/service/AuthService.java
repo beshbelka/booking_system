@@ -5,8 +5,8 @@ import booking_system.DTO.LoginRequest;
 import booking_system.DTO.RegisterRequest;
 import booking_system.entity.User;
 import booking_system.enums.USER_ROLE;
+import booking_system.exception.*;
 import booking_system.repository.UserRepository;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
 import java.util.HashMap;
 
 @Service
@@ -27,7 +26,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final TokenBlacklistService blacklistService;
+    private final BlacklistService blacklistService;
+    private final UserService userService;
 
     public ApiResponse register(RegisterRequest request) {
         try {
@@ -39,7 +39,7 @@ public class AuthService {
             userRepository.save(user);
 
             HashMap<String, String> token = new HashMap<>();
-            token.put("accessToken", jwtService.generateToken(request.email(), USER_ROLE.USER));
+            token.put("accessToken", jwtService.generateAccessToken(request.email(), USER_ROLE.USER));
 
             return ApiResponse.success(token);
 
@@ -58,12 +58,14 @@ public class AuthService {
             );
             User user = (User) auth.getPrincipal();
             if (user != null) {
-                HashMap <String, String> token = new HashMap<>();
-                token.put("accessToken", jwtService.generateToken(user.getEmail(), user.getRole()));
-
+                HashMap<String, String> token = new HashMap<>();
+                token.put("accessToken", jwtService.generateAccessToken(user.getEmail(), user.getRole()));
+                token.put("refreshToken", jwtService.generateRefreshToken(user.getEmail()));
                 return ApiResponse.success(token);
             }
-            return ApiResponse.error(401, "Пользователь не авторизован");
+            throw new UserNotFoundException();
+        } catch (BaseException e) {
+            return ApiResponse.error(e.getErrorCode(), e.getMessage());
         } catch (Exception e) {
             String message;
             if (e instanceof BadCredentialsException) {
@@ -76,21 +78,55 @@ public class AuthService {
         }
     }
 
-    public ApiResponse logout(String token, HttpServletResponse response) {
+    public ApiResponse logout(String accessToken, String refreshToken, HttpServletResponse response) {
         try {
-            if (token == null) {
-                return ApiResponse.error(401, "token is null");
+            if (accessToken == null || refreshToken == null) {
+                throw new TokenIsNullException();
             }
-            blacklistService.blackList(token);
-            Cookie cookie = new Cookie("accessToken", null);
-            cookie.setPath("/");
-            cookie.setMaxAge(0);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(false);
-            response.addCookie(cookie);
+            blacklistService.blackList(accessToken);
+            blacklistService.blackList(refreshToken);
+
+            jwtService.clearAccessTokenCookie(response);
+            jwtService.clearRefreshTokenCookie(response);
 
             return ApiResponse.success("logout ok");
+        } catch (BaseException e) {
+            return ApiResponse.error(e.getErrorCode(), e.getMessage());
+        } catch (Exception e) {
+            return ApiResponse.error(500, e.getMessage());
+        }
+    }
 
+    public ApiResponse refresh(String refreshToken, HttpServletResponse response){
+        try {
+            if (refreshToken == null || refreshToken.isEmpty()) {
+                throw new TokenIsNullException();
+            }
+            if (blacklistService.isBlackListed(refreshToken)) {
+                throw new TokenBlacklistedException();
+            }
+            if (!jwtService.isRefreshTokenValid(refreshToken)) {
+                throw new InvalidTokenException();
+            }
+
+            String email = jwtService.extractEmail(refreshToken);
+            User user = userService.findByEmail(email);
+
+            blacklistService.blackList(refreshToken);
+
+            String newAccessToken = jwtService.generateAccessToken(email, user.getRole());
+            String newRefreshToken = jwtService.generateRefreshToken(email);
+
+            jwtService.addAccessTokenCookie(response, newAccessToken);
+            jwtService.addRefreshTokenCookie(response, newRefreshToken);
+
+            HashMap<String, String> data = new HashMap<>();
+            data.put("accessToken", newAccessToken);
+            data.put("refreshToken", newRefreshToken);
+
+            return ApiResponse.success(data);
+        } catch (BaseException e) {
+            return ApiResponse.error(e.getErrorCode(), e.getMessage());
         } catch (Exception e) {
             return ApiResponse.error(500, e.getMessage());
         }

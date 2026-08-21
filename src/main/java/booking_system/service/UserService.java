@@ -3,15 +3,12 @@ package booking_system.service;
 import booking_system.DTO.ApiResponse;
 import booking_system.DTO.ProfileEditRequest;
 import booking_system.entity.Book;
-import booking_system.entity.Seat;
 import booking_system.entity.User;
-import booking_system.enums.BOOK_STATUS;
-import booking_system.enums.SEAT_STATUS;
+import booking_system.enums.USER_ROLE;
 import booking_system.exception.BaseException;
 import booking_system.exception.PasswordDoesNotMatchException;
 import booking_system.exception.UserNotFoundException;
 import booking_system.repository.UserRepository;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +47,7 @@ public class UserService {
 
             userRepository.save(user);
 
-            String newToken = jwtService.generateToken(email, user.getRole());
+            String newToken = jwtService.generateAccessToken(email, user.getRole());
             HashMap<String, String> newData = new HashMap<>();
             newData.put("accessToken", newToken);
 
@@ -112,4 +109,8 @@ public class UserService {
         return user.getBooks();
     }
 
+    public USER_ROLE getRole(String email) {
+        User user = findByEmail(email);
+        return user.getRole();
+    }
 }

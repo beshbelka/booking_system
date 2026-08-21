@@ -27,7 +27,7 @@ public class BookController {
     public ResponseEntity<ApiResponse> createBooking(@Valid @RequestBody BookRequest bookRequest,
                                                      HttpServletRequest request) {
         try {
-            String token = jwtService.extractTokenFromCookies(request);
+            String token = jwtService.extractAccessTokenFromCookies(request);
             if (token == null || token.isEmpty()) {
                 return ResponseEntity
                         .status(HttpStatus.UNAUTHORIZED)

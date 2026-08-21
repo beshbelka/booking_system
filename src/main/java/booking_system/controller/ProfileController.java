@@ -37,13 +37,13 @@ public class ProfileController {
             HttpServletRequest request,
             HttpServletResponse response) {
         try {
-            String token = jwtService.extractTokenFromCookies(request);
+            String token = jwtService.extractAccessTokenFromCookies(request);
             if (token == null || token.isEmpty()) throw new TokenIsNullException();
             ApiResponse apiResponse = userService.editProfile(data, token);
             if (apiResponse.isSuccess()) {
                 HashMap<String, String> responseData = apiResponse.getData();
                 String newToken = responseData.get("accessToken");
-                jwtService.addTokenCookie(response, newToken);
+                jwtService.addAccessTokenCookie(response, newToken);
                 return ResponseEntity.ok(ApiResponse.success("edit ok"));
             }
             return ResponseEntity
@@ -63,7 +63,7 @@ public class ProfileController {
         try {
             String oldPass = passwordChangeRequest.oldPassword();
             String newPass = passwordChangeRequest.newPassword();
-            String token = jwtService.extractTokenFromCookies(request);
+            String token = jwtService.extractAccessTokenFromCookies(request);
             ApiResponse apiResponse = userService.changePassword(token, oldPass, newPass);
             if (apiResponse.isSuccess()) {
                 return ResponseEntity.ok(ApiResponse.success("changePassword ok"));
@@ -81,9 +81,10 @@ public class ProfileController {
     @DeleteMapping("/deleteAccount")
     public ResponseEntity<ApiResponse> deleteAccount(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String token = jwtService.extractTokenFromCookies(request);
-            authService.logout(token, response);
-            String email = jwtService.extractEmail(token);
+            String accessToken = jwtService.extractAccessTokenFromCookies(request);
+            String refreshToken = jwtService.extractRefreshTokenFromCookies(request);
+            authService.logout(accessToken, refreshToken, response);
+            String email = jwtService.extractEmail(accessToken);
             ApiResponse apiResponse = userService.deleteAccount(email);
             if (apiResponse.isSuccess()) {
                 return ResponseEntity.ok().body(apiResponse);
@@ -110,7 +111,7 @@ public class ProfileController {
                         .status(HttpStatus.BAD_REQUEST)
                         .body(ApiResponse.error(400, "Неверный ID бронирования"));
             }
-            String token = jwtService.extractTokenFromCookies(request);
+            String token = jwtService.extractAccessTokenFromCookies(request);
             String email = jwtService.extractEmail(token);
             Long id = Long.parseLong(bookIdString);
             ApiResponse apiResponse = bookService.deleteBooking(email, id);

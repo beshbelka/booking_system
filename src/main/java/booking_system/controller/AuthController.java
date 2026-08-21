@@ -3,8 +3,14 @@ package booking_system.controller;
 import booking_system.DTO.ApiResponse;
 import booking_system.DTO.LoginRequest;
 import booking_system.DTO.RegisterRequest;
+import booking_system.entity.User;
+import booking_system.exception.BaseException;
+import booking_system.exception.TokenBlacklistedException;
+import booking_system.exception.TokenIsNullException;
 import booking_system.service.AuthService;
 import booking_system.service.JwtService;
+import booking_system.service.BlacklistService;
+import booking_system.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -23,13 +29,15 @@ public class AuthController {
 
     private final AuthService authService;
     private final JwtService jwtService;
+    private final BlacklistService blacklistService;
+    private final UserService userService;
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody RegisterRequest request, HttpServletResponse response) {
         try {
             ApiResponse apiResponse= authService.register(request);
             if (apiResponse.isSuccess()) {
-                jwtService.addTokenCookie(response, apiResponse.getData().get("accessToken"));
+                jwtService.addAccessTokenCookie(response, apiResponse.getData().get("accessToken"));
                 return ResponseEntity.ok(apiResponse);
             }
             return ResponseEntity
@@ -47,8 +55,8 @@ public class AuthController {
         try {
             ApiResponse apiResponse = authService.login(request);
             if (apiResponse.isSuccess()) {
-                String token = apiResponse.getData().get("accessToken");
-                jwtService.addTokenCookie(response, token);
+                jwtService.addAccessTokenCookie(response, apiResponse.getData().get("accessToken"));
+                jwtService.addRefreshTokenCookie(response, apiResponse.getData().get("refreshToken"));
                 return ResponseEntity.ok(ApiResponse.success(apiResponse.getData()));
             }
             return ResponseEntity
@@ -64,10 +72,32 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse> logout(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String token = jwtService.extractTokenFromCookies(request);
-            ApiResponse apiResponse = authService.logout(token, response);
+            String accessToken = jwtService.extractAccessTokenFromCookies(request);
+            String refreshToken = jwtService.extractRefreshTokenFromCookies(request);
+            ApiResponse apiResponse = authService.logout(accessToken, refreshToken, response);
             if (apiResponse.isSuccess()) {
                 return ResponseEntity.ok(apiResponse);
+            }
+            return ResponseEntity
+                    .status(apiResponse.getCode())
+                    .body(apiResponse);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error(500, e.getMessage()));
+        }
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse> refreshToken(
+            HttpServletResponse response,
+            HttpServletRequest request
+    ) {
+        try {
+            String refreshToken = jwtService.extractRefreshTokenFromCookies(request);
+            ApiResponse apiResponse = authService.refresh(refreshToken, response);
+            if (apiResponse.isSuccess()) {
+                return ResponseEntity.ok().body(apiResponse);
             }
             return ResponseEntity
                     .status(apiResponse.getCode())

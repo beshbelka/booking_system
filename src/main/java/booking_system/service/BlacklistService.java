@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Slf4j
-public class TokenBlacklistService {
+public class BlacklistService {
 
     private final Set<String> blackListedTokens = ConcurrentHashMap.newKeySet();
 
@@ -19,4 +19,5 @@ public class TokenBlacklistService {
     public boolean isBlackListed(String token) {
         return blackListedTokens.contains(token);
     }
+
 }

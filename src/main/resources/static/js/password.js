@@ -1,3 +1,5 @@
+import { fetchWithAuth } from './fetchWithAuth.js';
+
 function openPasswordModal() {
     document.getElementById('passwordModal').classList.add('active');
     document.getElementById('passwordForm').reset();
@@ -39,7 +41,7 @@ async function changePassword(event) {
     }
 
     try {
-        const response = await fetch('/profile/password', {
+        const response = await fetchWithAuth('/profile/password', {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({oldPassword: oldPass, newPassword: newPass})

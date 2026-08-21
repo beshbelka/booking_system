@@ -1,3 +1,4 @@
+import { fetchWithAuth } from './fetchWithAuth.js';
 
 let isEditMode = false;
 let originalValues = {};
@@ -128,7 +129,7 @@ async function saveAllFields() {
         saveBtn.textContent = 'Сохранение...';
         saveBtn.disabled = true;
 
-        const response = await fetch('/profile/edit', {
+        const response = await fetchWithAuth('/profile/edit', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -237,7 +238,7 @@ function showNotification(message, type = 'info') {
 }
 
 function deleteAccount() {
-    fetch('/profile/deleteAccount', {
+    fetchWithAuth('/profile/deleteAccount', {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
@@ -267,7 +268,7 @@ function cancelBooking(button) {
         return;
     }
 
-    fetch('/profile/deleteBooking', {
+    fetchWithAuth('/profile/deleteBooking', {
         method: 'DELETE',
         headers: {
             'Content-Type' : 'application/json'
