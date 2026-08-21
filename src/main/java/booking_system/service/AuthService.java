@@ -7,6 +7,7 @@ import booking_system.entity.User;
 import booking_system.enums.USER_ROLE;
 import booking_system.exception.*;
 import booking_system.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final BlacklistService blacklistService;
     private final UserService userService;
+    private final RefreshTokenService refreshTokenService;
 
     public ApiResponse register(RegisterRequest request) {
         try {
@@ -129,6 +131,23 @@ public class AuthService {
             return ApiResponse.error(e.getErrorCode(), e.getMessage());
         } catch (Exception e) {
             return ApiResponse.error(500, e.getMessage());
+        }
+    }
+
+    public boolean isAuthenticated(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            String accessToken = jwtService.extractAccessTokenFromCookies(request);
+            if (accessToken != null && jwtService.isTokenValid(accessToken)) {
+                return true;
+            }
+            String refreshToken = jwtService.extractRefreshTokenFromCookies(request);
+            if (refreshToken != null && jwtService.isRefreshTokenValid(refreshToken)) {
+                refreshTokenService.refresh(refreshToken, response);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
         }
     }
 }

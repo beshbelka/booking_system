@@ -1,4 +1,4 @@
-import { fetchWithAuth } from './fetchWithAuth.js';
+
 function payTicket() {
     const row = document.getElementById('rowSelect').value;
     const number = document.getElementById('seatSelect').value;
@@ -22,7 +22,7 @@ function cancelBooking() {
 
 async function createBooking(seanceId, row, number) {
     try {
-        const response = await fetchWithAuth('/book', {
+        const response = await fetch('/book', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

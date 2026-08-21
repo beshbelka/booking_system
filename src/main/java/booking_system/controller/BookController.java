@@ -3,6 +3,9 @@ package booking_system.controller;
 import booking_system.DTO.ApiResponse;
 import booking_system.DTO.BookRequest;
 import booking_system.exception.BaseException;
+import booking_system.exception.InvalidTokenException;
+import booking_system.exception.TokenBlacklistedException;
+import booking_system.exception.TokenIsNullException;
 import booking_system.service.BookService;
 import booking_system.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,13 +32,9 @@ public class BookController {
         try {
             String token = jwtService.extractAccessTokenFromCookies(request);
             if (token == null || token.isEmpty()) {
-                return ResponseEntity
-                        .status(HttpStatus.UNAUTHORIZED)
-                        .body(ApiResponse.error(401, "token is null or empty"));
+                throw new TokenIsNullException();
             } else if (!jwtService.isTokenValid(token)) {
-                return ResponseEntity
-                        .status(HttpStatus.FORBIDDEN)
-                        .body(ApiResponse.error(403, "token invalid"));
+                throw new InvalidTokenException();
             }
             ApiResponse apiResponse = bookService.createBooking(bookRequest, token);
             return ResponseEntity.ok(apiResponse);

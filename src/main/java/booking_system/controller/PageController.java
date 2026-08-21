@@ -1,7 +1,6 @@
 package booking_system.controller;
 
 import booking_system.entity.Book;
-import booking_system.enums.USER_ROLE;
 import booking_system.service.*;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +26,7 @@ public class PageController {
     private final BookService bookService;
     private final JwtService jwtService;
     private final UserService userService;
+    private final RefreshTokenService refreshTokenService;
 
     @GetMapping("/")
     public String home(Model model) {
@@ -53,30 +53,19 @@ public class PageController {
 
     @GetMapping("/profile")
     public String profile(HttpServletRequest request, Model model, HttpServletResponse response) {
-        String token = jwtService.extractAccessTokenFromCookies(request);
-        if (token == null) {
+        String accessToken = jwtService.extractAccessTokenFromCookies(request);
+        if (accessToken == null) {
             String refreshToken = jwtService.extractRefreshTokenFromCookies(request);
             if (refreshToken == null) {
                 return "redirect:/auth/login";
             }
-            try {
-                if (jwtService.isRefreshTokenValid(refreshToken)) {
-                    String email = jwtService.extractEmail(refreshToken);
-                    USER_ROLE role = userService.getRole(email);
-                    String newAccessToken = jwtService.generateAccessToken(email, role);
-                    jwtService.addAccessTokenCookie(response, newAccessToken);
-                    return "redirect:/profile";
-                }
-            } catch (Exception e) {
-                log.error(e.getMessage());
-            }
-            return "redirect:/auth/login";
+            refreshTokenService.refresh(refreshToken, response);
         }
         try {
-            if (jwtService.isTokenValid(token)) {
+            if (jwtService.isTokenValid(accessToken)) {
 
-                Claims claims = jwtService.extractClaims(token);
-                String email = jwtService.extractEmail(token);
+                Claims claims = jwtService.extractClaims(accessToken);
+                String email = jwtService.extractEmail(accessToken);
                 HashMap<String, String > nameAndBirthDate = userService.getNameAndBirthDate(email);
                 List<Book> books = userService.getBooks(email);
 

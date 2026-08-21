@@ -1,4 +1,4 @@
-import { fetchWithAuth } from './fetchWithAuth.js';
+
 // Элементы
 const card = document.getElementById('paymentCard');
 const icon = document.getElementById('paymentIcon');
@@ -48,7 +48,7 @@ function fetchPaymentStatus() {
         }
 
         try {
-            const response = await fetchWithAuth('/payment', {
+            const response = await fetch('/payment', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -2,9 +2,7 @@ package booking_system.security;
 
 import booking_system.exception.TokenExpiredException;
 import booking_system.exception.UserNotFoundException;
-import booking_system.service.JwtService;
-import booking_system.service.BlacklistService;
-import booking_system.service.UserDetailsServiceImpl;
+import booking_system.service.*;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsServiceImpl userDetailsService;
     private final BlacklistService blacklistService;
+    private final RefreshTokenService refreshTokenService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -35,9 +34,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         String accessToken = jwtService.extractAccessTokenFromCookies(request);
+        String refreshToken = jwtService.extractRefreshTokenFromCookies(request);
 
         if (accessToken == null) {
-            log.error("token is null (JwtAuthenticationFilter)");
+            log.error("access token is null (JwtAuthenticationFilter)");
+            if (refreshToken != null) {
+                refreshTokenService.refresh(refreshToken, response);
+            }
             filterChain.doFilter(request, response);
             return;
         }
@@ -65,6 +68,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                 new WebAuthenticationDetailsSource().buildDetails(request)
                         );
                         SecurityContextHolder.getContext().setAuthentication(authToken);
+                    } else if (jwtService.isRefreshTokenValid(refreshToken)) {
+                        refreshTokenService.refresh(refreshToken, response);
                     } else {
                         log.warn("JwtAuthenticationFilter: token invalid");
                     }
