@@ -10,6 +10,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Comparator;
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class SeanceController {
@@ -17,16 +20,17 @@ public class SeanceController {
     private final SeanceService seanceService;
     private final MovieService movieService;
 
-    @GetMapping("/seats")
-    public String chooseSeat(@RequestParam Long seanceId,
-                             Model model) {
+    @GetMapping("/seances")
+    public String showSeance(@RequestParam Long movieId, Model model) {
+        Movie movie = movieService.findById(movieId);
+        List<Seance> seances = seanceService.findByMovieId(movieId);
 
-        Seance seance = seanceService.findById(seanceId);
-        Movie movie = seance.getMovie();
-
-        model.addAttribute("seance", seance);
         model.addAttribute("movie", movie);
+        if (!seances.isEmpty()) {
+            seances.sort(Comparator.comparing(Seance::getStart_time));
+        }
+        model.addAttribute("seances", seances);
 
-        return "seats";
+        return "seances";
     }
 }

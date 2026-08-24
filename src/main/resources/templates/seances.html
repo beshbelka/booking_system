@@ -38,16 +38,22 @@
 
             <!-- Сеансы идут подряд, каждый в большом квадрате -->
             <div class="sessions-grid">
-                <div class="session-card" th:each="seance : ${seances}">
+                <div class="session-card" th:each="seance : ${seances}"
+                     th:data-start="${#temporals.format(seance.start_time, 'HH:mm')}"
+                     th:data-end="${#temporals.format(seance.end_time, 'HH:mm')}">
+                    <div class="session-status-badge">
+                        <span class="status-dot"></span>
+                        <span class="status-label">Загрузка...</span>
+                    </div>
                     <div class="session-time-large" th:text="${#temporals.format(seance.start_time, 'HH:mm')}">
                         12:30
                     </div>
                     <div class="session-end-time" th:text="${#temporals.format(seance.end_time, 'HH:mm')}">
-                        Окончание: 14:30
+                        14:30
                     </div>
                     <div class="session-hall">Зал <span th:text="${seance.hall.id}">1</span></div>
                     <button class="btn-select-session"
-                            th:attr="onclick='selectSession(' + ${movie.id} + ', ' + ${seance.id} + ')'">
+                            th:attr="onclick='selectSession(' + ${seance.id} + ')'">
                         Выбрать
                     </button>
                 </div>
@@ -64,8 +70,54 @@
 <div th:replace="~{fragments/footer :: footer}"></div>
 
 <script>
-    function selectSession(movieId, seanceId) {
-        window.location.href = '/seats?seanceId=' + seanceId;
+    document.addEventListener('DOMContentLoaded', function() {
+        const now = new Date();
+        const cards = document.querySelectorAll('.session-card');
+
+        cards.forEach(card => {
+            const startTime = card.dataset.start;
+            const endTime = card.dataset.end;
+
+            // Проверка на наличие данных
+            if (!startTime || !endTime) {
+                console.warn('Нет данных о времени', card);
+                return;
+            }
+
+            const [startHour, startMin] = startTime.split(':').map(Number);
+            const [endHour, endMin] = endTime.split(':').map(Number);
+
+            const start = new Date();
+            start.setHours(startHour, startMin, 0, 0);
+            const end = new Date();
+            end.setHours(endHour, endMin, 0, 0);
+
+            const dot = card.querySelector('.status-dot');
+            const label = card.querySelector('.status-label');
+            const btn = card.querySelector('.btn-select-session');
+
+            if (now >= start && now <= end) {
+                card.classList.add('session-playing');
+                dot.className = 'status-dot playing';
+                label.textContent = 'Идет сейчас';
+            } else if (now > end) {
+                card.classList.add('session-completed');
+                dot.className = 'status-dot ended';
+                label.textContent = 'Завершен';
+                if (btn) {
+                    btn.disabled = true;
+                    btn.textContent = 'Недоступен';
+                    btn.classList.add('btn-completed');
+                }
+            } else {
+                dot.className = 'status-dot upcoming';
+                label.textContent = 'Скоро начнется';
+            }
+        });
+    });
+
+    function selectSession(seanceId) {
+        window.location.href = "/seats?seanceId=" + seanceId;
     }
 </script>
 

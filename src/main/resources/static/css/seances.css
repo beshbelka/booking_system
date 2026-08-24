@@ -229,3 +229,73 @@
         padding: 20px 15px;
     }
 }
+
+/* Статус сеанса */
+.session-status-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    font-weight: bold;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    width: 100%;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-dot.playing {
+    background: #e50914;
+    animation: pulse 1.5s infinite;
+}
+
+.status-dot.ended {
+    background: #666;
+}
+
+.status-dot.upcoming {
+    background: #4a8a4a;
+}
+
+.status-label {
+    color: #fff;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.session-card.session-playing {
+    border-color: #e50914;
+    box-shadow: 0 0 30px rgba(229, 9, 20, 0.2);
+}
+
+.session-card.session-playing .session-time-large {
+    color: #e50914;
+}
+
+.session-card.session-completed {
+    opacity: 0.5;
+}
+
+.session-card.session-completed .btn-select-session {
+    background: #2a2a2a;
+    color: #666;
+    cursor: not-allowed;
+}
+
+.session-card.session-completed .btn-select-session:hover {
+    background: #2a2a2a;
+    transform: none;
+}

@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import booking_system.enums.SEANCE_STATUS;
 
 import java.time.LocalTime;
 
@@ -22,9 +21,6 @@ public class Seance {
     private LocalTime start_time;
     private LocalTime end_time;
 
-    @Enumerated(EnumType.STRING)
-    private SEANCE_STATUS status;
-
     @ManyToOne
     @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
@@ -32,5 +28,10 @@ public class Seance {
     @ManyToOne
     @JoinColumn(name = "hall_id", nullable = false)
     private Hall hall;
+
+    public boolean isAvailable() {
+        LocalTime now = LocalTime.now();
+        return now.isBefore(end_time);
+    }
 
 }

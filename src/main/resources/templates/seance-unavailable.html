@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сеанс недоступен - Кинозал</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/seance-unavailable.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="unavailable-container">
+    <div class="unavailable-card">
+        <h1 class="unavailable-title">Сеанс недоступен</h1>
+        <p class="unavailable-message">
+            К сожалению, этот сеанс уже завершён
+        </p>
+        <div class="unavailable-actions">
+            <a href="/" class="btn-home">На главную</a>
+            <a href="javascript:history.back()" class="btn-back">Вернуться назад</a>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>
