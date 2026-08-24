@@ -1,51 +1,247 @@
+let selectedSeats = []; // Массив выбранных мест [{row, number}, ...]
+let occupiedSeats = new Set();
+let seanceId = null;
 
-function payTicket() {
-    const row = document.getElementById('rowSelect').value;
-    const number = document.getElementById('seatSelect').value;
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    seanceId = urlParams.get('seanceId');
 
-    if (!row || !number) {
-        alert('Пожалуйста, выберите ряд и место');
+    if (!seanceId) {
+        alert('Ошибка: не указан сеанс');
         return;
     }
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const seanceId = urlParams.get('seanceId');
-    createBooking(seanceId, row, number);
+    loadHallInfo(seanceId);
+});
 
+async function loadHallInfo(seanceId) {
+    try {
+        const hallResponse = await fetch(`/hall/info?seanceId=${seanceId}`);
+        if (!hallResponse.ok) {
+            throw new Error('Ошибка загрузки информации о зале');
+        }
+        const hallInfo = await hallResponse.json();
+
+        const occupiedResponse = await fetch(`/seat/occupied?seanceId=${seanceId}`);
+        if (!occupiedResponse.ok) {
+            throw new Error('Ошибка загрузки занятых мест');
+        }
+        const result = await occupiedResponse.json();
+
+        const occupiedData = result.data || {};
+
+        occupiedSeats = new Set();
+        for (const value of Object.values(occupiedData)) {
+            occupiedSeats.add(value);
+        }
+
+        generateHallScheme(
+            hallInfo.data.rows,
+            hallInfo.data.seatsPerRow,
+            occupiedSeats
+        );
+    } catch (error) {
+        console.error('Ошибка загрузки данных:', error);
+        alert('Ошибка загрузки данных о зале. Попробуйте обновить страницу.');
+        generateHallScheme(10, 10, new Set());
+    }
+}
+
+function generateHallScheme(rows, seatsPerRow, occupied) {
+    const scheme = document.getElementById('hallScheme');
+    scheme.innerHTML = '';
+
+    const screen = document.createElement('div');
+    screen.className = 'screen';
+    screen.textContent = 'ЭКРАН';
+    scheme.appendChild(screen);
+
+    for (let row = 1; row <= rows; row++) {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'seat-row';
+
+        const rowLabel = document.createElement('span');
+        rowLabel.className = 'row-label';
+        rowLabel.textContent = row;
+        rowDiv.appendChild(rowLabel);
+
+        for (let seat = 1; seat <= seatsPerRow; seat++) {
+            const seatBtn = document.createElement('button');
+            seatBtn.className = 'seat-btn available';
+            seatBtn.dataset.row = row;
+            seatBtn.dataset.seat = seat;
+            seatBtn.textContent = seat;
+            seatBtn.type = 'button';
+
+            const key = `${row}-${seat}`;
+            if (occupied.has(key)) {
+                seatBtn.classList.add('occupied');
+                seatBtn.disabled = true;
+                seatBtn.title = 'Это место уже занято';
+            }
+
+            seatBtn.addEventListener('click', function() {
+                toggleSeat(row, seat);
+            });
+
+            rowDiv.appendChild(seatBtn);
+        }
+
+        scheme.appendChild(rowDiv);
+    }
+}
+
+function toggleSeat(row, seat) {
+    const seatBtn = document.querySelector(`.seat-btn[data-row="${row}"][data-seat="${seat}"]`);
+
+    if (!seatBtn || seatBtn.classList.contains('occupied')) {
+        return;
+    }
+
+    // Проверяем, выбрано ли уже это место
+    const index = selectedSeats.findIndex(s => s.row === row && s.number === seat);
+
+    if (index === -1) {
+        // Место не выбрано - добавляем
+        seatBtn.classList.add('selected');
+        selectedSeats.push({ row, number: seat });
+    } else {
+        // Место уже выбрано - удаляем
+        seatBtn.classList.remove('selected');
+        selectedSeats.splice(index, 1);
+    }
+
+    updateSelectedSeatsInfo();
+    updatePayButton();
+}
+
+function updateSelectedSeatsInfo() {
+    const display = document.getElementById('selectedSeatDisplay');
+    const info = document.getElementById('selectedSeatInfo');
+
+    if (selectedSeats.length === 0) {
+        display.textContent = 'Места не выбраны';
+        info.style.borderColor = '#2a2a2a';
+    } else {
+        const seatsStr = selectedSeats
+            .map(s => `${s.row}-${s.number}`)
+            .join(', ');
+        display.textContent = `Выбрано мест: ${selectedSeats.length} (${seatsStr})`;
+        info.style.borderColor = '#e50914';
+    }
+}
+
+function updatePayButton() {
+    const payButton = document.getElementById('payButton');
+    payButton.disabled = selectedSeats.length === 0;
+
+    if (selectedSeats.length === 0) {
+        payButton.textContent = 'Выберите места';
+    } else {
+        payButton.textContent = `Продолжить (${selectedSeats.length} мест)`;
+    }
+}
+
+function payTicket() {
+    if (selectedSeats.length === 0) {
+        alert('Пожалуйста, выберите места на схеме зала');
+        return;
+    }
+
+    if (!seanceId) {
+        alert('Ошибка: сеанс не найден');
+        return;
+    }
+
+    createBooking(seanceId, selectedSeats);
 }
 
 function cancelBooking() {
-    if (confirm('Вы уверены, что хотите отменить бронирование?')) {
+    if (selectedSeats.length === 0) {
+        window.location.href = '/';
+        return;
+    }
+
+    if (confirm('Вы уверены, что хотите отменить выбор?')) {
         window.location.href = '/';
     }
 }
 
-async function createBooking(seanceId, row, number) {
+async function createBooking(seanceId, seats) {
     try {
+        const payButton = document.getElementById('payButton');
+        payButton.disabled = true;
+        payButton.textContent = 'Обработка...';
+
+        // Формируем запрос с массивом мест
+        const bookRequest = {
+            seanceId: parseInt(seanceId),
+            seats: seats.map(s => ({
+                row: parseInt(s.row),
+                number: parseInt(s.number)
+            }))
+        };
+
+        console.log('Отправка запроса:', bookRequest);
+
         const response = await fetch('/book', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            credentials: 'include',  // ← отправлять куки
-            body: JSON.stringify({
-                seanceId: seanceId,
-                row: row,
-                number: number
-            })
+            credentials: 'include',
+            body: JSON.stringify(bookRequest)
         });
 
         const result = await response.json();
+        console.log('Ответ сервера:', result);
 
         if (response.ok && result.success) {
             const bookId = result.data.bookId;
             window.location.href = '/payment?bookId=' + bookId;
         } else {
             alert(result.message || '❌ Ошибка при бронировании');
+            payButton.disabled = false;
+            payButton.textContent = `Продолжить (${selectedSeats.length} мест)`;
         }
 
     } catch (error) {
         console.error('Ошибка:', error);
-        alert('⚠️ Ошибка соединения');
+        alert('⚠️ Ошибка соединения. Проверьте интернет-соединение.');
+        const payButton = document.getElementById('payButton');
+        payButton.disabled = false;
+        payButton.textContent = `Продолжить (${selectedSeats.length} мест)`;
+    }
+}
+
+// Добавляем возможность отмены выбора всех мест (опционально)
+function clearAllSeats() {
+    if (selectedSeats.length === 0) return;
+
+    if (confirm('Отменить выбор всех мест?')) {
+        // Удаляем класс selected со всех кнопок
+        document.querySelectorAll('.seat-btn.selected').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        selectedSeats = [];
+        updateSelectedSeatsInfo();
+        updatePayButton();
+    }
+}
+
+// Обработчик для кнопки "Отменить" - теперь отменяет выбор, а не уходит на главную
+function cancelSelection() {
+    if (selectedSeats.length === 0) {
+        window.location.href = '/';
+        return;
+    }
+
+    if (confirm('Отменить выбор всех мест?')) {
+        document.querySelectorAll('.seat-btn.selected').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        selectedSeats = [];
+        updateSelectedSeatsInfo();
+        updatePayButton();
     }
 }

@@ -8,7 +8,10 @@ import booking_system.enums.SEAT_STATUS;
 import booking_system.enums.SEAT_TYPE;
 
 @Entity
-@Table (name = "seat")
+@Table(name = "seat",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"hall_id", "row", "number", "seance_id"})
+        })
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,17 +36,23 @@ public class Seat {
     @JoinColumn(name = "hall_id", nullable = false)
     private Hall hall;
 
+    @ManyToOne
+    @JoinColumn(name = "seance_id", nullable = false)
+    private Seance seance;
+
     public Seat (short row,
                  short number,
                  SEAT_STATUS status,
                  float price,
                  SEAT_TYPE type,
-                 Hall hall) {
+                 Hall hall,
+                 Seance seance) {
         this.row = row;
         this.number = number;
         this.status = status;
         this.price = price;
         this.type = type;
         this.hall = hall;
+        this.seance = seance;
     }
 }

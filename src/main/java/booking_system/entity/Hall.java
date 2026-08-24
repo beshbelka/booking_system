@@ -16,13 +16,23 @@ import java.util.List;
 public class Hall {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
+
+    @Column(nullable = false)
+    private int rows;
+
+    @Column(nullable = false)
+    private int seatsPerRow;
 
     @OneToMany(mappedBy = "hall")
     private List<Seance> seances = new ArrayList<>();
 
     @OneToMany(mappedBy = "hall")
     private List<Seat> seats = new ArrayList<>();
+
+    public int getTotalSeats() {
+        return rows * seatsPerRow;
+    }
 
 }

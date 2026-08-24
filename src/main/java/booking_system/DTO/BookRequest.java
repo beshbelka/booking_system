@@ -1,9 +1,11 @@
 package booking_system.DTO;
 
+import booking_system.entity.Seat;
+
+import java.util.ArrayList;
+
 public record BookRequest(
-        Long movieId,
         Long seanceId,
-        Short row,
-        Short number
+        ArrayList<Seat> seats
 ) {
 }

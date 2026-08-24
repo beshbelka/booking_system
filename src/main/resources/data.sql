@@ -1,7 +1,13 @@
 
 -- 1. ЗАЛЫ
-INSERT INTO hall (id)
-SELECT id FROM (VALUES (1), (2), (3), (4), (5)) AS h(id)
+INSERT INTO hall (id, rows, seats_per_row)
+SELECT * FROM (VALUES
+                   (1, 10, 12),
+                   (2, 8, 14),
+                   (3,  12, 10),
+                   (4,  10, 12),
+                   (5, 8, 12)
+              ) AS h(id, rows, seats_per_row)
 WHERE NOT EXISTS (SELECT 1 FROM hall WHERE hall.id = h.id);
 
 -- 2. ФИЛЬМЫ (все 7 фильмов)
@@ -63,4 +69,25 @@ WHERE NOT EXISTS (
     WHERE seance.start_time = s.start_time
       AND seance.movie_id = s.movie_id
       AND seance.hall_id = s.hall_id
+);
+
+INSERT INTO seat (row, number, status, price, type, hall_id, seance_id)
+SELECT
+    row_num,
+    seat_num,
+    'FREE'::varchar,
+    0,
+    'ORDINARY'::varchar,
+    h.id,
+    s.id
+FROM seance s
+         JOIN hall h ON h.id = s.hall_id
+         CROSS JOIN generate_series(1, h.rows) AS row_num
+         CROSS JOIN generate_series(1, h.seats_per_row) AS seat_num
+WHERE NOT EXISTS (
+    SELECT 1 FROM seat
+    WHERE seat.hall_id = h.id
+      AND seat.row = row_num
+      AND seat.number = seat_num
+      AND seat.seance_id = s.id
 );

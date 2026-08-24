@@ -22,49 +22,24 @@
                 Начало: <span th:text="${#temporals.format(seance.start_time, 'HH:mm')}">19:00</span>
                 Окончание: <span th:text="${#temporals.format(seance.end_time, 'HH:mm')}">21:46</span>
             </div>
-            Зал <div class="session-hall-display" th:text="${seance.hall.id}">3</div>
+            Зал <div class="session-hall-display" th:text="${seance.hall.id}">1</div>
         </div>
 
-        <!-- Выбор места -->
+        <!-- Схема зала -->
         <div class="seat-selection">
-            <div class="selection-group">
-                <label for="rowSelect">Ряд</label>
-                <select id="rowSelect" class="seat-select">
-                    <option value="">Выберите ряд</option>
-                    <option value="1">1 ряд</option>
-                    <option value="2">2 ряд</option>
-                    <option value="3">3 ряд</option>
-                    <option value="4">4 ряд</option>
-                    <option value="5">5 ряд</option>
-                    <option value="6">6 ряд</option>
-                    <option value="7">7 ряд</option>
-                    <option value="8">8 ряд</option>
-                    <option value="9">9 ряд</option>
-                    <option value="10">10 ряд</option>
-                </select>
+            <div class="hall-scheme" id="hallScheme">
+                <!-- Схема зала будет генерироваться JS -->
             </div>
+        </div>
 
-            <div class="selection-group">
-                <label for="seatSelect">Место</label>
-                <select id="seatSelect" class="seat-select">
-                    <option value="">Выберите место</option>
-                    <option value="1">Место 1</option>
-                    <option value="2">Место 2</option>
-                    <option value="3">Место 3</option>
-                    <option value="4">Место 4</option>
-                    <option value="5">Место 5</option>
-                    <option value="6">Место 6</option>
-                    <option value="7">Место 7</option>
-                    <option value="8">Место 8</option>
-                    <option value="9">Место 9</option>
-                    <option value="10">Место 10</option>
-                </select>
-            </div>
+        <!-- Информация о выбранном месте -->
+        <div class="selected-seat-info" id="selectedSeatInfo">
+            <span id="selectedSeatDisplay">Место не выбрано</span>
         </div>
 
         <!-- Кнопки действий -->
         <div class="action-buttons">
-            <button class="btn-pay" onclick="payTicket()">Продолжить</button>
+            <button class="btn-pay" id="payButton" onclick="payTicket()" disabled>Продолжить</button>
             <button class="btn-cancel" onclick="cancelBooking()">✕ Отменить</button>
         </div>
     </div>

@@ -31,7 +31,7 @@ public class Book {
     private User user;
 
     @OneToMany
-    @JoinColumn(name = "book_id", nullable = false)
+    @JoinColumn(name = "book_id")
     private List<Seat> seats = new ArrayList<>();
 
     @ManyToOne

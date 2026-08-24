@@ -6,9 +6,7 @@ import booking_system.entity.*;
 import booking_system.enums.BOOK_STATUS;
 import booking_system.enums.SEAT_STATUS;
 import booking_system.enums.SEAT_TYPE;
-import booking_system.exception.BaseException;
-import booking_system.exception.BookNotFoundException;
-import booking_system.exception.UnauthorizedException;
+import booking_system.exception.*;
 import booking_system.repository.BookRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -43,36 +41,53 @@ public class BookService {
             User user = userService.findByEmail(email);
 
             Seance seance = seanceService.findById(request.seanceId());
+            Hall hall = seance.getHall();
 
-            List<Seat> seats = new ArrayList<>();
-            Seat seat = new Seat(
-                    request.row(),
-                    request.number(),
-                    SEAT_STATUS.BOOK,
-                    0,
-                    SEAT_TYPE.ORDINARY,
-                    seance.getHall()
-            );
-            seats.add(seat);
+            List<Seat> requestedSeats = request.seats();
+
+            if (requestedSeats == null || requestedSeats.isEmpty()) {
+                throw new SeatsIsNullException();
+            }
+
+            List<Seat> seatsToBook = new ArrayList<>();
+
+            for (Seat seatRequest : requestedSeats) {
+                Seat existingSeat = seatService.findByHallRowNumberAndSeance(
+                        hall.getId(),
+                        seatRequest.getRow(),
+                        seatRequest.getNumber(),
+                        seance.getId()
+                );
+
+                if (existingSeat.getStatus() != SEAT_STATUS.FREE) {
+                    throw new SeatIsTakenException(existingSeat.getRow(), existingSeat.getNumber());
+                }
+
+                existingSeat.setStatus(SEAT_STATUS.BOOK);
+                seatsToBook.add(existingSeat);
+            }
+
+            seatService.saveAll(seatsToBook);
 
             Book book = new Book(
                     BOOK_STATUS.NOT_PAID,
                     user,
-                    seats,
+                    seatsToBook,
                     seance
             );
 
-            bookRepository.save(book);
-            seatService.save(seat);
+            book = bookRepository.save(book);
 
             HashMap<String, String> response = new HashMap<>();
             response.put("bookId", book.getId().toString());
 
             return ApiResponse.success(response);
+
         } catch (BaseException e) {
             return ApiResponse.error(e.getErrorCode(), e.getMessage());
         } catch (Exception e) {
-            return ApiResponse.error(500, e.getMessage());
+            log.error("Ошибка при создании бронирования: ", e);
+            return ApiResponse.error(500, "Внутренняя ошибка сервера");
         }
     }
 

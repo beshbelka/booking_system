@@ -164,3 +164,254 @@
         flex-direction: column;
     }
 }
+
+/* seats.css - добавить/обновить */
+
+.seats-container {
+    min-height: 100vh;
+    background: #0a0a0a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+.seats-card {
+    background: #1a1a1a;
+    border-radius: 16px;
+    border: 1px solid #333;
+    padding: 40px 50px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+}
+
+.seats-title {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 20px;
+}
+
+/* Информация о сеансе */
+.session-info {
+    background: #0a0a0a;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border: 1px solid #2a2a2a;
+    text-align: center;
+}
+
+.movie-title-display {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: #fff;
+}
+
+.session-time-display {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 8px;
+}
+
+.session-hall-display {
+    font-size: 14px;
+    color: #aaa;
+    background: #2a2a2a;
+    display: inline-block;
+    padding: 4px 16px;
+    border-radius: 20px;
+    margin-top: 5px;
+}
+
+/* Схема зала */
+.hall-scheme {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px 0;
+    margin-bottom: 20px;
+}
+
+.screen {
+    background: linear-gradient(180deg, #2a2a2a, #1a1a1a);
+    color: #666;
+    text-align: center;
+    padding: 10px;
+    width: 80%;
+    border-radius: 4px;
+    font-size: 14px;
+    letter-spacing: 4px;
+    margin-bottom: 20px;
+    border: 1px solid #333;
+}
+
+.seat-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.row-label {
+    color: #666;
+    font-size: 12px;
+    width: 25px;
+    text-align: right;
+    margin-right: 8px;
+    font-weight: bold;
+}
+
+.seat-btn {
+    width: 32px;
+    height: 32px;
+    border: 2px solid #444;
+    background: #1a1a1a;
+    color: #888;
+    border-radius: 6px 6px 0 0;
+    cursor: pointer;
+    font-size: 10px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.seat-btn:hover:not(:disabled) {
+    background: #2a2a2a;
+    border-color: #666;
+    transform: scale(1.1);
+}
+
+.seat-btn.available {
+    border-color: #2a5a2a;
+    color: #4a8a4a;
+}
+
+.seat-btn.available:hover:not(:disabled) {
+    border-color: #4a8a4a;
+    background: #2a3a2a;
+}
+
+.seat-btn.occupied {
+    border-color: #5a2a2a;
+    color: #8a4a4a;
+    cursor: not-allowed;
+    opacity: 0.5;
+    background: #1a1a1a;
+}
+
+.seat-btn.selected {
+    border-color: #e50914;
+    background: #e50914;
+    color: #fff;
+    transform: scale(1.15);
+    box-shadow: 0 0 20px rgba(229, 9, 20, 0.3);
+}
+
+.seat-btn:disabled {
+    cursor: not-allowed;
+}
+
+/* Информация о выбранном месте */
+.selected-seat-info {
+    text-align: center;
+    padding: 12px;
+    background: #0a0a0a;
+    border-radius: 8px;
+    border: 1px solid #2a2a2a;
+    margin-bottom: 20px;
+    color: #888;
+}
+
+#selectedSeatDisplay {
+    color: #fff;
+    font-weight: bold;
+}
+
+/* Кнопки */
+.action-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-pay,
+.btn-cancel {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-pay {
+    background: #e50914;
+    color: #fff;
+}
+
+.btn-pay:hover:not(:disabled) {
+    background: #b81d24;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(229, 9, 20, 0.3);
+}
+
+.btn-pay:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-cancel {
+    background: #2a2a2a;
+    color: #888;
+}
+
+.btn-cancel:hover {
+    background: #3a3a3a;
+    color: #fff;
+}
+
+/* Адаптив */
+@media (max-width: 600px) {
+    .seats-card {
+        padding: 20px 15px;
+    }
+
+    .seats-title {
+        font-size: 22px;
+    }
+
+    .session-time-display {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .seat-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 9px;
+    }
+
+    .row-label {
+        width: 20px;
+        font-size: 10px;
+    }
+
+    .seat-row {
+        gap: 4px;
+    }
+}
