@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.core.ObjectReadContext;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +64,7 @@ public class BookService {
                     throw new SeatIsTakenException(existingSeat.getRow(), existingSeat.getNumber());
                 }
 
-                existingSeat.setStatus(SEAT_STATUS.BOOK);
+                existingSeat.setStatus(SEAT_STATUS.BLOCKED);
                 seatsToBook.add(existingSeat);
             }
 
@@ -122,11 +123,33 @@ public class BookService {
             Book book = findById(bookId);
             book.setStatus(BOOK_STATUS.PAID);
             bookRepository.save(book);
+            List<Seat> seats = book.getSeats();
+            for (Seat seat : seats) {
+                seat.setStatus(SEAT_STATUS.BOOK);
+            }
+            seatService.saveAll(seats);
             return ApiResponse.success("set status PAID ok");
         } catch (BaseException e) {
             return ApiResponse.error(e.getErrorCode(), e.getMessage());
         } catch (Exception e) {
             return ApiResponse.error(500, e.getMessage());
+        }
+    }
+
+    public void save(Book book) {
+        try {
+            bookRepository.save(book);
+        } catch (Exception e) {
+            log.error("SAVE BOOK ERROR: " + e.getMessage());
+        }
+    }
+
+    public List<Book> findByStatusAndCreatedAtBefore(BOOK_STATUS bookStatus, LocalTime expiryTime) {
+        try {
+            return bookRepository.findByStatusAndCreatedAtBefore(bookStatus, expiryTime);
+        } catch (Exception e) {
+            log.error("FIND BY STATUS AND TIME ERROR: " + e.getMessage());
+            return new ArrayList<>();
         }
     }
 }

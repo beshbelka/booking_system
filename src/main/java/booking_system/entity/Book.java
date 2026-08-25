@@ -7,7 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import booking_system.enums.BOOK_STATUS;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +39,9 @@ public class Book {
     @ManyToOne
     @JoinColumn(name = "seance_id", nullable = false)
     private Seance seance;
+
+    @CreationTimestamp
+    private LocalTime createdAt;
 
     public Book (BOOK_STATUS status,
                  User user,
