@@ -1,12 +1,16 @@
 package booking_system.controller;
 
 import booking_system.entity.Book;
+import booking_system.enums.USER_ROLE;
 import booking_system.service.*;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,31 +57,24 @@ public class PageController {
 
     @GetMapping("/profile")
     public String profile(HttpServletRequest request, Model model, HttpServletResponse response) {
-        String accessToken = jwtService.extractAccessTokenFromCookies(request);
-        if (accessToken == null) {
-            String refreshToken = jwtService.extractRefreshTokenFromCookies(request);
-            if (refreshToken == null) {
-                return "redirect:/auth/login";
-            }
-            refreshTokenService.refresh(refreshToken, response);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
+            return "redirect:/auth/login";
         }
         try {
-            if (jwtService.isTokenValid(accessToken)) {
+            String email = authentication.getName();
+            USER_ROLE role = userService.getRole(email);
+            HashMap<String, String > nameAndBirthDate = userService.getNameAndBirthDate(email);
+            List<Book> books = userService.getBooks(email);
 
-                Claims claims = jwtService.extractClaims(accessToken);
-                String email = jwtService.extractEmail(accessToken);
-                HashMap<String, String > nameAndBirthDate = userService.getNameAndBirthDate(email);
-                List<Book> books = userService.getBooks(email);
+            model.addAttribute("email", email);
+            model.addAttribute("name", nameAndBirthDate.get("name"));
+            model.addAttribute("birthDate", nameAndBirthDate.get("birthDate"));
+            model.addAttribute("role", role.equals(USER_ROLE.USER) ? "Пользователь" : "Администратор");
+            model.addAttribute("books", books);
 
-                model.addAttribute("email", email);
-                model.addAttribute("name", nameAndBirthDate.get("name"));
-                model.addAttribute("birthDate", nameAndBirthDate.get("birthDate"));
-                model.addAttribute("role", claims.get("role").equals("USER") ? "Пользователь" : "Администратор");
-                model.addAttribute("books", books);
-
-                return "profile";
-            }
-            return "redirect:/auth/login";
+            return "profile";
         } catch (Exception e) {
             return "redirect:/auth/login";
         }

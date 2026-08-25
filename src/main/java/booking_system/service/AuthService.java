@@ -142,7 +142,7 @@ public class AuthService {
             }
             String refreshToken = jwtService.extractRefreshTokenFromCookies(request);
             if (refreshToken != null && jwtService.isRefreshTokenValid(refreshToken)) {
-                refreshTokenService.refresh(refreshToken, response);
+                refreshTokenService.refresh(refreshToken, response, request);
                 return true;
             }
             return false;
