@@ -4,6 +4,8 @@ import booking_system.DTO.ApiResponse;
 import booking_system.DTO.DeleteBookingRequest;
 import booking_system.DTO.PasswordChangeRequest;
 import booking_system.DTO.ProfileEditRequest;
+import booking_system.entity.User;
+import booking_system.enums.USER_ROLE;
 import booking_system.exception.TokenIsNullException;
 import booking_system.service.AuthService;
 import booking_system.service.BookService;
@@ -82,9 +84,15 @@ public class ProfileController {
     public ResponseEntity<ApiResponse> deleteAccount(HttpServletRequest request, HttpServletResponse response) {
         try {
             String accessToken = jwtService.extractAccessTokenFromCookies(request);
+            String email = jwtService.extractEmail(accessToken);
+            User user = userService.findByEmail(email);
+            if (user.getRole().equals(USER_ROLE.ADMIN)) {
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(ApiResponse.error(400, "Удалить администратора можно только прямым обращением к БД"));
+            }
             String refreshToken = jwtService.extractRefreshTokenFromCookies(request);
             authService.logout(accessToken, refreshToken, response);
-            String email = jwtService.extractEmail(accessToken);
             ApiResponse apiResponse = userService.deleteAccount(email);
             if (apiResponse.isSuccess()) {
                 return ResponseEntity.ok().body(apiResponse);

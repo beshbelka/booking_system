@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель - Кинозал</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="admin-container">
+    <a href="/profile" class="admin-card">← Назад</a>
+    <div class="admin-header">
+        <h1>Админ-панель</h1>
+        <p class="admin-subtitle">Управление системой кинозала</p>
+    </div>
+
+    <div class="admin-grid">
+        <!-- Карточка: Управление -->
+        <a href="#" class="admin-card admin-card-management">
+            <div class="admin-card-content">
+                <h2>Управление</h2>
+                <span class="admin-card-arrow">→</span>
+            </div>
+        </a>
+
+        <!-- Карточка: Финансы -->
+        <a href="#" class="admin-card admin-card-finance">
+            <div class="admin-card-content">
+                <h2>Финансы</h2>
+                <span class="admin-card-arrow">→</span>
+            </div>
+        </a>
+
+        <!-- Карточка: Система -->
+        <a href="/admin/about" class="admin-card admin-card-system">
+            <div class="admin-card-content">
+                <h2>О системе</h2>
+                <span class="admin-card-arrow">→</span>
+            </div>
+        </a>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

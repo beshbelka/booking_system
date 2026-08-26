@@ -251,7 +251,7 @@ function deleteAccount() {
             if (data.success === true) {
                 window.location.href = '/';
             } else {
-                alert('Ошибка: ' + (data.error || 'Неизвестная ошибка'));
+                alert('Ошибка: ' + (data.message || 'Неизвестная ошибка'));
             }
         })
         .catch(error => {

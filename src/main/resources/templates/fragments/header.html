@@ -6,7 +6,6 @@
     </div>
     <div class="nav">
         <a href="/">Афиша</a>
-        <a href="/about">О проекте</a>
         <a th:if="${isAuthenticated}" href="/profile">Личный кабинет</a>
         <a th:unless="${isAuthenticated}" href="/auth/login" class="open-btn">Вход</a>
     </div>

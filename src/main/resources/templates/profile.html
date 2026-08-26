@@ -62,9 +62,16 @@
             <button type="button" class="btn-profile-actions" id="logoutButton" onclick="logout()">
                 Выйти
             </button>
-            <button type="button" class="btn-profile-actions" onclick="deleteAccount()">
-                Удалить аккаунт
-            </button>
+            <th:block th:if="${role == 'Администратор'}">
+                <a href="/admin" class="btn-profile-actions">
+                    Управление
+                </a>
+            </th:block>
+            <th:block th:unless="${role == 'Администратор'}">
+                <button type="button" class="btn-profile-actions" onclick="deleteAccount()">
+                    Удалить аккаунт
+                </button>
+            </th:block>
         </div>
 
         <div class="edit-actions" id="editActions" style="display: none;">

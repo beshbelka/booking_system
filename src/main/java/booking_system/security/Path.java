@@ -12,7 +12,6 @@ public class Path {
 
     public static final String[] PUBLIC_GET = {
             "/",
-            "/about",
             "/auth/login",
             "/auth/registration",
             "/seances",
