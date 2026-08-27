@@ -7,10 +7,7 @@ import booking_system.DTO.ProfileEditRequest;
 import booking_system.entity.User;
 import booking_system.enums.USER_ROLE;
 import booking_system.exception.TokenIsNullException;
-import booking_system.service.AuthService;
-import booking_system.service.BookService;
-import booking_system.service.JwtService;
-import booking_system.service.UserService;
+import booking_system.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -32,6 +29,7 @@ public class ProfileController {
     private final JwtService jwtService;
     private final AuthService authService;
     private final BookService bookService;
+    private final DeleteService deleteService;
 
     @PostMapping("/edit")
     public ResponseEntity<ApiResponse> editProfile(
@@ -93,7 +91,7 @@ public class ProfileController {
             }
             String refreshToken = jwtService.extractRefreshTokenFromCookies(request);
             authService.logout(accessToken, refreshToken, response);
-            ApiResponse apiResponse = userService.deleteAccount(email);
+            ApiResponse apiResponse = deleteService.deleteAccount(email);
             if (apiResponse.isSuccess()) {
                 return ResponseEntity.ok().body(apiResponse);
             }

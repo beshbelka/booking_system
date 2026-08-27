@@ -29,15 +29,12 @@ public class AuthController {
 
     private final AuthService authService;
     private final JwtService jwtService;
-    private final BlacklistService blacklistService;
-    private final UserService userService;
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody RegisterRequest request, HttpServletResponse response) {
         try {
-            ApiResponse apiResponse= authService.register(request);
+            ApiResponse apiResponse= authService.register(request, response);
             if (apiResponse.isSuccess()) {
-                jwtService.addAccessTokenCookie(response, apiResponse.getData().get("accessToken"));
                 return ResponseEntity.ok(apiResponse);
             }
             return ResponseEntity

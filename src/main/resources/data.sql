@@ -10,23 +10,23 @@ SELECT * FROM (VALUES
               ) AS h(id, rows, seats_per_row)
 WHERE NOT EXISTS (SELECT 1 FROM hall WHERE hall.id = h.id);
 
+ALTER TABLE movie ALTER COLUMN active SET DEFAULT true;
 -- 2. ФИЛЬМЫ (все 7 фильмов)
-INSERT INTO movie (id, title, description, duration, genre, age_rating, poster_url, backdrop_url)
+INSERT INTO movie (title, description, duration, genre, age_rating, poster_url, backdrop_url)
 SELECT * FROM (VALUES
-    (1, 'Оппенгеймер', 'История американского физика Роберта Оппенгеймера, который руководил созданием первой атомной бомбы', 180, 'биография', '18+', '/images/posters/oppenheimer.jpg', '/images/backdrops/oppenheimer-bg.jpg'),
-    (2, 'Барби', 'Барби и Кен отправляются в приключение в реальном мире после того, как идеальный мир Барбиленда начинает давать трещину', 114, 'комедия', '12+', '/images/posters/barbie.jpg', '/images/backdrops/barbie-bg.jpg'),
-    (3, 'Дюна: Часть вторая', 'Пол Атрейдес объединяется с Чанни и фрименами, чтобы отомстить заговорщикам, уничтожившим его семью', 166, 'фантастика', '16+', '/images/posters/dune2.jpg', '/images/backdrops/dune2-bg.jpg'),
-    (4, 'Операция "Фортуна"', 'Британский разведчик вынужден работать с голливудской звездой, чтобы завербовать миллиардера и остановить продажу смертоносного оружия', 114, 'боевик', '16+', '/images/posters/fortune.jpg', '/images/backdrops/fortune-bg.jpg'),
-    (5, 'Наполеон', 'Взгляд на происхождение Наполеона Бонапарта и его стремительное восхождение к власти на фоне его зависимых отношений с женой Жозефиной', 158, 'история', '18+', '/images/posters/napoleon.jpg', '/images/backdrops/napoleon-bg.jpg'),
-    (6, 'Убийцы цветочной луны', 'Расследование серии убийств индейцев племени осейджей после того, как на их землях нашли нефть', 206, 'детектив', '18+', '/images/posters/killers.jpg', '/images/backdrops/killers-bg.jpg'),
-    (7, 'Мастер и Маргарита', 'Мистическая история о визите дьявола в советскую Москву, переплетающаяся с романом о Понтии Пилате', 157, 'мистика', '16+', '/images/posters/master.jpg', '/images/backdrops/master-bg.jpg')
-) AS m(id, title, description, duration, genre, age_rating, poster_url, backdrop_url)
-WHERE NOT EXISTS (SELECT 1 FROM movie WHERE movie.id = m.id);
+    ('Барби', 'Барби и Кен отправляются в приключение в реальном мире после того, как идеальный мир Барбиленда начинает давать трещину', 114, 'комедия', 12, '/images/posters/barbie.jpg', '/images/backdrops/barbie-bg.jpg'),
+    ('Оппенгеймер', 'История американского физика Роберта Оппенгеймера, который руководил созданием первой атомной бомбы', 180, 'биография', 18, '/images/posters/oppenheimer.jpg', '/images/backdrops/oppenheimer-bg.jpg'),
+    ('Дюна: Часть вторая', 'Пол Атрейдес объединяется с Чанни и фрименами, чтобы отомстить заговорщикам, уничтожившим его семью', 166, 'фантастика', 16, '/images/posters/dune2.jpg', '/images/backdrops/dune2-bg.jpg'),
+    ('Операция "Фортуна"', 'Британский разведчик вынужден работать с голливудской звездой, чтобы завербовать миллиардера и остановить продажу смертоносного оружия', 114, 'боевик', 16, '/images/posters/fortune.jpg', '/images/backdrops/fortune-bg.jpg'),
+    ('Наполеон', 'Взгляд на происхождение Наполеона Бонапарта и его стремительное восхождение к власти на фоне его зависимых отношений с женой Жозефиной', 158, 'история', 18, '/images/posters/napoleon.jpg', '/images/backdrops/napoleon-bg.jpg'),
+    ('Убийцы цветочной луны', 'Расследование серии убийств индейцев племени осейджей после того, как на их землях нашли нефть', 206, 'детектив', 18, '/images/posters/killers.jpg', '/images/backdrops/killers-bg.jpg'),
+    ('Мастер и Маргарита', 'Мистическая история о визите дьявола в советскую Москву, переплетающаяся с романом о Понтии Пилате', 157, 'мистика', 16, '/images/posters/master.jpg', '/images/backdrops/master-bg.jpg')
+) AS m(title, description, duration, genre, age_rating, poster_url, backdrop_url);
 
 INSERT INTO users (email, password, name, birth_date, role)
-VALUES ('user@email.com', '$2a$10$hCeKBUgH0EHGfAe/qEKMier5d.0wyNzzig5yksNE3H8MV5AFbPCby', 'username', '2005-06-25', 'USER');
-INSERT INTO users (email, password, name, birth_date, role)
 VALUES ('admin@email.com', '$2a$10$gSTUsYNKz.y9zuWjUSgljegSx6pXw3Ep8lvWY1/eESByh7K8b.bCe', 'adminame', '2005-06-25', 'ADMIN');
+INSERT INTO users (email, password, name, birth_date, role)
+VALUES ('user@email.com', '$2a$10$hCeKBUgH0EHGfAe/qEKMier5d.0wyNzzig5yksNE3H8MV5AFbPCby', 'username', '2005-06-25', 'USER');
 
 INSERT INTO seance (start_time, end_time, movie_id, hall_id)
 SELECT * FROM (VALUES

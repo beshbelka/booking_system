@@ -1,5 +1,8 @@
 package booking_system.controller;
 
+import booking_system.entity.Movie;
+import booking_system.entity.Seance;
+import booking_system.entity.User;
 import booking_system.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -7,6 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -18,6 +26,7 @@ public class AdminPageController {
     private final MovieService movieService;
     private final HallService hallService;
     private final BookService bookService;
+    private final UserService userService;
 
     @GetMapping("")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -34,4 +43,36 @@ public class AdminPageController {
         model.addAttribute("movies", movieService.getAllMovies());
         return "about";
     }
+
+    @GetMapping("/control")
+    public String control() {
+        return "control";
+    }
+
+    @GetMapping("/control-films")
+    public String films(Model model) {
+        List<Movie> movies = movieService.getAllMovies();
+        if (!movies.isEmpty()) {
+            movies.sort(Comparator.comparing(Movie::getId));
+        }
+        model.addAttribute("movies", movies);
+        return "control-films";
+    }
+
+    @GetMapping("/control-films-edit")
+    public String filmsEdit(@RequestParam Long movieId, Model model) {
+        Movie movie = movieService.findById(movieId);
+        model.addAttribute("movie", movie);
+        return "control-films-edit";
+    }
+
+    @GetMapping("/control-users")
+    public String users(Model model) {
+        List<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        return "control-users";
+    }
+
+    @GetMapping("/control-films-add")
+    public String addFilm() { return "control-films-add"; }
 }

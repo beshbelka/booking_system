@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Управление — Кинозал</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="admin-container">
+    <a href="/admin" class="back-link">
+        <span>←</span> Назад
+    </a>
+
+    <div class="admin-header">
+        <h1>Управление</h1>
+        <p class="admin-subtitle">Управление данными</p>
+    </div>
+
+    <!-- Сетка карточек управления -->
+    <div class="admin-grid" style="grid-template-columns: repeat(4, 1fr);">
+        <!-- Фильмы -->
+        <a href="/admin/control-films" class="admin-card card-movies">
+            <div class="admin-card-content">
+                <h2>Фильмы</h2>
+                <span class="admin-card-arrow">→</span>
+            </div>
+        </a>
+
+        <!-- Сеансы -->
+        <a href="#" class="admin-card card-sessions">
+            <div class="admin-card-content">
+                <h2>Сеансы</h2>
+                <span class="admin-card-arrow">→</span>
+            </div>
+        </a>
+
+        <!-- Бронирования -->
+        <a href="#" class="admin-card card-bookings">
+            <div class="admin-card-content">
+                <h2>Бронирования</h2>
+                <span class="admin-card-arrow">→</span>
+            </div>
+        </a>
+
+        <!-- Пользователи -->
+        <a href="/admin/control-users" class="admin-card card-users">
+            <div class="admin-card-content">
+                <h2>Пользователи</h2>
+                <span class="admin-card-arrow">→</span>
+            </div>
+        </a>
+    </div>
+</main>
+
+<!-- Футер (фрагмент) -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

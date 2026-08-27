@@ -152,4 +152,18 @@ public class BookService {
             return new ArrayList<>();
         }
     }
+
+    public List<Book> findBySeanceIdAndStatusNot(Long id, BOOK_STATUS bookStatus) {
+        try {
+            return bookRepository.findBySeanceIdAndStatusNot(id, bookStatus);
+        } catch (Exception e) {
+            log.error("FIND BY SEANCE ID AND STATUS NOT ERROR: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    public void saveAll(List<Book> books) {
+        bookRepository.saveAll(books);
+    }
+
 }

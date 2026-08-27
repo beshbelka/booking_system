@@ -21,4 +21,6 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
     );
 
     List<Seat> findBySeanceIdAndStatusNot(Long seanceId, SEAT_STATUS seatStatus);
+
+    List<Seat> findBySeanceId(Long id);
 }

@@ -17,29 +17,59 @@
 }
 
 .admin-header h1 {
-    font-size: 36px;
-    color: #ffffff;
+    font-size: 42px;
+    color: #e50914;
     margin-bottom: 4px;
 }
 
 .admin-subtitle {
     color: #888;
-    font-size: 16px;
+    font-size: 18px;
     margin: 0;
 }
 
+/* ===== BACK LINK (как в about) ===== */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #1a1a1a;
+    border-radius: 40px;
+    padding: 10px 22px;
+    border: 1px solid #2a2a2a;
+    color: #fff;
+    text-decoration: none;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    margin-bottom: 24px;
+    width: fit-content;
+}
+
+.back-link:hover {
+    border-color: #555;
+    transform: translateX(-4px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+.back-link span {
+    font-size: 18px;
+    line-height: 1;
+}
+
+/* ===== ADMIN GRID (3 колонки) ===== */
 .admin-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
+    margin-top: 10px;
 }
 
-/* ===== ADMIN CARDS ===== */
+/* ===== ADMIN CARDS (стиль как tech-card в about) ===== */
 .admin-card {
-    background: #1a1a1a;
-    border-radius: 16px;
-    border: 1px solid #2a2a2a;
-    padding: 36px 28px 28px 28px;
+    background-color: #1a1a1a;
+    border-radius: 12px;
+    padding: 30px;
+    border: 1px solid #333;
     text-decoration: none;
     color: #ffffff;
     transition: all 0.3s ease;
@@ -50,56 +80,21 @@
     position: relative;
     overflow: hidden;
     cursor: pointer;
-}
-
-.admin-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    min-height: 200px;
+    justify-content: center;
 }
 
 .admin-card:hover {
-    transform: translateY(-6px);
-    border-color: #3a3a3a;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-}
-
-.admin-card:hover::before {
-    opacity: 1;
+    border-color: #555;
 }
 
 .admin-card:hover .admin-card-arrow {
     transform: translateX(6px);
 }
 
-/* Цвета для каждой карточки */
-.admin-card-management::before {
-    background: linear-gradient(90deg, #667eea, #764ba2);
-}
-
-.admin-card-finance::before {
-    background: linear-gradient(90deg, #f093fb, #f5576c);
-}
-
-.admin-card-system::before {
-    background: linear-gradient(90deg, #4facfe, #00f2fe);
-}
-
-.admin-card-icon {
-    font-size: 52px;
-    margin-bottom: 20px;
-    display: block;
-    line-height: 1;
-}
-
 .admin-card-content h2 {
-    font-size: 22px;
-    margin-bottom: 8px;
+    font-size: 24px;
+    margin-bottom: 10px;
     color: #ffffff;
 }
 
@@ -108,6 +103,7 @@
     font-size: 15px;
     line-height: 1.5;
     margin-bottom: 16px;
+    max-width: 280px;
 }
 
 .admin-card-arrow {
@@ -137,16 +133,12 @@
     }
 
     .admin-header h1 {
-        font-size: 28px;
+        font-size: 32px;
     }
 
     .admin-card {
-        padding: 28px 20px 20px 20px;
-    }
-
-    .admin-card-icon {
-        font-size: 40px;
-        margin-bottom: 12px;
+        padding: 24px 18px;
+        min-height: 160px;
     }
 
     .admin-card-content h2 {

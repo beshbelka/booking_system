@@ -9,6 +9,7 @@ import booking_system.exception.BaseException;
 import booking_system.exception.SeatNotFoundException;
 import booking_system.repository.SeatRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SeatService {
 
     private final SeatRepository seatRepository;
@@ -57,6 +59,23 @@ public class SeatService {
             return ApiResponse.error(e.getErrorCode(), e.getMessage());
         } catch (Exception e) {
             return ApiResponse.error(500, e.getMessage());
+        }
+    }
+
+    public List<Seat> findBySeanceIdAndStatusNot(Long id, SEAT_STATUS seatStatus) {
+        try {
+            return seatRepository.findBySeanceIdAndStatusNot(id, seatStatus);
+        } catch (Exception e) {
+            log.error("FIND BY SEANCE ID AND STATUS NOT ERROR: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    public List<Seat> findBySeanceId(Long id) {
+        try {
+            return seatRepository.findBySeanceId(id);
+        } catch (Exception e) {
+            return new ArrayList<>();
         }
     }
 }

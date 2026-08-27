@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование фильма - Кинозал</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/control-films-edit.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="admin-container">
+    <a href="/admin/control-films" class="back-link">← Назад к списку фильмов</a>
+
+    <div class="admin-header">
+        <h1>Редактирование фильма</h1>
+        <p class="admin-subtitle">Измените данные о фильме</p>
+    </div>
+
+    <div class="form-container">
+        <form class="form-card"
+              th:action="@{/admin/control-films-edit}"
+              method="post"
+              enctype="multipart/form-data"
+              id="editFilmForm">
+
+            <!-- ID фильма (скрытое поле) -->
+            <input type="hidden" name="movieId" th:value="${movie.id}">
+
+            <!-- Название -->
+            <div class="form-group">
+                <label for="title">
+                    Название фильма
+                    <span class="required">*</span>
+                </label>
+                <input type="text"
+                       id="title"
+                       name="title"
+                       class="form-control"
+                       th:value="${movie.title}"
+                       placeholder="Введите название фильма"
+                       required>
+            </div>
+
+            <!-- Описание -->
+            <div class="form-group">
+                <label for="description">Описание</label>
+                <textarea id="description"
+                          name="description"
+                          class="form-control textarea"
+                          placeholder="Введите описание фильма"
+                          th:text="${movie.description}"></textarea>
+            </div>
+
+            <!-- Две колонки: жанр и длительность -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="genre">Жанр</label>
+                    <input type="text"
+                           id="genre"
+                           name="genre"
+                           class="form-control"
+                           th:value="${movie.genre}"
+                           placeholder="Например: фантастика, драма">
+                </div>
+
+                <div class="form-group">
+                    <label for="duration">Длительность (мин)</label>
+                    <input type="number"
+                           id="duration"
+                           name="duration"
+                           class="form-control"
+                           th:value="${movie.duration}"
+                           placeholder="120"
+                           min="1">
+                </div>
+            </div>
+
+            <!-- Возрастной рейтинг -->
+            <div class="form-group">
+                <label for="ageRating">Возрастной рейтинг</label>
+                <input type="text"
+                       id="ageRating"
+                       name="ageRating"
+                       class="form-control"
+                       th:value="${movie.ageRating}"
+                       placeholder="Например: 18+, 12+, 6+">
+            </div>
+
+            <!-- Постер -->
+            <div class="form-group">
+                <label>Постер</label>
+
+                <!-- Текущий постер -->
+                <div th:if="${movie.posterUrl != null && movie.posterUrl != ''}" class="current-image">
+                    <p style="color: #888; font-size: 14px; margin-bottom: 8px;">Текущий постер:</p>
+                    <img th:src="${movie.posterUrl}"
+                         th:alt="${movie.title}"
+                         class="current-poster">
+                </div>
+                <div th:if="${movie.posterUrl == null || movie.posterUrl == ''}" class="no-image">
+                    <p style="color: #888; font-size: 14px;">Постер не загружен</p>
+                </div>
+
+                <!-- Загрузка нового постера -->
+                <div class="upload-area" onclick="document.getElementById('posterFileInput').click()">
+                    <span class="icon">📁</span>
+                    <p>Нажмите чтобы заменить постер</p>
+                    <p style="font-size: 12px; color: #666;">Поддерживаются: JPG, PNG, WEBP (макс. 10MB)</p>
+                    <input type="file"
+                           id="posterFileInput"
+                           name="posterFile"
+                           class="file-input"
+                           accept="image/*">
+                </div>
+                <div id="posterFileName" style="color: #888; font-size: 14px; margin-top: 8px;"></div>
+
+                <!-- Превью нового постера -->
+                <div class="poster-preview" id="posterPreview">
+                    <img id="posterPreviewImage" src="" alt="Превью нового постера">
+                </div>
+            </div>
+
+            <!-- Бэкдроп -->
+            <div class="form-group">
+                <label>Бэкдроп (фоновое изображение)</label>
+
+                <!-- Текущий бэкдроп -->
+                <div th:if="${movie.backdropUrl != null && movie.backdropUrl != ''}" class="current-image">
+                    <p style="color: #888; font-size: 14px; margin-bottom: 8px;">Текущий бэкдроп:</p>
+                    <img th:src="${movie.backdropUrl}"
+                         th:alt="${movie.title}"
+                         class="current-backdrop">
+                </div>
+                <div th:if="${movie.backdropUrl == null || movie.backdropUrl == ''}" class="no-image">
+                    <p style="color: #888; font-size: 14px;">Бэкдроп не загружен</p>
+                </div>
+
+                <!-- Загрузка нового бэкдропа -->
+                <div class="upload-area" onclick="document.getElementById('backdropFileInput').click()">
+                    <span class="icon">🖼️</span>
+                    <p>Нажмите чтобы заменить бэкдроп</p>
+                    <p style="font-size: 12px; color: #666;">Поддерживаются: JPG, PNG, WEBP (макс. 10MB)</p>
+                    <input type="file"
+                           id="backdropFileInput"
+                           name="backdropFile"
+                           class="file-input"
+                           accept="image/*">
+                </div>
+                <div id="backdropFileName" style="color: #888; font-size: 14px; margin-top: 8px;"></div>
+
+                <!-- Превью нового бэкдропа -->
+                <div class="poster-preview" id="backdropPreview">
+                    <img id="backdropPreviewImage" src="" alt="Превью нового бэкдропа">
+                </div>
+            </div>
+
+            <!-- Активен -->
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox"
+                           id="active"
+                           name="active"
+                           th:checked="${movie.active}"
+                           value="true">
+                    <label for="active">Фильм активен (отображается на сайте)</label>
+                </div>
+            </div>
+
+            <!-- Кнопки -->
+            <div class="form-actions">
+                <button type="submit" class="btn-save">Сохранить изменения</button>
+                <a href="/admin/control-films" class="btn-cancel">Отмена</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Превью для постера
+        const posterFileInput = document.getElementById('posterFileInput');
+        const posterPreview = document.getElementById('posterPreview');
+        const posterPreviewImage = document.getElementById('posterPreviewImage');
+        const posterFileName = document.getElementById('posterFileName');
+
+        posterFileInput.addEventListener('change', function(e) {
+            const file = this.files[0];
+            if (file) {
+                posterFileName.textContent = '📎 ' + file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    posterPreviewImage.src = e.target.result;
+                    posterPreview.classList.add('visible');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                posterFileName.textContent = '';
+                posterPreview.classList.remove('visible');
+                posterPreviewImage.src = '';
+            }
+        });
+
+        // Превью для бэкдропа
+        const backdropFileInput = document.getElementById('backdropFileInput');
+        const backdropPreview = document.getElementById('backdropPreview');
+        const backdropPreviewImage = document.getElementById('backdropPreviewImage');
+        const backdropFileName = document.getElementById('backdropFileName');
+
+        backdropFileInput.addEventListener('change', function(e) {
+            const file = this.files[0];
+            if (file) {
+                backdropFileName.textContent = '📎 ' + file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    backdropPreviewImage.src = e.target.result;
+                    backdropPreview.classList.add('visible');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                backdropFileName.textContent = '';
+                backdropPreview.classList.remove('visible');
+                backdropPreviewImage.src = '';
+            }
+        });
+
+        // Отправка формы через AJAX
+        const form = document.getElementById('editFilmForm');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+                const submitBtn = form.querySelector('.btn-save');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Сохранение...';
+                submitBtn.disabled = true;
+
+                fetch('/admin/control-films-edit', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Ошибка сервера: ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = '/admin/control-films';
+                        } else {
+                            alert('Ошибка: ' + (data.message || 'Неизвестная ошибка'));
+                            submitBtn.textContent = originalText;
+                            submitBtn.disabled = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Ошибка:', error);
+                        alert('Произошла ошибка: ' + error.message);
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    });
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

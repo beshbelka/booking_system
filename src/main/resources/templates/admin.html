@@ -12,33 +12,38 @@
 <div th:replace="~{fragments/header :: header}"></div>
 
 <main class="admin-container">
-    <a href="/profile" class="admin-card">← Назад</a>
+    <a href="/profile" class="back-link">← Назад</a>
+
     <div class="admin-header">
         <h1>Админ-панель</h1>
         <p class="admin-subtitle">Управление системой кинозала</p>
     </div>
 
+    <!-- Сетка с 3 карточками -->
     <div class="admin-grid">
         <!-- Карточка: Управление -->
-        <a href="#" class="admin-card admin-card-management">
+        <a href="/admin/control" class="admin-card">
             <div class="admin-card-content">
                 <h2>Управление</h2>
+                <p>Фильмы, сеансы, залы, бронирования, пользователи</p>
                 <span class="admin-card-arrow">→</span>
             </div>
         </a>
 
         <!-- Карточка: Финансы -->
-        <a href="#" class="admin-card admin-card-finance">
+        <a href="#" class="admin-card">
             <div class="admin-card-content">
                 <h2>Финансы</h2>
+                <p>Доходы, статистика, отчёты</p>
                 <span class="admin-card-arrow">→</span>
             </div>
         </a>
 
-        <!-- Карточка: Система -->
-        <a href="/admin/about" class="admin-card admin-card-system">
+        <!-- Карточка: О системе -->
+        <a href="/admin/about" class="admin-card">
             <div class="admin-card-content">
                 <h2>О системе</h2>
+                <p>Техническая информация о проекте</p>
                 <span class="admin-card-arrow">→</span>
             </div>
         </a>

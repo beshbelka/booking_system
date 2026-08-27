@@ -3,6 +3,7 @@ package booking_system.service;
 import booking_system.DTO.ApiResponse;
 import booking_system.DTO.ProfileEditRequest;
 import booking_system.entity.Book;
+import booking_system.entity.Seat;
 import booking_system.entity.User;
 import booking_system.enums.USER_ROLE;
 import booking_system.exception.BaseException;
@@ -28,6 +29,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final SeatService seatService;
+    private final DeleteService deleteService;
 
     @Transactional
     public ApiResponse editProfile(@Valid ProfileEditRequest data, String token) {
@@ -84,18 +87,6 @@ public class UserService {
         return userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
     }
 
-    public ApiResponse deleteAccount(String email) {
-        try {
-            User user = findByEmail(email);
-            userRepository.delete(user);
-            return ApiResponse.success("delete account ok");
-        } catch (BaseException e) {
-            return ApiResponse.error(e.getErrorCode(), e.getMessage());
-        } catch (Exception e) {
-            return ApiResponse.error(500, e.getMessage());
-        }
-    }
-
     public HashMap<String, String> getNameAndBirthDate(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
         HashMap<String, String> nameAnsBirthDate = new HashMap<>();
@@ -112,5 +103,9 @@ public class UserService {
     public USER_ROLE getRole(String email) {
         User user = findByEmail(email);
         return user.getRole();
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }

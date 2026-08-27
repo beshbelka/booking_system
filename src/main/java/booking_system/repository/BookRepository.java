@@ -12,4 +12,6 @@ import java.util.List;
 public interface BookRepository extends JpaRepository<Book, Long> {
 
     List<Book> findByStatusAndCreatedAtBefore(BOOK_STATUS bookStatus, LocalTime expiryTime);
+
+    List<Book> findBySeanceIdAndStatusNot(Long id, BOOK_STATUS bookStatus);
 }

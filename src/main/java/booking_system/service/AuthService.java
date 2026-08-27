@@ -31,7 +31,7 @@ public class AuthService {
     private final UserService userService;
     private final RefreshTokenService refreshTokenService;
 
-    public ApiResponse register(RegisterRequest request) {
+    public ApiResponse register(RegisterRequest request, HttpServletResponse response) {
         try {
             if (userRepository.existsByEmail(request.email())) {
                 return ApiResponse.error(409, "Пользователь с таким email уже существует");
@@ -40,10 +40,12 @@ public class AuthService {
             User user = new User(request.email(), passwordEncoder.encode(request.password()), request.name(), request.birthDate());
             userRepository.save(user);
 
-            HashMap<String, String> token = new HashMap<>();
-            token.put("accessToken", jwtService.generateAccessToken(request.email(), USER_ROLE.USER));
+            String accessToken = jwtService.generateAccessToken(request.email(), USER_ROLE.USER);
+            String refreshToken = jwtService.generateRefreshToken(request.email());
+            jwtService.addAccessTokenCookie(response, accessToken);
+            jwtService.addRefreshTokenCookie(response, refreshToken);
 
-            return ApiResponse.success(token);
+            return ApiResponse.success("register user ok");
 
         } catch (Exception e) {
             return ApiResponse.error(500, e.getMessage());

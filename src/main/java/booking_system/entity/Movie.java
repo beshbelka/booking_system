@@ -14,7 +14,7 @@ import java.util.List;
 public class Movie {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long id;
 
     @Column(nullable = false, unique = true)
@@ -31,6 +31,9 @@ public class Movie {
 
     private String posterUrl;
     private String backdropUrl;
+
+    @Column(nullable = false)
+    private boolean active = true;
 
     public String getFormattedDuration() {
         if (duration == null) return "—";
