@@ -71,6 +71,14 @@ public class SeatService {
         }
     }
 
+    public int getBookedSeatsCount(Seance seance) {
+        try {
+            return seatRepository.countBySeanceAndStatus(seance, SEAT_STATUS.BOOK);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
     public List<Seat> findBySeanceId(Long id) {
         try {
             return seatRepository.findBySeanceId(id);

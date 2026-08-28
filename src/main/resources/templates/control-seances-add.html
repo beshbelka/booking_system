@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавление сеанса - Кинозал</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/control-seances-add.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="admin-container">
+    <a href="/admin/control-seances" class="back-link">← Назад</a>
+
+    <div class="admin-header">
+        <h1>Добавление сеанса</h1>
+        <p class="admin-subtitle">Заполните информацию о новом сеансе</p>
+    </div>
+
+    <div class="form-container">
+        <form class="form-card" id="addSeanceForm" action="/admin/control-seances-add" method="post">
+
+            <!-- Фильм -->
+            <div class="form-group">
+                <label for="movieId">
+                    Фильм
+                    <span class="required">*</span>
+                </label>
+                <select id="movieId" name="movieId" class="form-control" required>
+                    <option value="">Выберите фильм</option>
+                    <option th:each="movie : ${movies}"
+                            th:value="${movie.id}"
+                            th:text="${movie.title}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- Зал -->
+            <div class="form-group">
+                <label for="hallId">
+                    Зал
+                    <span class="required">*</span>
+                </label>
+                <select id="hallId" name="hallId" class="form-control" required>
+                    <option value="">Выберите зал</option>
+                    <option th:each="hall : ${halls}"
+                            th:value="${hall.id}"
+                            th:text="'Зал ' + ${hall.id} + ' (' + ${hall.totalSeats} + ' мест)'">
+                    </option>
+                </select>
+            </div>
+
+            <!-- время начала -->
+            <div class="form-group">
+                <label for="startTime">
+                    Время начала
+                    <span class="required">*</span>
+                </label>
+                <input type="time"
+                       id="startTime"
+                       name="startTime"
+                       class="form-control"
+                       required>
+            </div>
+
+            <!-- Длительность (автоматически вычисляется из фильма) -->
+            <div class="form-group">
+                <label for="duration">Длительность</label>
+                <input type="text"
+                       id="duration"
+                       class="form-control"
+                       placeholder="Выберите фильм для автоматического расчета"
+                       readonly
+                       style="background-color: #0a0a0a; color: #666; cursor: not-allowed;">
+            </div>
+
+            <!-- Цена -->
+            <div class="form-group">
+                <label for="price">
+                    Цена билета (₽)
+                    <span class="required">*</span>
+                </label>
+                <input type="number"
+                       id="price"
+                       name="price"
+                       class="form-control"
+                       placeholder="500"
+                       min="1"
+                       step="1"
+                       required>
+            </div>
+
+            <!-- Кнопки -->
+            <div class="form-actions">
+                <button type="submit" class="btn-save">Добавить сеанс</button>
+                <a href="/admin/control-seances" class="btn-cancel">Отмена</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script th:src="@{/js/control-seances-add.js}"></script>
+
+</body>
+</html>

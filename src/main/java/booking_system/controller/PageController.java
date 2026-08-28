@@ -5,7 +5,6 @@ import booking_system.enums.USER_ROLE;
 import booking_system.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,7 +27,7 @@ public class PageController {
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("movies", movieService.getAllMovies());
+        model.addAttribute("movies", movieService.getAll());
         model.addAttribute("featuredMovie", movieService.getRandomMovie());
         return "mainPage";
     }

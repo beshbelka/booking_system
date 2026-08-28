@@ -29,6 +29,11 @@ public class Seance {
     @JoinColumn(name = "hall_id", nullable = false)
     private Hall hall;
 
+    private boolean cancelled;
+
+    private float price;
+
+    @Transient
     public boolean isAvailable() {
         LocalTime now = LocalTime.now();
         return now.isBefore(end_time);

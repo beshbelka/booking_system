@@ -1,16 +1,11 @@
 package booking_system.service;
 
-import booking_system.DTO.ApiResponse;
 import booking_system.entity.*;
-import booking_system.enums.BOOK_STATUS;
-import booking_system.enums.SEAT_STATUS;
-import booking_system.exception.BaseException;
 import booking_system.exception.MovieNotFoundException;
 import booking_system.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -39,7 +34,7 @@ public class MovieService {
         return movieRepository.count();
     }
 
-    public List<Movie> getAllMovies() {
+    public List<Movie> getAll() {
         return movieRepository.findAll();
     }
 
@@ -49,5 +44,13 @@ public class MovieService {
 
     public void save(Movie movie) {
         movieRepository.save(movie);
+    }
+
+    public Movie findByTitle(String movieTitle) {
+        try {
+            return movieRepository.findByTitle(movieTitle);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

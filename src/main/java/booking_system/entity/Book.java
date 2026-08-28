@@ -58,10 +58,4 @@ public class Book {
                 .map(seat -> seat.getRow() + "-" + seat.getNumber())
                 .collect(Collectors.joining(", "));
     }
-
-    public float getTotalPrice() {
-        return (float) seats.stream()
-                .mapToDouble(Seat::getPrice)
-                .sum();
-    }
 }

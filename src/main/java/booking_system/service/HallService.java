@@ -36,4 +36,16 @@ public class HallService {
             return ApiResponse.error(500, e.getMessage());
         }
     }
+
+    public Hall findById(Long hallId) {
+        try {
+            return hallRepository.findById(hallId).orElseThrow(RuntimeException::new);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public void save(Hall hall) {
+        hallRepository.save(hall);
+    }
 }

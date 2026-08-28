@@ -6,6 +6,7 @@ import booking_system.enums.BOOK_STATUS;
 import booking_system.enums.SEAT_STATUS;
 import booking_system.exception.BaseException;
 import booking_system.exception.MovieNotFoundException;
+import booking_system.exception.SeanceNotFoundException;
 import booking_system.exception.UserNotFoundException;
 import booking_system.repository.*;
 import jakarta.transaction.Transactional;
@@ -25,6 +26,7 @@ public class DeleteService {
     private final SeatRepository seatRepository;
     private final SeanceRepository seanceRepository;
     private final UserRepository userRepository;
+    private final HallService hallService;
 
     public void deleteAllBooks(List<Book> books) {
         try {
@@ -96,6 +98,25 @@ public class DeleteService {
             return ApiResponse.error(e.getErrorCode(), e.getMessage());
         } catch (Exception e) {
             return ApiResponse.error(500, e.getMessage());
+        }
+    }
+
+    public ApiResponse cancelSeance(Long seanceId) {
+        try {
+            Seance seance = seanceRepository.findById(seanceId).orElseThrow(SeanceNotFoundException::new);
+            seance.setCancelled(true);
+            seanceRepository.save(seance);
+            List<Book> books = bookRepository.findBySeanceIdAndStatusNot(seanceId, BOOK_STATUS.CANCELLED);
+            for (Book book : books) {
+                book.setStatus(BOOK_STATUS.CANCELLED);
+            }
+            bookRepository.saveAll(books);
+            Hall hall = seance.getHall();
+            hall.getSeances().remove(seance);
+            hallService.save(hall);
+            return ApiResponse.success("cancel seance ok");
+        } catch (Exception e) {
+            return ApiResponse.error();
         }
     }
 }

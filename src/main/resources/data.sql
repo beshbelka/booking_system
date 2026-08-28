@@ -28,6 +28,8 @@ VALUES ('admin@email.com', '$2a$10$gSTUsYNKz.y9zuWjUSgljegSx6pXw3Ep8lvWY1/eESByh
 INSERT INTO users (email, password, name, birth_date, role)
 VALUES ('user@email.com', '$2a$10$hCeKBUgH0EHGfAe/qEKMier5d.0wyNzzig5yksNE3H8MV5AFbPCby', 'username', '2005-06-25', 'USER');
 
+ALTER TABLE seance ALTER COLUMN cancelled SET DEFAULT false;
+ALTER TABLE seance ALTER COLUMN price SET DEFAULT 0;
 INSERT INTO seance (start_time, end_time, movie_id, hall_id)
 SELECT * FROM (VALUES
 
@@ -71,12 +73,11 @@ WHERE NOT EXISTS (
       AND seance.hall_id = s.hall_id
 );
 
-INSERT INTO seat (row, number, status, price, type, hall_id, seance_id)
+INSERT INTO seat (row, number, status, type, hall_id, seance_id)
 SELECT
     row_num,
     seat_num,
     'FREE'::varchar,
-    0,
     'ORDINARY'::varchar,
     h.id,
     s.id

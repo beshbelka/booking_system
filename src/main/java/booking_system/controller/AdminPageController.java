@@ -1,7 +1,6 @@
 package booking_system.controller;
 
 import booking_system.entity.Movie;
-import booking_system.entity.Seance;
 import booking_system.entity.User;
 import booking_system.service.*;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -40,7 +38,7 @@ public class AdminPageController {
         model.addAttribute("seanceCount", seanceService.getSeanceCount());
         model.addAttribute("hallCount", hallService.getHallCount());
         model.addAttribute("bookCount", bookService.getBookCount());
-        model.addAttribute("movies", movieService.getAllMovies());
+        model.addAttribute("movies", movieService.getAll());
         return "about";
     }
 
@@ -51,7 +49,7 @@ public class AdminPageController {
 
     @GetMapping("/control-films")
     public String films(Model model) {
-        List<Movie> movies = movieService.getAllMovies();
+        List<Movie> movies = movieService.getAll();
         if (!movies.isEmpty()) {
             movies.sort(Comparator.comparing(Movie::getId));
         }
@@ -75,4 +73,10 @@ public class AdminPageController {
 
     @GetMapping("/control-films-add")
     public String addFilm() { return "control-films-add"; }
+
+    @GetMapping("/control-seances")
+    public String seancesPage() { return "control-seances"; }
+
+    @GetMapping("/control-seances-add")
+    public String addSeancePage() { return "control-seances-add"; }
 }

@@ -45,7 +45,7 @@ public class SeatController {
     public String chooseSeat(@RequestParam Long seanceId,
                              Model model) {
         Seance seance = seanceService.findById(seanceId);
-        if (seance.isAvailable()) {
+        if (!seance.isCancelled() && seance.isAvailable()) {
             Movie movie = seance.getMovie();
 
             model.addAttribute("seance", seance);

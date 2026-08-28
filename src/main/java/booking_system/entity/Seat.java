@@ -27,8 +27,6 @@ public class Seat {
     @Enumerated(EnumType.STRING)
     private SEAT_STATUS status;
 
-    private float price;
-
     @Enumerated(EnumType.STRING)
     private SEAT_TYPE type;
 
@@ -43,14 +41,12 @@ public class Seat {
     public Seat (short row,
                  short number,
                  SEAT_STATUS status,
-                 float price,
                  SEAT_TYPE type,
                  Hall hall,
                  Seance seance) {
         this.row = row;
         this.number = number;
         this.status = status;
-        this.price = price;
         this.type = type;
         this.hall = hall;
         this.seance = seance;

@@ -29,8 +29,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private final SeatService seatService;
-    private final DeleteService deleteService;
 
     @Transactional
     public ApiResponse editProfile(@Valid ProfileEditRequest data, String token) {

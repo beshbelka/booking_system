@@ -10,8 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,11 +25,14 @@ public class SeanceController {
     @GetMapping("/seances")
     public String showSeance(@RequestParam Long movieId, Model model) {
         Movie movie = movieService.findById(movieId);
-        List<Seance> seances = seanceService.findByMovieId(movieId);
-
+        List<Seance> allSeances = seanceService.findByMovieId(movieId);
+        List<Seance> seances = new ArrayList<>();
         model.addAttribute("movie", movie);
-        if (!seances.isEmpty()) {
-            seances.sort(Comparator.comparing(Seance::getStart_time));
+        if (!allSeances.isEmpty()) {
+            seances = allSeances.stream()
+                    .filter(seance -> !seance.isCancelled())
+                    .sorted(Comparator.comparing(Seance::getStart_time))
+                    .toList();
         }
         model.addAttribute("seances", seances);
 
