@@ -51,12 +51,11 @@ public class SeanceService {
         return seanceRepository.findAll();
     }
 
-    public boolean isHallAvailable(Long hallId, LocalTime startTime, LocalTime endTime) {
-        List<Seance> overlapping = seanceRepository.findOverlappingSeancesNotCancelled(hallId, startTime, endTime);
-        return overlapping.isEmpty();
-    }
-
     public void save(Seance seance) {
         seanceRepository.save(seance);
+    }
+
+    public List<Seance> findOverlappingSeancesNotCancelled(Long hallId, LocalTime startTime, LocalTime endTime) {
+        return seanceRepository.findOverlappingSeancesNotCancelled(hallId, startTime, endTime);
     }
 }

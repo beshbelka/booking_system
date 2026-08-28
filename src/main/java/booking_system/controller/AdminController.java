@@ -252,7 +252,7 @@ public class AdminController {
             if (movie == null) return ResponseEntity.status(404).body(ApiResponse.error(404, "Фильм не найден"));
             Hall hall = hallService.findById(request.hallId());
             if (hall == null) return ResponseEntity.status(404).body(ApiResponse.error(404, "Зал не найден"));
-            if (!seanceService.isHallAvailable(request.hallId(), request.start_time(), request.start_time().plusMinutes(movie.getDuration()))) {
+            if (!hallService.isHallAvailable(0L, request.hallId(), request.start_time(), request.start_time().plusMinutes(movie.getDuration()))) {
                 return ResponseEntity.status(409).body(ApiResponse.error(409, "Зал занят в это время"));
             }
             Seance seance = new Seance();
@@ -268,6 +268,26 @@ public class AdminController {
             hall.getSeances().add(seance);
             hallService.save(hall);
             return ResponseEntity.ok().body(ApiResponse.success("add seance ok"));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(500)
+                    .body(ApiResponse.error());
+        }
+    }
+
+    @PostMapping("/control-seances-edit")
+    public ResponseEntity<ApiResponse> editSeance(@RequestBody EditSeanceRequest request) {
+        try {
+            if (request.seanceId() <= 0) return ResponseEntity.status(400).body(ApiResponse.error(400, "Некорректный ID"));
+            Seance seance = seanceService.findById(request.seanceId());
+            Hall hall = seance.getHall();
+            Movie movie = seance.getMovie();
+            LocalTime endTime = request.start_time().plusMinutes(movie.getDuration());
+            if (!hallService.isHallAvailable(request.seanceId(), hall.id, request.start_time(), endTime)) return ResponseEntity.status(409).body(ApiResponse.error(409, "Зал занят в это время"));
+            seance.setStart_time(request.start_time());
+            seance.setEnd_time(endTime);
+            seanceService.save(seance);
+            return ResponseEntity.ok().body(ApiResponse.success("edit seance ok"));
         } catch (Exception e) {
             return ResponseEntity
                     .status(500)

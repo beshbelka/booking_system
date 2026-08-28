@@ -8,7 +8,9 @@ import booking_system.repository.HallRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -47,5 +49,15 @@ public class HallService {
 
     public void save(Hall hall) {
         hallRepository.save(hall);
+    }
+
+    public boolean isHallAvailable(Long seanceId, Long hallId, LocalTime startTime, LocalTime endTime) {
+        try {
+            List<Seance> overlapping = seanceService.findOverlappingSeancesNotCancelled(hallId, startTime, endTime);
+            if (seanceId != 0) overlapping.removeIf(seance -> seance.getId().equals(seanceId));
+            return overlapping.isEmpty();
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

@@ -100,14 +100,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Кнопки показываются только если cancelled == false
             const actionsHtml = !seance.cancelled ? `
-            <td class="actions-cell">
-                <button class="btn-delete" data-id="${seance.id}" type="button">Отменить</button>
-            </td>
-        ` : `
-            <td class="actions-cell">
-                <span style="color: #888; font-size: 13px;">Отменён</span>
-            </td>
-        `;
+                <td class="actions-cell">
+                    <button class="btn-edit" data-id="${seance.id}" data-time="${formatTime(seance.start_time)}" type="button">Редактировать</button>
+                    <button class="btn-delete" data-id="${seance.id}" type="button">Отменить</button>
+                </td>
+            ` : `
+                <td class="actions-cell">
+                    <span style="color: #888; font-size: 13px;">Отменён</span>
+                </td>
+            `;
 
             html += `
             <tr>
@@ -128,7 +129,8 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.btn-edit').forEach(btn => {
             btn.addEventListener('click', function() {
                 const id = this.dataset.id;
-                window.location.href = '/admin/control-seances-edit?id=' + id;
+                const time = this.dataset.time;
+                openEditModal(id, time);
             });
         });
 
@@ -232,4 +234,70 @@ document.addEventListener('DOMContentLoaded', function() {
             searchSeances();
         }
     });
+});
+
+// Модальное окно для редактирования
+let editSeanceId = null;
+
+// Открыть модалку редактирования
+function openEditModal(seanceId, currentTime) {
+    editSeanceId = seanceId;
+    document.getElementById('editSeanceId').value = seanceId;
+    document.getElementById('editStartTime').value = currentTime;
+    document.getElementById('editModal').style.display = 'flex';
+}
+
+// Закрыть модалку
+function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+    editSeanceId = null;
+}
+
+// Сохранить изменения
+function saveEditSeance() {
+    const seanceId = document.getElementById('editSeanceId').value;
+    const newTime = document.getElementById('editStartTime').value;
+
+    if (!newTime) {
+        alert('Пожалуйста, выберите время');
+        return;
+    }
+
+    fetch('/admin/control-seances-edit', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            seanceId: parseInt(seanceId),
+            start_time: newTime
+        })
+    })
+        .then(response => response.json())
+        .then(apiResponse => {
+            if (!apiResponse.success) {
+                throw new Error(apiResponse.message || 'Ошибка редактирования');
+            }
+            alert('✅ ' + (apiResponse.message || 'Время сеанса обновлено'));
+            closeEditModal();
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+            alert('❌ ' + error.message);
+        });
+}
+
+// Закрыть модалку при клике вне окна
+window.addEventListener('click', function(e) {
+    const modal = document.getElementById('editModal');
+    if (e.target === modal) {
+        closeEditModal();
+    }
+});
+
+// Закрыть по Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeEditModal();
+    }
 });

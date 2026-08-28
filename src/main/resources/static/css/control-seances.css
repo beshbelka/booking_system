@@ -258,3 +258,127 @@
         height: 38px;
     }
 }
+
+/* ===== МОДАЛЬНОЕ ОКНО ===== */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    padding: 30px;
+    position: relative;
+    margin: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 15px;
+}
+
+.modal-header h2 {
+    color: #fff;
+    font-size: 22px;
+    margin: 0;
+}
+
+.modal-close {
+    font-size: 28px;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.3s;
+    background: none;
+    border: none;
+    padding: 0 8px;
+}
+
+.modal-close:hover {
+    color: #fff;
+}
+
+.modal-body {
+    margin-bottom: 20px;
+}
+
+.modal-body .form-group {
+    margin-bottom: 15px;
+}
+
+.modal-body .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.modal-body .form-group .form-control {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #0a0a0a;
+    border: 1px solid #333;
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 15px;
+    transition: border-color 0.3s;
+}
+
+.modal-body .form-group .form-control:focus {
+    outline: none;
+    border-color: #e50914;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    border-top: 1px solid #333;
+    padding-top: 20px;
+}
+
+.modal-footer .btn-save {
+    background: #e50914;
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.modal-footer .btn-save:hover {
+    background: #b81d24;
+}
+
+.modal-footer .btn-cancel {
+    background: transparent;
+    color: #888;
+    border: 1px solid #333;
+    padding: 10px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.modal-footer .btn-cancel:hover {
+    border-color: #555;
+    color: #fff;
+}
