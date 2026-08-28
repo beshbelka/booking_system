@@ -34,7 +34,7 @@ public class AdminController {
     private static final String POSTER_DIR = "src/main/resources/static/images/posters/";
     private static final String BACKDROP_DIR = "src/main/resources/static/images/backdrops/";
 
-    @PostMapping("/control-films-delete")
+    @DeleteMapping("/control-films-delete")
     @Transactional
     public ResponseEntity<ApiResponse> deleteFilm(@RequestBody AdminDeleteRequest request) {
         try {
@@ -54,7 +54,7 @@ public class AdminController {
         }
     }
 
-    @PostMapping("/control-users-delete")
+    @DeleteMapping("/control-users-delete")
     @Transactional
     public ResponseEntity<ApiResponse> deleteUser(@RequestBody AdminDeleteRequest request) {
         try {
