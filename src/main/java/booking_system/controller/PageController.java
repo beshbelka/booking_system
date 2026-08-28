@@ -27,7 +27,7 @@ public class PageController {
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("movies", movieService.getAll());
+        model.addAttribute("movies", movieService.findAll());
         model.addAttribute("featuredMovie", movieService.getRandomMovie());
         return "mainPage";
     }

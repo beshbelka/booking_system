@@ -38,7 +38,7 @@ public class AdminPageController {
         model.addAttribute("seanceCount", seanceService.getSeanceCount());
         model.addAttribute("hallCount", hallService.getHallCount());
         model.addAttribute("bookCount", bookService.getBookCount());
-        model.addAttribute("movies", movieService.getAll());
+        model.addAttribute("movies", movieService.findAll());
         return "about";
     }
 
@@ -49,7 +49,7 @@ public class AdminPageController {
 
     @GetMapping("/control-films")
     public String films(Model model) {
-        List<Movie> movies = movieService.getAll();
+        List<Movie> movies = movieService.findAll();
         if (!movies.isEmpty()) {
             movies.sort(Comparator.comparing(Movie::getId));
         }
@@ -79,4 +79,7 @@ public class AdminPageController {
 
     @GetMapping("/control-seances-add")
     public String addSeancePage() { return "control-seances-add"; }
+
+    @GetMapping("/control-bookings")
+    public String bookingsPage() { return "control-bookings"; }
 }

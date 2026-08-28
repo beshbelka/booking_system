@@ -38,6 +38,20 @@ public class Seat {
     @JoinColumn(name = "seance_id", nullable = false)
     private Seance seance;
 
+    public float getCoefficient() {
+        switch (type) {
+            case VIP -> {
+                return 2;
+            }
+            case FOR_DISABLED_PEOPLE -> {
+                return 0.5F;
+            }
+            default -> {
+                return 1;
+            }
+        }
+    };
+
     public Seat (short row,
                  short number,
                  SEAT_STATUS status,

@@ -1,9 +1,9 @@
 package booking_system.controller;
 
 import booking_system.DTO.*;
-import booking_system.entity.Hall;
-import booking_system.entity.Movie;
-import booking_system.entity.Seance;
+import booking_system.entity.*;
+import booking_system.enums.BOOK_STATUS;
+import booking_system.enums.SEAT_STATUS;
 import booking_system.service.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +37,7 @@ public class AdminController {
     private final HallService hallService;
     private final SeanceService seanceService;
     private final SeatService seatService;
+    private final BookService bookService;
 
     @DeleteMapping("/control-films-delete")
     @Transactional
@@ -157,7 +158,7 @@ public class AdminController {
     public ResponseEntity<ApiResponse> getMoviesAndCountHalls() {
         try {
             HashMap<String, String> data = new HashMap<>();
-            List<Movie> movies = movieService.getAll();
+            List<Movie> movies = movieService.findAll();
             for (Movie movie : movies) {
                 data.put(String.valueOf(movie.getId()), movie.getTitle());
             }
@@ -175,7 +176,7 @@ public class AdminController {
     public ResponseEntity<ApiResponse> getMoviesWithDurationAndCountHalls() {
         try {
             HashMap<String, String> data = new HashMap<>();
-            List<Movie> movies = movieService.getAll();
+            List<Movie> movies = movieService.findAll();
             for (Movie movie : movies) {
                 data.put(movie.getTitle(), String.valueOf(movie.getFormattedDuration()));
             }
@@ -292,6 +293,61 @@ public class AdminController {
             return ResponseEntity
                     .status(500)
                     .body(ApiResponse.error());
+        }
+    }
+
+    @GetMapping("/control-bookings-find")
+    public ResponseEntity<List<BookingResponse>> findBookings(@RequestParam Long movieId) {
+        try {
+            List<Book> books = bookService.findByMovieId(movieId);
+            List<BookingResponse> responses = new ArrayList<>();
+            for (Book book : books) {
+                BookingResponse bookingResponse = new BookingResponse(
+                        book.id,
+                        book.getStatusFormatted(),
+                        book.getUser().getEmail(),
+                        book.getSeatsFormatted(),
+                        book.getSeance().id,
+                        book.getSeance().getMovie().getTitle()
+                );
+                responses.add(bookingResponse);
+            }
+            return ResponseEntity.ok().body(responses);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @GetMapping("/control-bookings-get-data")
+    public ResponseEntity<ApiResponse> getMovieTitles() {
+        try {
+            List<Movie> movies = movieService.findAll();
+            HashMap<String, String> data = new HashMap<>();
+            for (Movie movie : movies) {
+                data.put(String.valueOf(movie.getId()), movie.getTitle());
+            }
+            return ResponseEntity.ok().body(ApiResponse.success(data));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(500)
+                    .body(ApiResponse.error());
+        }
+    }
+
+    @PostMapping("/control-bookings-cancel")
+    public ResponseEntity<ApiResponse> cancelBooking(@RequestParam Long bookingId) {
+        try {
+            Book book = bookService.findById(bookingId);
+            if (book.getStatus().equals(BOOK_STATUS.CANCELLED)) return ResponseEntity.status(409).body(ApiResponse.error(409, "Бронирование уже отменено"));
+            ApiResponse apiResponse = bookService.deleteBooking(book.getUser().getEmail(), bookingId);
+            if (apiResponse.isSuccess()) {
+                return ResponseEntity.ok().body(apiResponse);
+            }
+            return ResponseEntity
+                    .status(apiResponse.getCode())
+                    .body(apiResponse);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(ApiResponse.error());
         }
     }
 }

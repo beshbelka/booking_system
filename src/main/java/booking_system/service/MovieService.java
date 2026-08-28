@@ -34,7 +34,7 @@ public class MovieService {
         return movieRepository.count();
     }
 
-    public List<Movie> getAll() {
+    public List<Movie> findAll() {
         return movieRepository.findAll();
     }
 

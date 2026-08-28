@@ -1,0 +1,247 @@
+/* ===== CONTROL BOOKINGS STYLES ===== */
+
+/* ===== ФОРМА ФИЛЬТРАЦИИ ===== */
+.filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 20px;
+    background-color: #1a1a1a;
+    padding: 24px 30px;
+    border-radius: 12px;
+    border: 1px solid #333;
+    margin-bottom: 30px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 180px;
+}
+
+.filter-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-select {
+    background-color: #0a0a0a;
+    color: #ffffff;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: border-color 0.3s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+}
+
+.form-select:hover {
+    border-color: #555;
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: #e50914;
+}
+
+.btn-find {
+    background-color: #e50914;
+    color: #ffffff;
+    border: none;
+    padding: 10px 32px;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    height: 42px;
+    white-space: nowrap;
+    min-width: 120px;
+}
+
+.btn-find:hover {
+    background-color: #b81d24;
+}
+
+/* ===== РЕЗУЛЬТАТЫ ===== */
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.results-count {
+    color: #888;
+    font-size: 16px;
+}
+
+/* ===== ТАБЛИЦА ===== */
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.bookings-table {
+    width: 100%;
+    min-width: 700px;
+    border-collapse: collapse;
+    background-color: #1a1a1a;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.bookings-table th {
+    background-color: #2a2a2a;
+    color: #ffffff;
+    padding: 14px 18px;
+    text-align: left;
+    font-weight: bold;
+    border-bottom: 2px solid #333;
+    font-size: 14px;
+}
+
+.bookings-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid #333;
+    color: #cccccc;
+    vertical-align: middle;
+}
+
+.bookings-table tr:hover td {
+    background-color: #252525;
+}
+
+.bookings-table .empty-row td {
+    background-color: transparent !important;
+    padding: 0;
+}
+
+/* ===== БЕЙДЖИ СТАТУСОВ ===== */
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.badge-active {
+    background-color: #2ecc71;
+    color: #ffffff;
+}
+
+.badge-cancelled {
+    background-color: #e74c3c;
+    color: #ffffff;
+}
+
+.badge-pending {
+    background-color: #f39c12;
+    color: #ffffff;
+}
+
+/* ===== ПУСТОЕ СОСТОЯНИЕ ===== */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #888;
+    width: 100%;
+}
+
+.empty-state h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.empty-state p {
+    font-size: 16px;
+}
+
+/* ===== ДЕЙСТВИЯ ===== */
+.actions-cell {
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-cancel-booking {
+    display: inline-block;
+    background-color: #f5576c;
+    color: #ffffff;
+    padding: 6px 16px;
+    font-size: 13px;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-cancel-booking:hover {
+    background-color: #d94458;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .filter-form {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 18px 16px;
+        gap: 14px;
+    }
+
+    .filter-group {
+        min-width: 100%;
+    }
+
+    .btn-find {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .results-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .bookings-table {
+        display: block;
+        overflow-x: auto;
+        min-width: 500px;
+    }
+
+    .bookings-table th,
+    .bookings-table td {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-group label {
+        font-size: 12px;
+    }
+
+    .form-select {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+
+    .btn-find {
+        font-size: 13px;
+        padding: 8px 16px;
+        height: 38px;
+    }
+}

@@ -58,4 +58,34 @@ public class Book {
                 .map(seat -> seat.getRow() + "-" + seat.getNumber())
                 .collect(Collectors.joining(", "));
     }
+
+    public String getStatusFormatted() {
+        switch (this.status) {
+            case PAID -> {
+                return "Оплачено";
+            }
+            case NOT_PAID -> {
+                return "Не оплачено";
+            }
+            case CANCELLED -> {
+                return "Отменено";
+            }
+            case FILM_SCREENING -> {
+                return "В процессе";
+            }
+            default -> {
+                return null;
+            }
+        }
+    }
+
+    @Transient
+    public float getTotalPrice() {
+        float price = 0;
+        float seancePrice = seance.getPrice();
+        for (Seat seat : this.seats) {
+            price += (seancePrice * seat.getCoefficient());
+        }
+        return price;
+    }
 }

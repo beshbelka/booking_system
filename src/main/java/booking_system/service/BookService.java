@@ -5,15 +5,12 @@ import booking_system.DTO.BookRequest;
 import booking_system.entity.*;
 import booking_system.enums.BOOK_STATUS;
 import booking_system.enums.SEAT_STATUS;
-import booking_system.enums.SEAT_TYPE;
 import booking_system.exception.*;
 import booking_system.repository.BookRepository;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tools.jackson.core.ObjectReadContext;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -30,6 +27,7 @@ public class BookService {
     private final JwtService jwtService;
     private final SeanceService seanceService;
     private final SeatService seatService;
+    private final MovieService movieService;
 
     public long getBookCount() {
         return bookRepository.count();
@@ -166,4 +164,14 @@ public class BookService {
         bookRepository.saveAll(books);
     }
 
+    public List<Book> findAll() {
+        return bookRepository.findAll();
+    }
+
+    public List<Book> findByMovieId(Long movieId) {
+        if (movieId == 0) {
+            return bookRepository.findAll();
+        }
+        return bookRepository.findBySeanceMovieId(movieId);
+    }
 }
