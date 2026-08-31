@@ -1,5 +1,6 @@
 package booking_system.repository;
 
+import booking_system.entity.Movie;
 import booking_system.entity.Seance;
 import booking_system.entity.Seat;
 import booking_system.enums.SEAT_STATUS;
@@ -25,4 +26,6 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
     List<Seat> findBySeanceId(Long id);
 
     int countBySeanceAndStatus(Seance seance, SEAT_STATUS status);
+
+    Long countByStatus(SEAT_STATUS seatStatus);
 }

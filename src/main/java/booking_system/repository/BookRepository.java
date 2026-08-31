@@ -17,4 +17,10 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> findBySeanceIdAndStatusNot(Long id, BOOK_STATUS bookStatus);
 
     List<Book> findBySeanceMovieId(Long movieId);
+
+    List<Book> findByStatus(BOOK_STATUS bookStatus);
+
+    Long countByStatus(BOOK_STATUS bookStatus);
+
+    Long countBySeanceMovieId(long id);
 }

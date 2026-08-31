@@ -1,6 +1,7 @@
 package booking_system.service;
 
 import booking_system.DTO.ApiResponse;
+import booking_system.entity.Movie;
 import booking_system.entity.Seance;
 import booking_system.entity.Seat;
 import booking_system.enums.BOOK_STATUS;
@@ -84,6 +85,28 @@ public class SeatService {
             return seatRepository.findBySeanceId(id);
         } catch (Exception e) {
             return new ArrayList<>();
+        }
+    }
+
+    public Long countByStatus(SEAT_STATUS seatStatus) {
+        try {
+            Long count = seatRepository.countByStatus(seatStatus);
+            return count == null ? 0L : count;
+        } catch (Exception e) {
+            return 0L;
+        }
+    }
+
+    public Long countByMovie(Movie movie) {
+        try {
+            List<Seance> seances = seanceService.findByMovieId(movie.id);
+            long count = 0L;
+            for (Seance seance : seances) {
+                count += seatRepository.countBySeanceAndStatus(seance, SEAT_STATUS.BOOK);
+            }
+            return count;
+        } catch (Exception e) {
+            return 0L;
         }
     }
 }

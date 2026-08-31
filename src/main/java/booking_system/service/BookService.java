@@ -27,7 +27,6 @@ public class BookService {
     private final JwtService jwtService;
     private final SeanceService seanceService;
     private final SeatService seatService;
-    private final MovieService movieService;
 
     public long getBookCount() {
         return bookRepository.count();
@@ -173,5 +172,50 @@ public class BookService {
             return bookRepository.findAll();
         }
         return bookRepository.findBySeanceMovieId(movieId);
+    }
+
+    public float total() {
+        try {
+            List<Book> books = bookRepository.findByStatus(BOOK_STATUS.PAID);
+            System.out.println(books.size());
+            float total = 0L;
+            for (Book book : books) {
+                total += book.getTotalPrice();
+            }
+            return total;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    public float total(Movie movie) {
+        try {
+            float count = 0;
+            List<Book> books = bookRepository.findBySeanceMovieId(movie.id);
+            for (Book book : books) {
+                count += book.getTotalPrice();
+            }
+            return count;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    public float averagePrice(Long count) {
+        try {
+            float total = total();
+            return count == 0 ? 0 : total / count;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    public float averagePrice(float total, Movie movie) {
+        try {
+            Long count = bookRepository.countBySeanceMovieId(movie.id);
+            return count == 0 ? 0 : total / count;
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }

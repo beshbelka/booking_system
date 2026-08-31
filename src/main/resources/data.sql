@@ -92,3 +92,41 @@ WHERE NOT EXISTS (
       AND seat.number = seat_num
       AND seat.seance_id = s.id
 );
+
+UPDATE seance SET price =
+                      CASE
+                          -- === ЗАЛ 1 ===
+                          WHEN id = 1 THEN 500  -- 10:00 Дюна 2
+                          WHEN id = 2 THEN 500  -- 13:00 Оппенгеймер
+                          WHEN id = 3 THEN 500  -- 15:30 Барби
+                          WHEN id = 4 THEN 600  -- 18:00 Фортуна (вечер)
+                          WHEN id = 5 THEN 600  -- 20:30 Наполеон (вечер)
+
+                      -- === ЗАЛ 2 ===
+                          WHEN id = 6 THEN 450  -- 10:30 Дюна 2
+                          WHEN id = 7 THEN 450  -- 14:00 Оппенгеймер
+                          WHEN id = 8 THEN 450  -- 17:30 Барби
+                          WHEN id = 9 THEN 550  -- 20:00 Фортуна (вечер)
+
+                      -- === ЗАЛ 3 ===
+                          WHEN id = 10 THEN 400 -- 11:00 Убийцы
+                          WHEN id = 11 THEN 400 -- 14:00 Наполеон
+                          WHEN id = 12 THEN 400 -- 17:00 Оппенгеймер
+                          WHEN id = 13 THEN 500 -- 20:30 Барби (вечер)
+
+                      -- === ЗАЛ 4 ===
+                          WHEN id = 14 THEN 350 -- 09:30 Дюна 2
+                          WHEN id = 15 THEN 350 -- 13:00 Оппенгеймер
+                          WHEN id = 16 THEN 350 -- 16:30 Барби
+                          WHEN id = 17 THEN 450 -- 19:00 Фортуна (вечер)
+                          WHEN id = 18 THEN 450 -- 21:30 Наполеон (вечер)
+
+                      -- === ЗАЛ 5 ===
+                          WHEN id = 19 THEN 300 -- 10:00 Оппенгеймер
+                          WHEN id = 20 THEN 300 -- 13:30 Барби
+                          WHEN id = 21 THEN 300 -- 16:00 Дюна 2
+                          WHEN id = 22 THEN 400 -- 19:30 Убийцы (вечер)
+
+                          ELSE 350
+                          END
+WHERE price = 0 OR price IS NULL;

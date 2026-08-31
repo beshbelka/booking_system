@@ -70,9 +70,6 @@ public class Book {
             case CANCELLED -> {
                 return "Отменено";
             }
-            case FILM_SCREENING -> {
-                return "В процессе";
-            }
             default -> {
                 return null;
             }

@@ -1,7 +1,9 @@
 package booking_system.controller;
 
+import booking_system.DTO.MovieFinanceRequest;
 import booking_system.entity.Movie;
 import booking_system.entity.User;
+import booking_system.enums.SEAT_STATUS;
 import booking_system.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +27,7 @@ public class AdminPageController {
     private final HallService hallService;
     private final BookService bookService;
     private final UserService userService;
+    private final SeatService seatService;
 
     @GetMapping("")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -82,4 +85,17 @@ public class AdminPageController {
 
     @GetMapping("/control-bookings")
     public String bookingsPage() { return "control-bookings"; }
+
+    @GetMapping("/finance")
+    public String financePage(Model model) {
+        String total = String.valueOf(bookService.total());
+        Long soldTickets = seatService.countByStatus(SEAT_STATUS.BOOK);
+        String averagePrice = String.valueOf(bookService.averagePrice(soldTickets));
+        List<MovieFinanceRequest> movieFinanceRequests = movieService.finance();
+        model.addAttribute("total", total);
+        model.addAttribute("soldTickets", String.valueOf(soldTickets));
+        model.addAttribute("averagePrice", averagePrice);
+        model.addAttribute("movies", movieFinanceRequests);
+        return "finance";
+    }
 }

@@ -1,11 +1,13 @@
 package booking_system.service;
 
+import booking_system.DTO.MovieFinanceRequest;
 import booking_system.entity.*;
 import booking_system.exception.MovieNotFoundException;
 import booking_system.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -14,6 +16,8 @@ import java.util.Random;
 public class MovieService {
 
     private final MovieRepository movieRepository;
+    private final SeatService seatService;
+    private final BookService bookService;
 
     public Movie getRandomMovie() {
         List<Movie> allMovies = movieRepository.findAll();
@@ -51,6 +55,29 @@ public class MovieService {
             return movieRepository.findByTitle(movieTitle);
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    public List<MovieFinanceRequest> finance() {
+        try {
+            List<Movie> movies = movieRepository.findAll();
+            List<MovieFinanceRequest> movieFinanceRequests = new ArrayList<>();
+            for (Movie movie : movies) {
+                Long ticketCount = seatService.countByMovie(movie);
+                float total = bookService.total(movie);
+                float averagePrice = bookService.averagePrice(total, movie);
+                MovieFinanceRequest request = new MovieFinanceRequest(
+                        movie.id,
+                        movie.getTitle(),
+                        ticketCount,
+                        total,
+                        averagePrice
+                );
+                movieFinanceRequests.add(request);
+            }
+            return movieFinanceRequests;
+        } catch (Exception e) {
+            return new ArrayList<>();
         }
     }
 }

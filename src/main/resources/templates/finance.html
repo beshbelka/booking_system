@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Финансы - Кинозал</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/finance.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="admin-container">
+    <a href="/admin" class="back-link">← Назад</a>
+
+    <div class="admin-header">
+        <h1>💰 Финансы</h1>
+        <p class="admin-subtitle">Статистика за сегодня</p>
+    </div>
+
+    <!-- Основные метрики -->
+    <div class="finance-grid">
+        <div class="finance-card">
+            <div class="finance-icon">💰</div>
+            <div class="finance-info">
+                <span class="finance-label">Общая выручка</span>
+                <span class="finance-value" th:text="${total} + ' ₽'">0 ₽</span>
+            </div>
+        </div>
+
+        <div class="finance-card">
+            <div class="finance-icon">🎫</div>
+            <div class="finance-info">
+                <span class="finance-label">Продано билетов</span>
+                <span class="finance-value" th:text="${soldTickets}">0</span>
+            </div>
+        </div>
+
+        <div class="finance-card">
+            <div class="finance-icon">📊</div>
+            <div class="finance-info">
+                <span class="finance-label">Средняя цена билета</span>
+                <span class="finance-value" th:text="${averagePrice} + ' ₽'">0 ₽</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Таблица фильмов -->
+    <div class="movies-finance">
+        <h2 class="section-title">🎬 Статистика по фильмам</h2>
+        <div class="table-wrapper">
+            <table class="finance-table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Название фильма</th>
+                    <th>Продано билетов</th>
+                    <th>Общая выручка</th>
+                    <th>Средняя цена</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="movie, iterStat : ${movies}">
+                    <td class="rank" th:text="${iterStat.index + 1}">1</td>
+                    <td class="movie-title" th:text="${movie.title}">Дюна: Часть вторая</td>
+                    <td class="tickets" th:text="${movie.ticketCount}">148</td>
+                    <td class="revenue" th:text="${movie.total} + ' ₽'">74 000 ₽</td>
+                    <td class="avg-price" th:text="${movie.averagePrice} + ' ₽'">500 ₽</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(movies)}">
+                    <td colspan="5">
+                        <div class="empty-state">
+                            <h3>Нет данных</h3>
+                            <p>За сегодня продаж не было.</p>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>
