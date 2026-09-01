@@ -39,30 +39,9 @@ public class Seat {
     private Seance seance;
 
     public float getCoefficient() {
-        switch (type) {
-            case VIP -> {
-                return 2;
-            }
-            case FOR_DISABLED_PEOPLE -> {
-                return 0.5F;
-            }
-            default -> {
-                return 1;
-            }
+        if (this.type == SEAT_TYPE.VIP) {
+            return 1.5F;
         }
-    };
-
-    public Seat (short row,
-                 short number,
-                 SEAT_STATUS status,
-                 SEAT_TYPE type,
-                 Hall hall,
-                 Seance seance) {
-        this.row = row;
-        this.number = number;
-        this.status = status;
-        this.type = type;
-        this.hall = hall;
-        this.seance = seance;
+        return 1;
     }
 }

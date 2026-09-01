@@ -67,22 +67,22 @@ function fetchPaymentStatus() {
 
             const result = await response.json();
 
-            // ✅ Проверяем статус
             if (response.ok && result.success) {
                 showSuccess();
             } else {
-                console.error('Ошибка оплаты:', result.message || 'Неизвестная ошибка');
-                showError();
+                if (result.message === "Бронь уже оплачена") {
+                    alreadyPayed();
+                } else {
+                    showError();
+                }
             }
         } catch (error) {
-            console.error('Ошибка соединения:', error);
             showError();
         }
     }, delay);
 }
 
 function showSuccess() {
-    // ✅ Успешная оплата
     svg.innerHTML = `
             <circle cx="50" cy="50" r="45" fill="none" stroke="#4CAF50" stroke-width="4"/>
             <path d="M30 50 L45 65 L70 35" fill="none" stroke="#4CAF50" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
@@ -97,8 +97,22 @@ function showSuccess() {
     btn.onclick = () => window.location.href = '/profile';
 }
 
+function alreadyPayed() {
+    svg.innerHTML = `
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#4CAF50" stroke-width="4"/>
+            <path d="M30 50 L45 65 L70 35" fill="none" stroke="#4CAF50" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+                <animate attributeName="stroke-dasharray" from="0 100" to="100 0" dur="0.5s" fill="freeze"/>
+            </path>
+        `;
+    card.className = 'payment-card success';
+    title.textContent = 'Бронь уже оплачена!';
+    message.textContent = 'Билеты забронированы. Приятного просмотра!';
+    btn.style.display = 'block';
+    btn.textContent = 'Перейти к билетам';
+    btn.onclick = () => window.location.href = '/profile';
+}
+
 function showError() {
-    // ❌ Неудачная оплата
     svg.innerHTML = `
             <circle cx="50" cy="50" r="45" fill="none" stroke="#e50914" stroke-width="4"/>
             <line x1="30" y1="30" x2="70" y2="70" stroke="#e50914" stroke-width="6" stroke-linecap="round">

@@ -1,7 +1,6 @@
 package booking_system.service;
 
 import booking_system.DTO.ApiResponse;
-import booking_system.entity.Seat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 public class PaymentService {
 
     private final BookService bookService;
-    private final SeatService seatService;
 
     public ApiResponse payBooking(Long bookId) {
         try {

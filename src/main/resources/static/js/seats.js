@@ -41,7 +41,6 @@ async function loadHallInfo(seanceId) {
             occupiedSeats
         );
     } catch (error) {
-        console.error('Ошибка загрузки данных:', error);
         alert('Ошибка загрузки данных о зале. Попробуйте обновить страницу.');
         generateHallScheme(10, 10, new Set());
     }
@@ -65,6 +64,9 @@ function generateHallScheme(rows, seatsPerRow, occupied) {
         rowLabel.textContent = row;
         rowDiv.appendChild(rowLabel);
 
+        // Определяем, VIP ли ряд
+        const isVip = isVipRow(row);
+
         for (let seat = 1; seat <= seatsPerRow; seat++) {
             const seatBtn = document.createElement('button');
             seatBtn.className = 'seat-btn available';
@@ -73,11 +75,18 @@ function generateHallScheme(rows, seatsPerRow, occupied) {
             seatBtn.textContent = seat;
             seatBtn.type = 'button';
 
+            // Если VIP - добавляем класс и иконку
+            if (isVip) {
+                seatBtn.classList.add('vip');
+                seatBtn.innerHTML = `⭐ ${seat}`; // Или просто оставить номер
+                seatBtn.title = 'VIP место';
+            }
+
             const key = `${row}-${seat}`;
             if (occupied.has(key)) {
                 seatBtn.classList.add('occupied');
                 seatBtn.disabled = true;
-                seatBtn.title = 'Это место уже занято';
+                seatBtn.title = isVip ? 'VIP место занято' : 'Место занято';
             }
 
             seatBtn.addEventListener('click', function() {
@@ -200,21 +209,21 @@ async function createBooking(seanceId, seats) {
             const bookId = result.data.bookId;
             window.location.href = '/payment?bookId=' + bookId;
         } else {
-            alert(result.message || '❌ Ошибка при бронировании');
             payButton.disabled = false;
             payButton.textContent = `Продолжить (${selectedSeats.length} мест)`;
+            if (result.code === 401) {
+                window.location.href = '/auth/login?seats=true&seanceId=' + seanceId;
+            }
         }
 
     } catch (error) {
-        console.error('Ошибка:', error);
-        alert('⚠️ Ошибка соединения. Проверьте интернет-соединение.');
+        alert('Произошла ошибка');
         const payButton = document.getElementById('payButton');
         payButton.disabled = false;
         payButton.textContent = `Продолжить (${selectedSeats.length} мест)`;
     }
 }
 
-// Добавляем возможность отмены выбора всех мест (опционально)
 function clearAllSeats() {
     if (selectedSeats.length === 0) return;
 
@@ -229,7 +238,6 @@ function clearAllSeats() {
     }
 }
 
-// Обработчик для кнопки "Отменить" - теперь отменяет выбор, а не уходит на главную
 function cancelSelection() {
     if (selectedSeats.length === 0) {
         window.location.href = '/';
@@ -244,4 +252,8 @@ function cancelSelection() {
         updateSelectedSeatsInfo();
         updatePayButton();
     }
+}
+
+function isVipRow(row) {
+    return row >= 3 && row <= 5; // 3, 4, 5 ряды - VIP
 }

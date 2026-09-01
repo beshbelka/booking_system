@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -106,7 +105,7 @@ public class BookService {
             seats.forEach(seat -> seat.setStatus(SEAT_STATUS.FREE));
             seatService.saveAll(seats);
 
-            return ApiResponse.success("delete booking ok");
+            return ApiResponse.success("Успешная отмена бронирования");
         } catch (BaseException e) {
             return ApiResponse.error(e.getErrorCode(), e.getMessage());
         } catch (Exception e) {
@@ -137,34 +136,8 @@ public class BookService {
         try {
             bookRepository.save(book);
         } catch (Exception e) {
-            log.error("SAVE BOOK ERROR: " + e.getMessage());
+            log.error("SAVE BOOK ERROR: {}", e.getMessage());
         }
-    }
-
-    public List<Book> findByStatusAndCreatedAtBefore(BOOK_STATUS bookStatus, LocalTime expiryTime) {
-        try {
-            return bookRepository.findByStatusAndCreatedAtBefore(bookStatus, expiryTime);
-        } catch (Exception e) {
-            log.error("FIND BY STATUS AND TIME ERROR: " + e.getMessage());
-            return new ArrayList<>();
-        }
-    }
-
-    public List<Book> findBySeanceIdAndStatusNot(Long id, BOOK_STATUS bookStatus) {
-        try {
-            return bookRepository.findBySeanceIdAndStatusNot(id, bookStatus);
-        } catch (Exception e) {
-            log.error("FIND BY SEANCE ID AND STATUS NOT ERROR: " + e.getMessage());
-            return new ArrayList<>();
-        }
-    }
-
-    public void saveAll(List<Book> books) {
-        bookRepository.saveAll(books);
-    }
-
-    public List<Book> findAll() {
-        return bookRepository.findAll();
     }
 
     public List<Book> findByMovieId(Long movieId) {
@@ -191,7 +164,7 @@ public class BookService {
     public float total(Movie movie) {
         try {
             float count = 0;
-            List<Book> books = bookRepository.findBySeanceMovieId(movie.id);
+            List<Book> books = bookRepository.findBySeanceMovieIdAndStatusNot(movie.id, BOOK_STATUS.CANCELLED);
             for (Book book : books) {
                 count += book.getTotalPrice();
             }
@@ -212,7 +185,7 @@ public class BookService {
 
     public float averagePrice(float total, Movie movie) {
         try {
-            Long count = bookRepository.countBySeanceMovieId(movie.id);
+            Long count = bookRepository.countBySeanceMovieIdAndStatusNot(movie.id, BOOK_STATUS.CANCELLED);
             return count == 0 ? 0 : total / count;
         } catch (Exception e) {
             return 0;

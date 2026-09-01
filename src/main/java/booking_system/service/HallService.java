@@ -27,7 +27,7 @@ public class HallService {
         try {
             Seance seance = seanceService.findById(seanceId);
             Hall hall = seance.getHall();
-            HashMap<String, String> hallInfo = new HashMap<String, String>();
+            HashMap<String, String> hallInfo = new HashMap<>();
             hallInfo.put("id", hall.id.toString());
             hallInfo.put("rows", String.valueOf(hall.getRows()));
             hallInfo.put("seatsPerRow", String.valueOf(hall.getSeatsPerRow()));

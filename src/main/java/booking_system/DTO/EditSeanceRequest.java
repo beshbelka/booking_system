@@ -4,6 +4,7 @@ import java.time.LocalTime;
 
 public record EditSeanceRequest(
         Long seanceId,
-        LocalTime start_time
+        LocalTime start_time,
+        float price
 ) {
 }

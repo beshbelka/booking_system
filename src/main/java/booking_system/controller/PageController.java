@@ -48,7 +48,8 @@ public class PageController {
         try {
             String email = authentication.getName();
             USER_ROLE role = userService.getRole(email);
-            HashMap<String, String > nameAndBirthDate = userService.getNameAndBirthDate(email);
+            HashMap<String, String > nameAndBirthDate;
+            nameAndBirthDate = userService.getNameAndBirthDate(email);
             List<Book> books = userService.getBooks(email);
 
             model.addAttribute("email", email);

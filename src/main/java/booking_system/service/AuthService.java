@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 
 @Service
@@ -28,7 +29,6 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final BlacklistService blacklistService;
-    private final UserService userService;
     private final RefreshTokenService refreshTokenService;
 
     public ApiResponse register(RegisterRequest request, HttpServletResponse response) {
@@ -36,8 +36,21 @@ public class AuthService {
             if (userRepository.existsByEmail(request.email())) {
                 return ApiResponse.error(409, "Пользователь с таким email уже существует");
             }
+            if (request.password().length() < 6) {
+                return ApiResponse.error(400, "Длина пароля должна быть не менее 6 символов");
+            }
+            if (request.name().length() < 2) {
+                return ApiResponse.error(400, "Длина имени должна быть не менее 2 символов");
+            }
+            if (request.birthDate().isAfter(LocalDate.now()) || request.birthDate().isBefore(LocalDate.of(1900, 12, 31))) {
+                return ApiResponse.error(400, "Дата рождения должна быть в пределах 1900-12-31 - сегодня");
+            }
 
-            User user = new User(request.email(), passwordEncoder.encode(request.password()), request.name(), request.birthDate());
+            User user = new User(
+                    request.email(),
+                    passwordEncoder.encode(request.password()),
+                    request.name(),
+                    request.birthDate());
             userRepository.save(user);
 
             String accessToken = jwtService.generateAccessToken(request.email(), USER_ROLE.USER);
@@ -94,41 +107,6 @@ public class AuthService {
             jwtService.clearRefreshTokenCookie(response);
 
             return ApiResponse.success("logout ok");
-        } catch (BaseException e) {
-            return ApiResponse.error(e.getErrorCode(), e.getMessage());
-        } catch (Exception e) {
-            return ApiResponse.error(500, e.getMessage());
-        }
-    }
-
-    public ApiResponse refresh(String refreshToken, HttpServletResponse response){
-        try {
-            if (refreshToken == null || refreshToken.isEmpty()) {
-                throw new TokenIsNullException();
-            }
-            if (blacklistService.isBlackListed(refreshToken)) {
-                throw new TokenBlacklistedException();
-            }
-            if (!jwtService.isRefreshTokenValid(refreshToken)) {
-                throw new InvalidTokenException();
-            }
-
-            String email = jwtService.extractEmail(refreshToken);
-            User user = userService.findByEmail(email);
-
-            blacklistService.blackList(refreshToken);
-
-            String newAccessToken = jwtService.generateAccessToken(email, user.getRole());
-            String newRefreshToken = jwtService.generateRefreshToken(email);
-
-            jwtService.addAccessTokenCookie(response, newAccessToken);
-            jwtService.addRefreshTokenCookie(response, newRefreshToken);
-
-            HashMap<String, String> data = new HashMap<>();
-            data.put("accessToken", newAccessToken);
-            data.put("refreshToken", newRefreshToken);
-
-            return ApiResponse.success(data);
         } catch (BaseException e) {
             return ApiResponse.error(e.getErrorCode(), e.getMessage());
         } catch (Exception e) {

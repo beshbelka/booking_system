@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,7 +34,7 @@ public class User implements UserDetails {
 
     private LocalDate birthDate;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     private List<Book> books = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
@@ -47,14 +46,6 @@ public class User implements UserDetails {
         this.name = name;
         this.birthDate = birthDate;
         this.role = USER_ROLE.USER;
-    }
-
-    public User (String email, String password, String name, LocalDate birthDate, USER_ROLE role) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.birthDate = birthDate;
-        this.role = role;
     }
 
     @Override

@@ -101,7 +101,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Кнопки показываются только если cancelled == false
             const actionsHtml = !seance.cancelled ? `
                 <td class="actions-cell">
-                    <button class="btn-edit" data-id="${seance.id}" data-time="${formatTime(seance.start_time)}" type="button">Редактировать</button>
+                    <button class="btn-edit" 
+                            data-id="${seance.id}" 
+                            data-time="${formatTime(seance.start_time)}" 
+                            data-price="${seance.price}" 
+                            type="button">Редактировать</button>
                     <button class="btn-delete" data-id="${seance.id}" type="button">Отменить</button>
                 </td>
             ` : `
@@ -116,6 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${escapeHtml(formatTime(seance.start_time))}</td>
                 <td>${escapeHtml(formatTime(seance.end_time))}</td>
                 <td><span class="badge ${statusClass}">${statusText}</span></td>
+                <td>${seance.price}₽</td>
                 <td>${seance.seats}</td>
                 <td>${seance.bookedSeats}</td>
                 <td>${availableSeats}</td>
@@ -130,7 +135,8 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.addEventListener('click', function() {
                 const id = this.dataset.id;
                 const time = this.dataset.time;
-                openEditModal(id, time);
+                const price = this.dataset.price;
+                openEditModal(id, time, price);
             });
         });
 
@@ -240,10 +246,11 @@ document.addEventListener('DOMContentLoaded', function() {
 let editSeanceId = null;
 
 // Открыть модалку редактирования
-function openEditModal(seanceId, currentTime) {
+function openEditModal(seanceId, currentTime, price) {
     editSeanceId = seanceId;
     document.getElementById('editSeanceId').value = seanceId;
     document.getElementById('editStartTime').value = currentTime;
+    document.getElementById('editPrice').value = price;
     document.getElementById('editModal').style.display = 'flex';
 }
 
@@ -257,9 +264,20 @@ function closeEditModal() {
 function saveEditSeance() {
     const seanceId = document.getElementById('editSeanceId').value;
     const newTime = document.getElementById('editStartTime').value;
+    const newPrice = document.getElementById('editPrice').value;
 
     if (!newTime) {
         alert('Пожалуйста, выберите время');
+        return;
+    }
+
+    if (!newPrice) {
+        alert('Пожалуйста, укажите цену');
+        return;
+    }
+
+    if (newPrice < 0) {
+        alert('Цена не может быть отрицательной');
         return;
     }
 
@@ -270,7 +288,8 @@ function saveEditSeance() {
         },
         body: JSON.stringify({
             seanceId: parseInt(seanceId),
-            start_time: newTime
+            start_time: newTime,
+            price : newPrice
         })
     })
         .then(response => response.json())
@@ -278,12 +297,11 @@ function saveEditSeance() {
             if (!apiResponse.success) {
                 throw new Error(apiResponse.message || 'Ошибка редактирования');
             }
-            alert('✅ ' + (apiResponse.message || 'Время сеанса обновлено'));
+            alert((apiResponse.message || 'Время сеанса обновлено'));
             closeEditModal();
         })
         .catch(error => {
-            console.error('Ошибка:', error);
-            alert('❌ ' + error.message);
+            alert(error.message);
         });
 }
 

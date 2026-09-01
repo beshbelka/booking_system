@@ -40,10 +40,6 @@ public class ApiResponse {
         return new ApiResponse(false, message, new HashMap<>(), code, null);
     }
 
-    public static  ApiResponse validationError(Map<String, String> errors) {
-        return new ApiResponse(false, "validate error", new HashMap<>(), 400, errors);
-    }
-
     public static ApiResponse error() {
         return new ApiResponse(false, "Внутренняя ошибка сервера", new HashMap<>(), 500, null);
     }

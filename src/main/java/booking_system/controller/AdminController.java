@@ -3,7 +3,6 @@ package booking_system.controller;
 import booking_system.DTO.*;
 import booking_system.entity.*;
 import booking_system.enums.BOOK_STATUS;
-import booking_system.enums.SEAT_STATUS;
 import booking_system.service.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -100,7 +99,7 @@ public class AdminController {
             }
             movie.setActive(request.active());
             movieService.save(movie);
-            return ResponseEntity.ok().body(ApiResponse.success("add movie ok"));
+            return ResponseEntity.ok().body(ApiResponse.success("Успешное добавление фильма"));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(ApiResponse.error());
         }
@@ -148,7 +147,7 @@ public class AdminController {
                 movie.setBackdropUrl(backdropPath);
             }
             movieService.save(movie);
-            return ResponseEntity.ok().body(ApiResponse.success("edit movie ok"));
+            return ResponseEntity.ok().body(ApiResponse.success("Успешное изменение фильма"));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(ApiResponse.error());
         }
@@ -216,10 +215,10 @@ public class AdminController {
                         seance.getStart_time(),
                         seance.getEnd_time(),
                         seance.isAvailable(),
+                        seance.getPrice(),
                         seance.getHall().getTotalSeats(),
                         seatService.getBookedSeatsCount(seance),
                         seance.isCancelled());
-                if (seance.isAvailable()) System.out.println("AVAILABLE SEANCE: " + seance.getId());
                 seanceResponses.add(seanceResponse);
             }
             return ResponseEntity.ok().body(seanceResponses);
@@ -268,7 +267,7 @@ public class AdminController {
             movieService.save(movie);
             hall.getSeances().add(seance);
             hallService.save(hall);
-            return ResponseEntity.ok().body(ApiResponse.success("add seance ok"));
+            return ResponseEntity.ok().body(ApiResponse.success("Успешное добавление сеанса"));
         } catch (Exception e) {
             return ResponseEntity
                     .status(500)
@@ -280,6 +279,7 @@ public class AdminController {
     public ResponseEntity<ApiResponse> editSeance(@RequestBody EditSeanceRequest request) {
         try {
             if (request.seanceId() <= 0) return ResponseEntity.status(400).body(ApiResponse.error(400, "Некорректный ID"));
+            if (request.price() < 0) return ResponseEntity.status(400).body(ApiResponse.error(400, "Некорректная цена"));
             Seance seance = seanceService.findById(request.seanceId());
             Hall hall = seance.getHall();
             Movie movie = seance.getMovie();
@@ -287,8 +287,9 @@ public class AdminController {
             if (!hallService.isHallAvailable(request.seanceId(), hall.id, request.start_time(), endTime)) return ResponseEntity.status(409).body(ApiResponse.error(409, "Зал занят в это время"));
             seance.setStart_time(request.start_time());
             seance.setEnd_time(endTime);
+            seance.setPrice(request.price());
             seanceService.save(seance);
-            return ResponseEntity.ok().body(ApiResponse.success("edit seance ok"));
+            return ResponseEntity.ok().body(ApiResponse.success("Успешное изменение сеанса"));
         } catch (Exception e) {
             return ResponseEntity
                     .status(500)

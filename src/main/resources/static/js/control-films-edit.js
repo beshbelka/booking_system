@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (data.success) {
                         window.location.href = '/admin/control-films';
                     } else {
-                        alert('Ошибка: ' + (data.message || 'Неизвестная ошибка'));
+                        alert(data.message || 'Неизвестная ошибка');
                         submitBtn.textContent = originalText;
                         submitBtn.disabled = false;
                     }

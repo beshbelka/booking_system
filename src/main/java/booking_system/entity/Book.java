@@ -1,7 +1,5 @@
 package booking_system.entity;
 
-import booking_system.enums.SEAT_STATUS;
-import booking_system.enums.SEAT_TYPE;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,7 +27,7 @@ public class Book {
     private BOOK_STATUS status;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany

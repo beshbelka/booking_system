@@ -37,7 +37,7 @@ public class SeatController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error(500, e.getMessage()));
+                    .body(ApiResponse.error());
         }
     }
 

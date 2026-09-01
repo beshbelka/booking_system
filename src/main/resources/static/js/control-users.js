@@ -27,14 +27,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Пользователь успешно удален!');
                         location.reload();
                     } else {
-                        alert('Ошибка: ' + (data.message || 'Неизвестная ошибка'));
+                        alert(data.message || 'Неизвестная ошибка');
                     }
                 })
                 .catch(error => {
-                    console.error('Ошибка:', error);
                     alert('Произошла ошибка при удалении пользователя.');
                 });
         });

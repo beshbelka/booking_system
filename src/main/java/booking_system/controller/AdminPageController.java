@@ -30,7 +30,6 @@ public class AdminPageController {
     private final SeatService seatService;
 
     @GetMapping("")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String admin() {
         return "admin";
     }

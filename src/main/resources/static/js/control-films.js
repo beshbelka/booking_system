@@ -23,10 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Фильм успешно удален!');
                         location.reload();
                     } else {
-                        alert('Ошибка: ' + (data.message || 'Неизвестная ошибка'));
+                        alert(data.message || 'Неизвестная ошибка');
                     }
                 })
                 .catch(error => {

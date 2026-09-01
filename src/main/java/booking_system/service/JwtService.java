@@ -16,7 +16,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -63,10 +62,6 @@ public class JwtService {
         return extractAllClaims(token).getExpiration().before(new Date());
     }
 
-    public Claims extractClaims(String token) {
-        return extractAllClaims(token);
-    }
-
     public String extractEmail(String token) {
         if (token == null || token.isEmpty()) {
             throw new TokenIsNullException();
@@ -108,15 +103,6 @@ public class JwtService {
         try {
             Claims claims = extractAllClaims(token);
             return "access".equals(claims.get("type"));
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        try {
-            final String email = extractEmail(token);
-            return email.equals(userDetails.getUsername()) && !isTokenExpired(token) && isAccessToken(token);
         } catch (Exception e) {
             return false;
         }

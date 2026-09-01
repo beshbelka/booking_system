@@ -63,6 +63,7 @@ public class ProfileController {
         try {
             String oldPass = passwordChangeRequest.oldPassword();
             String newPass = passwordChangeRequest.newPassword();
+            if (newPass.length() < 6) return ResponseEntity.status(400).body(ApiResponse.error(400, "Длина пароля должна быть не менее 6 символов"));
             String token = jwtService.extractAccessTokenFromCookies(request);
             ApiResponse apiResponse = userService.changePassword(token, oldPass, newPass);
             if (apiResponse.isSuccess()) {

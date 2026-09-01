@@ -122,12 +122,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!apiResponse.success) {
                     throw new Error(apiResponse.message || 'Ошибка отмены бронирования');
                 }
-                alert('✅ ' + (apiResponse.message || 'Бронирование отменено'));
                 searchBookings();
             })
             .catch(error => {
                 console.error('Ошибка:', error);
-                alert('❌ ' + error.message);
+                alert(error.message);
             });
     }
 

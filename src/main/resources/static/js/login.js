@@ -30,7 +30,6 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 
         if (response.ok && result.success) {
             if (seats === 'true') {
-                const movieId = urlParams.get('movieId');
                 const seanceId = urlParams.get('seanceId');
                 window.location.href = "/seats?&seanceId=" + seanceId;
             } else {

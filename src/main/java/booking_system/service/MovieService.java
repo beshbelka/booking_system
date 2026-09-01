@@ -24,14 +24,14 @@ public class MovieService {
         if (allMovies.isEmpty()) {
             return null;
         }
-        Movie movie;
-        Random random = new Random();
-        movie = allMovies.get(random.nextInt(allMovies.size()));
-        while (!movie.isActive()) {
-            random = new Random();
-            movie = allMovies.get(random.nextInt(allMovies.size()));
+        List<Movie> activeMovies = allMovies.stream()
+                .filter(Movie::isActive)
+                .toList();
+        if (activeMovies.isEmpty()) {
+            return null;
         }
-        return movie;
+        Random random = new Random();
+        return activeMovies.get(random.nextInt(activeMovies.size()));
     }
 
     public long getMovieCount() {

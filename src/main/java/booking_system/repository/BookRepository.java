@@ -1,7 +1,6 @@
 package booking_system.repository;
 
 import booking_system.entity.Book;
-import booking_system.entity.Movie;
 import booking_system.enums.BOOK_STATUS;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -16,11 +15,11 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     List<Book> findBySeanceIdAndStatusNot(Long id, BOOK_STATUS bookStatus);
 
-    List<Book> findBySeanceMovieId(Long movieId);
+    List<Book> findBySeanceMovieIdAndStatusNot(Long movieId, BOOK_STATUS bookStatus);
 
     List<Book> findByStatus(BOOK_STATUS bookStatus);
 
-    Long countByStatus(BOOK_STATUS bookStatus);
+    List<Book> findBySeanceMovieId(Long movieId);
 
-    Long countBySeanceMovieId(long id);
+    Long countBySeanceMovieIdAndStatusNot(long id, BOOK_STATUS bookStatus);
 }

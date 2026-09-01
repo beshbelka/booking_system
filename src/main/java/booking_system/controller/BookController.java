@@ -4,7 +4,6 @@ import booking_system.DTO.ApiResponse;
 import booking_system.DTO.BookRequest;
 import booking_system.exception.BaseException;
 import booking_system.exception.InvalidTokenException;
-import booking_system.exception.TokenBlacklistedException;
 import booking_system.exception.TokenIsNullException;
 import booking_system.service.BookService;
 import booking_system.service.JwtService;
@@ -45,7 +44,7 @@ public class BookController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error(500, e.getMessage()));
+                    .body(ApiResponse.error());
         }
     }
 }

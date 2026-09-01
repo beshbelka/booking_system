@@ -1,8 +1,6 @@
 package booking_system.service;
 
-import booking_system.DTO.ApiResponse;
 import booking_system.entity.User;
-import booking_system.exception.BaseException;
 import booking_system.exception.InvalidTokenException;
 import booking_system.exception.TokenBlacklistedException;
 import booking_system.exception.TokenIsNullException;
@@ -12,11 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -42,13 +37,9 @@ public class RefreshTokenService {
         String email = jwtService.extractEmail(refreshToken);
         User user = userService.findByEmail(email);
 
-        blacklistService.blackList(refreshToken);
-
         String newAccessToken = jwtService.generateAccessToken(email, user.getRole());
-        String newRefreshToken = jwtService.generateRefreshToken(email);
 
         jwtService.addAccessTokenCookie(response, newAccessToken);
-        jwtService.addRefreshTokenCookie(response, newRefreshToken);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(

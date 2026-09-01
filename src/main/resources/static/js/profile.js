@@ -185,11 +185,10 @@ function logout() {
             if (data.success === true) {
                 window.location.href = '/';
             } else {
-                alert('Ошибка: ' + (data.error || 'Неизвестная ошибка'));
+                alert(data.error || 'Неизвестная ошибка');
             }
         })
         .catch(error => {
-            console.error('Ошибка:', error);
             alert('Ошибка соединения с сервером');
         });
 }

@@ -24,7 +24,7 @@
                 <div class="movie-meta-hero">
                     <span class="meta-item">⏱ <span th:text="${movie.getFormattedDuration()}">2ч 46мин</span></span>
                     <span class="meta-item">🎬 <span th:text="${movie.genre}">Фантастика</span></span>
-                    <span class="meta-item age-rating" th:text="${movie.ageRating}">18+</span>
+                    <span class="meta-item age-rating" th:text="${movie.ageRating} + '+'">18+</span>
                 </div>
                 <p class="movie-description-hero" th:text="${movie.description}">Описание</p>
             </div>

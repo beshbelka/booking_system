@@ -19,12 +19,6 @@ public interface SeanceRepository extends JpaRepository<Seance, Long> {
     List<Seance> findByHallId(Long hallId);
 
     @Query("SELECT s FROM Seance s WHERE s.hall.id = :hallId AND " +
-            "s.start_time < :endTime AND s.end_time > :startTime")
-    List<Seance> findOverlappingSeances(@Param("hallId") Long hallId,
-                                        @Param("startTime") LocalTime startTime,
-                                        @Param("endTime") LocalTime endTime);
-
-    @Query("SELECT s FROM Seance s WHERE s.hall.id = :hallId AND " +
             "s.start_time < :endTime AND s.end_time > :startTime AND " +
             "s.cancelled = false")
     List<Seance> findOverlappingSeancesNotCancelled(@Param("hallId") Long hallId,

@@ -1,7 +1,6 @@
 package booking_system.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.boot.webmvc.error.ErrorController;
 import org.springframework.stereotype.Controller;
 
 import booking_system.exception.BaseException;
@@ -13,11 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.io.IOException;
 
 @Controller
-public class CustomErrorController implements ErrorController {
+public class ErrorController implements org.springframework.boot.webmvc.error.ErrorController {
 
     @RequestMapping("/error")
     public String handleError(HttpServletRequest request, Model model, HttpServletResponse response) throws IOException {
-        // Получаем исключение из атрибутов запроса
         Object exception = request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
 
         int code = 500;
@@ -34,7 +32,6 @@ public class CustomErrorController implements ErrorController {
         }
 
         if (code == 401) {
-            System.out.println("TRUE");
             response.sendRedirect("/auth/login");
         }
 

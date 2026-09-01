@@ -15,7 +15,9 @@ public class Path {
             "/auth/login",
             "/auth/registration",
             "/seances",
-            "/seats"
+            "/seats",
+            "/hall/info",
+            "/seat/occupied"
     };
 
     public static final String[] PUBLIC_POST = {

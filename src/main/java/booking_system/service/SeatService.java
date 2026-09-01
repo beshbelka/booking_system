@@ -4,7 +4,6 @@ import booking_system.DTO.ApiResponse;
 import booking_system.entity.Movie;
 import booking_system.entity.Seance;
 import booking_system.entity.Seat;
-import booking_system.enums.BOOK_STATUS;
 import booking_system.enums.SEAT_STATUS;
 import booking_system.exception.BaseException;
 import booking_system.exception.SeatNotFoundException;
@@ -13,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -63,28 +60,11 @@ public class SeatService {
         }
     }
 
-    public List<Seat> findBySeanceIdAndStatusNot(Long id, SEAT_STATUS seatStatus) {
-        try {
-            return seatRepository.findBySeanceIdAndStatusNot(id, seatStatus);
-        } catch (Exception e) {
-            log.error("FIND BY SEANCE ID AND STATUS NOT ERROR: " + e.getMessage());
-            return new ArrayList<>();
-        }
-    }
-
     public int getBookedSeatsCount(Seance seance) {
         try {
             return seatRepository.countBySeanceAndStatus(seance, SEAT_STATUS.BOOK);
         } catch (Exception e) {
             return 0;
-        }
-    }
-
-    public List<Seat> findBySeanceId(Long id) {
-        try {
-            return seatRepository.findBySeanceId(id);
-        } catch (Exception e) {
-            return new ArrayList<>();
         }
     }
 

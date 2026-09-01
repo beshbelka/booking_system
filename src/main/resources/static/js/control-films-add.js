@@ -53,8 +53,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const file = this.files[0];
         if (file) {
             // Проверка размера (макс. 5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                alert('Файл слишком большой! Максимальный размер 5MB');
+            if (file.size > 10 * 1024 * 1024) {
+                alert('Файл слишком большой! Максимальный размер 10MB');
                 this.value = '';
                 posterFileName.textContent = '';
                 posterPreview.classList.remove('visible');
@@ -85,9 +85,8 @@ document.addEventListener('DOMContentLoaded', function() {
     backdropFileInput.addEventListener('change', function(e) {
         const file = this.files[0];
         if (file) {
-            // Проверка размера (макс. 5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                alert('Файл слишком большой! Максимальный размер 5MB');
+            if (file.size > 10 * 1024 * 1024) {
+                alert('Файл слишком большой! Максимальный размер 10MB');
                 this.value = '';
                 backdropFileName.textContent = '';
                 backdropPreview.classList.remove('visible');
@@ -115,12 +114,6 @@ document.addEventListener('DOMContentLoaded', function() {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
 
-            // Проверка: выбран ли файл постера
-            if (!posterFileInput.files.length) {
-                alert('Пожалуйста, выберите файл постера');
-                return;
-            }
-
             const formData = new FormData(this);
 
             // Показываем индикатор загрузки (опционально)
@@ -143,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (data.success) {
                         window.location.href = '/admin/control-films';
                     } else {
-                        alert('Ошибка: ' + (data.message || 'Неизвестная ошибка'));
+                        alert(data.message || 'Неизвестная ошибка');
                         submitBtn.textContent = originalText;
                         submitBtn.disabled = false;
                     }

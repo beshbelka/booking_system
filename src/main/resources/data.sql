@@ -3,7 +3,7 @@
 INSERT INTO hall (id, rows, seats_per_row)
 SELECT * FROM (VALUES
                    (1, 10, 12),
-                   (2, 8, 14),
+                   (2, 8, 13),
                    (3,  12, 10),
                    (4,  10, 12),
                    (5, 8, 12)
@@ -78,7 +78,10 @@ SELECT
     row_num,
     seat_num,
     'FREE'::varchar,
-    'ORDINARY'::varchar,
+    CASE
+        WHEN row_num BETWEEN 3 AND 5 THEN 'VIP'::varchar
+        ELSE 'ORDINARY'::varchar
+END,
     h.id,
     s.id
 FROM seance s

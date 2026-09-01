@@ -18,29 +18,39 @@
         <div class="hero-label">СЕАНС НЕДЕЛИ</div>
         <h1 class="hero-title" th:text="${featuredMovie.title}">Бегущий по лезвию 2049</h1>
         <div class="hero-meta">
-            <span th:text="${featuredMovie.formattedDuration}">2ч 43мин</span>
-            <span th:text="${featuredMovie.genre}">фантастика</span>
-            <span th:text="${featuredMovie.ageRating} + '+'">18+</span>
+            <span th:text="${featuredMovie.formattedDuration != null ? featuredMovie.formattedDuration : '0ч 0мин'}">2ч 43мин</span>
+            <span th:text="${featuredMovie.genre != null ? featuredMovie.genre : '---'}">фантастика</span>
+            <span th:text="${featuredMovie.ageRating != null ? featuredMovie.ageRating + '+' : '0+'}">18+</span>
         </div>
-        <p class="hero-description" th:text="${featuredMovie.description}">
+        <p class="hero-description" th:text="${featuredMovie.description != null ? featuredMovie.description : 'Описание отсутствует'}">
             Офицер полиции Кей вынужден разыскивать беглецов...
         </p>
         <a th:href="@{/seances(movieId=${featuredMovie.id})}"
-           th:if="${not #lists.isEmpty(featuredMovie.seances)}"
+           th:if="${featuredMovie.seances != null and not #lists.isEmpty(featuredMovie.seances)}"
            class="btn-buy" th:data-movie-id="${featuredMovie.id}">Купить билет
         </a>
-        <div th:if="${#lists.isEmpty(featuredMovie.seances)}" class="no-seances-message">
+        <div th:if="${featuredMovie.seances == null or #lists.isEmpty(featuredMovie.seances)}" class="no-seances-message">
             Скоро будут сеансы
         </div>
     </div>
 
     <div class="hero-poster">
-        <img th:src="${featuredMovie.posterUrl != null && featuredMovie.posterUrl != '' ? featuredMovie.posterUrl : '/images/no-image.jpg'}" th:alt="${featuredMovie.title}" class="hero-poster-img">
+        <img th:src="${featuredMovie.posterUrl != null && featuredMovie.posterUrl != '' ? featuredMovie.posterUrl : '/images/no-image.jpg'}"
+             th:alt="${featuredMovie.title != null ? featuredMovie.title : 'Постер фильма'}"
+             class="hero-poster-img">
     </div>
 </section>
 
+<!-- Если фильмов нет - показываем сообщение -->
+<div th:if="${movies == null or #lists.isEmpty(movies)}" class="container">
+    <h2 class="section-title">Сегодня в кино</h2>
+    <div class="empty-message">
+        <p style="text-align: center; padding: 50px; font-size: 1.2rem; color: #888;">😕 Фильмов пока нет. Зайдите позже!</p>
+    </div>
+</div>
+
 <!-- Main Content - Афиша -->
-<main class="container">
+<main class="container" th:unless="${movies == null or #lists.isEmpty(movies)}">
     <h2 class="section-title">Сегодня в кино</h2>
 
     <div class="movies-grid">
@@ -48,18 +58,18 @@
         <div class="movie-card" th:each="movie : ${movies}" th:if="${movie.active}">
             <div class="movie-image">
                 <img th:src="${movie.posterUrl != null && movie.posterUrl != '' ? movie.posterUrl : '/images/no-image.jpg'}"
-                     th:alt="${movie.title}"
+                     th:alt="${movie.title != null ? movie.title : 'Постер фильма'}"
                      class="movie-poster-img">
             </div>
             <div class="movie-info">
-                <h3 class="movie-title" th:text="${movie.title}">Название фильма</h3>
-                <p class="movie-description" th:text="${movie.description}">Описание фильма</p>
+                <h3 class="movie-title" th:text="${movie.title != null ? movie.title : 'Без названия'}">Название фильма</h3>
+                <p class="movie-description" th:text="${movie.description != null ? movie.description : 'Описание отсутствует'}">Описание фильма</p>
                 <a th:href="@{/seances(movieId=${movie.id})}" class="btn-buy-small"
-                   th:if="${not #lists.isEmpty(movie.seances)}"
+                   th:if="${movie.seances != null and not #lists.isEmpty(movie.seances)}"
                    th:data-movie-id="${movie.id}">
                     Купить билет
                 </a>
-                <div th:if="${#lists.isEmpty(movie.seances)}" class="no-seances-message">
+                <div th:if="${movie.seances == null or #lists.isEmpty(movie.seances)}" class="no-seances-message">
                     Скоро будут сеансы
                 </div>
             </div>

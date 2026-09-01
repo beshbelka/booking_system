@@ -21,7 +21,7 @@
     </div>
 
     <div class="form-container">
-        <form class="form-card" id="addFilmForm" action="/admin/control-films-add" method="post" enctype="multipart/form-data">
+        <form class="form-card" id="addFilmForm" action="/admin/control-films-add" method="post" enctype="multipart/form-data" novalidate>
 
             <!-- Название -->
             <div class="form-group">
@@ -91,8 +91,7 @@
                            id="posterFileInput"
                            name="posterFile"
                            class="file-input"
-                           accept="image/*"
-                           required>
+                           accept="image/*">
                 </div>
                 <div id="posterFileName" style="color: #888; font-size: 14px; margin-top: 8px;"></div>
                 <div class="poster-preview" id="posterPreview">

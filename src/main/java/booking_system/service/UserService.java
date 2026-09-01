@@ -3,7 +3,6 @@ package booking_system.service;
 import booking_system.DTO.ApiResponse;
 import booking_system.DTO.ProfileEditRequest;
 import booking_system.entity.Book;
-import booking_system.entity.Seat;
 import booking_system.entity.User;
 import booking_system.enums.USER_ROLE;
 import booking_system.exception.BaseException;
@@ -29,6 +28,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final DeleteService deleteService;
 
     @Transactional
     public ApiResponse editProfile(@Valid ProfileEditRequest data, String token) {
@@ -94,6 +94,7 @@ public class UserService {
     }
 
     public List<Book> getBooks(String email) {
+        deleteService.cancelExpiredBookings();
         User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
         return user.getBooks();
     }
